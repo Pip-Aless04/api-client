@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión</title>
+    <link rel="icon" id="appIcon" type="image/x-icon" href="https://cms.blumewebsites.com/pops/website/favicon.png">
+    <link rel="stylesheet" href="./css/login.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <div class="header">
+                <h1 class="title">Bienvenido</h1>
+            </div>
+            <form class="form" id="login-form">
+                <div class="input-group">
+                    <label for="ident">Identificación</label>
+                    <input type="text" id="ident" placeholder="Identificación" required>
+                </div>
+                <div class="input-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" placeholder="Contraseña" required>
+                </div>
+                <button type="submit">Ingresar</button>
+                <div id="notification" class="notification"></div> <!-- Contenedor para la notificación -->
+            </form>
+            <div class="logo">
+                <img src="./img/logo_pops_2024.webp" alt="Logo">
+            </div>
+        </div>
+    </div>
+</body>
+<script src="./js/login.js"></script>
+</html>
