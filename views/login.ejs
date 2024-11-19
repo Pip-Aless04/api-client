@@ -16,14 +16,17 @@
             <form class="form" id="login-form">
                 <div class="input-group">
                     <label for="ident">Identificación</label>
-                    <input type="text" id="ident" placeholder="Identificación" required>
+                    <input type="text" id="ident" name="ident" placeholder="Identificación" required>
                 </div>
                 <div class="input-group">
                     <label for="password">Contraseña</label>
-                    <input type="password" id="password" placeholder="Contraseña" required>
+                    <div class="password-wrapper">
+                        <input type="password" id="password" name="password" placeholder="Contraseña" required>
+                        <span class="toggle-password" onclick="togglePassword()">👁️</span>
+                    </div>
                 </div>
                 <button type="submit">Ingresar</button>
-                <div id="notification" class="notification"></div> <!-- Contenedor para la notificación -->
+                <div id="notification" class="notification"></div>
             </form>
             <div class="logo">
                 <img src="./img/logo_pops_2024.webp" alt="Logo">
@@ -31,5 +34,31 @@
         </div>
     </div>
 </body>
-<script src="./js/login.js"></script>
+<script src="../js/login.js"></script>
+<style>
+    /* Agregamos estilo para el wrapper de contraseña y el icono */
+    .password-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .password-wrapper input[type="password"],
+    .password-wrapper input[type="text"] {
+        width: 100%;
+        padding-right: 40px; /* Espacio para el icono */
+    }
+
+    .toggle-password {
+        position: absolute;
+        right: 10px;
+        cursor: pointer;
+        font-size: 1.2em;
+        color: #888;
+    }
+
+    .toggle-password:hover {
+        color: #333;
+    }
+</style>
 </html>

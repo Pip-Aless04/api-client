@@ -28,6 +28,7 @@ WHERE 1=1
 
 
 SELECT * FROM colaborador
+WHERE col_identificacion = '111'
 
 
 SELECT * FROM descripcion_talento
@@ -315,3 +316,9 @@ VALUES
 (N'COORDINADOR DE MERCADEO Y VENTAS')
 
 
+UPDATE colaborador
+SET  col_jefe_id = '52DC0839-0BE8-47A5-9BCD-EBCDB4F17266'  WHERE col_id = 'C86198EA-0767-4EAE-9824-10091D6E2930'
+
+
+SELECT * FROM colaborador 
+WHERE col_jefe_id = 'C7D001F5-AAD7-4087-8BAE-06A85D142C38'

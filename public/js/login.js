@@ -8,8 +8,8 @@
 
     loginForm?.addEventListener('submit', e => {
         e.preventDefault();
-        const col_identificacion = $('#ident').value;
-        const col_clave = $('#password').value;
+        const ident = $('#ident').value;
+        const clave = $('#password').value;
 
         // Muestra el círculo de carga
         notification.innerHTML = ''; 
@@ -17,12 +17,12 @@
         loadingCircle.style.display = 'block'; 
         notification.style.display = 'block';
 
-        fetch('evaluacion/colaboradores/login', {
+        fetch('http://localhost:3000/dhcoapp/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ col_identificacion, col_clave })
+            body: JSON.stringify({ ident, clave })
         })
         .then(res => {
             loadingCircle.style.display = 'none'; // Oculta el círculo de carga
@@ -30,7 +30,7 @@
                 notification.className = 'notification success';
                 notification.innerText = "Iniciando sesión...";
                 setTimeout(() => {
-                    window.location.href = '/inicio';
+                    window.location.href = '/dhcoapp/inicio';
                 }, 2000);
             } else {
                 notification.className = 'notification error';

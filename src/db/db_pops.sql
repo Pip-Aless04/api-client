@@ -5,7 +5,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     USE Pops;
 
 /*##########################################################################*/
-    CREATE TABLE Pais(
+    CREATE TABLE pais(
         pais_id INT IDENTITY(1,1) PRIMARY KEY,
         pais_nombre NVARCHAR(50) NOT NULL,
         pais_acronimo VARCHAR(4) NOT NULL,
@@ -507,13 +507,17 @@ CREATE TABLE detalle_talento(
     */
 
 /*##########################################################################*/
-    CREATE TABLE aspecto_pdi_detalle(
-        apdid_id INT IDENTITY(1,1) PRIMARY KEY,
-        apdid_apdi_id INT NOT NULL,
-        apdid_texto NVARCHAR(MAX) NOT NULL,
-        apdid_estado CHAR(1) NOT NULL DEFAULT 'A',
-        FOREIGN KEY(apdid_apdi_id) REFERENCES aspecto_pdi(apdi_id)
-    )
+    CREATE TABLE detalle_pdi(
+        de_pdi_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        de_pdi_col_id uniqueidentifier NOT NULL,
+        de_pdi_talento INT NOT NULL,
+        de_pdi_resultado_esperado TEXT,
+        de_pdi_aprendizaje_practico TEXT,
+        de_pdi_aprendizaje_con_otros TEXT,
+        de_pdi_aprendizaje_formal TEXT,
+        FOREIGN KEY (de_pdi_col_id) REFERENCES colaborador(col_id),
+        FOREIGN KEY (de_pdi_talento) REFERENCES talento(tal_id)
+    );
 
     /*
     INSERT INTO aspecto_pdi_detalle(apdid_apdi_id, apdid_texto, apdid_estado)
@@ -524,13 +528,19 @@ CREATE TABLE detalle_talento(
     */
 
 /*##########################################################################*/
-    CREATE TABLE pdi_detalle(
-        pdid_id INT IDENTITY(1,1) PRIMARY KEY,
-        pdid_id_eval_detalle INT NOT NULL,
-        pdid_apdi_nombre INT NOT NULL,
-        pdid_apdid_texto  INT NOT NULL,
-    )
-
+    CREATE TABLE pdi (
+        pdi_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        pdi_id_colaborador uniqueidentifier NOT NULL,
+        pdi_id_jefe_cargo uniqueidentifier NOT NULL,
+        pdi_talento_mejorar INT,
+        pdi_id_detalle INT,
+        pdi_fecha_avance DATE NULL,
+        pdi_avances TEXT,
+        FOREIGN KEY (pdi_id_colaborador) REFERENCES colaborador(col_id),
+        FOREIGN KEY (pdi_id_jefe_cargo) REFERENCES colaborador(col_id),
+        FOREIGN KEY (pdi_talento_mejorar) REFERENCES talento(tal_id),
+        FOREIGN KEY (pdi_id_detalle) REFERENCES detalle_pdi(de_pdi_id)
+    );
     /*
     INSERT INTO pdi_detalle(pdid_id_eval_detalle, pdid_apdi_nombre, pdid_apdid_texto)
     VALUES
@@ -548,54 +558,101 @@ CREATE TABLE detalle_talento(
     (1,6,3),
     (1,7,1),
     (1,7,2),
-*/
+*/  
 
+    CREATE TABLE log_cambio_clave(
+        lcc_id INT IDENTITY(1,1) PRIMARY KEY,
+        lcc_col_id INT NOT NULL,
+        lcc_codigo INT NOT NULL,
+        lcc_fecha DATE NOT NULL,
+        lcc_fecha_expiracion DATE NOT NULL,
+        FOREIGN KEY (lcc_col_id) REFERENCES colaborador(col_id)
+    );
+
+    CREATE TABLE log_cambio_depto(
+        lcd_id INT IDENTITY(1,1) PRIMARY KEY,
+        lcd_col_id UNIQUEIDENTIFIER,
+        lcd_depto_id INT,
+        lcd_fecha DATE
+    );
+
+/*##############################TABLAS REPORTES############################################*/
 
     CREATE TABLE tipo_salida(
-        tipo_salida_id INT IDENTITY(1,1) PRIMARY KEY,
-        tipo_salida_nombre NVARCHAR(50) NOT NULL,
-        tipo_salida_estado CHAR(1) NOT NULL DEFAULT 'A'
-    )
-
+        ts_id INT IDENTITY(1,1) PRIMARY KEY,
+        ts_nombre NVARCHAR(100) NOT NULL,
+        ts_estado CHAR(1) NOT NULL DEFAULT 'A'
+    );
 
     CREATE TABLE motivo_salida(
-        motivo_salida_id INT IDENTITY(1,1) PRIMARY KEY,
-        motivo_salida_nombre NVARCHAR(50) NOT NULL,
-        motivo_salida_estado CHAR(1) NOT NULL DEFAULT 'A'
-    )
-
-
-    CREATE TABLE tipo_carta(
-        tipo_carta_id INT IDENTITY(1,1) PRIMARY KEY,
-        tipo_carta_nombre NVARCHAR(50) NOT NULL,        
-        tipo_carta_estado CHAR(1) NOT NULL DEFAULT 'A'
-    )
-
+        ms_id INT IDENTITY(1,1) PRIMARY KEY,
+        ms_nombre NVARCHAR(100) NOT NULL,
+        ms_estado CHAR(1) NOT NULL DEFAULT 'A'
+    );
 
     CREATE TABLE tipo_novedad(
-        tipo_novedad_id INT IDENTITY(1,1) PRIMARY KEY,
-        tipo_novedad_nombre NVARCHAR(50) NOT NULL,
-        tipo_novedad_estado CHAR(1) NOT NULL DEFAULT 'A'
-    )
-
-
-    CREATE TABLE tipo_reporte(
-        tipo_reporte_id INT IDENTITY(1,1) PRIMARY KEY,
-        tipo_reporte_nombre NVARCHAR(50) NOT NULL,
-        tipo_reporte_creador UNIQUEIDENTIFIER NOT NULL,
-        tipo_reporte_fecha DATE NOT NULL,
-        tipo_reporte_estado CHAR(1) NOT NULL DEFAULT 'A'
-    )
-
-
-    CREATE TABLE detalle_reporte(
-        det_report_id INT IDENTITY(1,1) PRIMARY KEY,
-        det_report_tipo_reporte INT NOT NULL,
-        det_report_col_id UNIQUEIDENTIFIER NOT NULL,
-        det_report_fecha DATE NOT NULL,
-        det_report_estado CHAR(1) NOT NULL DEFAULT 'A'
-    )
+        tn_id INT IDENTITY(1,1) PRIMARY KEY,
+        tn_nombre NVARCHAR(100) NOT NULL,
+        tn_estado CHAR(1) NOT NULL DEFAULT 'A'
+    );
     
+    CREATE TABLE tipo_carta(
+        tc_id INT IDENTITY(1,1) PRIMARY KEY,
+        tc_nombre NVARCHAR(100) NOT NULL,
+        tc_estado CHAR(1) NOT NULL DEFAULT 'A'
+    );
+    
+    CREATE TABLE tipo_reporte(
+        tr_id INT IDENTITY(1,1) PRIMARY KEY,
+        tr_nombre NVARCHAR(100) NOT NULL,
+        tr_creado_por UNIQUEIDENTIFIER NOT NULL,
+        tr_creado_fecha DATETIME NOT NULL,
+        tr_estado CHAR(1) NOT NULL DEFAULT 'A'
+    );
 
+    CREATE TABLE reporte(
+        rep_id INT IDENTITY(1,1) PRIMARY KEY,
+        rep_col_id_solicita UNIQUEIDENTIFIER NOT NULL,
+        rep_col_jefe_inmediato UNIQUEIDENTIFIER,
+        rep_tipo_reporte INT NOT NULL,
+        rep_detalle_reporte NVARCHAR(MAX),
+        rep_tipo_salida INT,
+        rep_motivo_salida INT,
+        rep_tipo_novedad INT,
+        rep_tipo_carta INT,
+        rep_pais_solicita INT,
+        rep_fec_inicio DATE,
+        rep_fec_fin DATE,
+        rep_area_actual INT,
+        rep_area_traslado INT,
+        rep_fec_envio_documentos DATE,
+        rep_otro NVARCHAR(MAX),
+        rep_email_envio VARCHAR(50),
+        rep_estado CHAR(1) NOT NULL DEFAULT 'S',
+        FOREIGN KEY (rep_col_id_solicita) REFERENCES colaborador(col_id),
+        FOREIGN KEY (rep_col_jefe_inmediato) REFERENCES colaborador(col_id),
+        FOREIGN KEY (rep_tipo_reporte) REFERENCES tipo_reporte(tr_id),
+        FOREIGN KEY (rep_tipo_salida) REFERENCES tipo_salida(ts_id),
+        FOREIGN KEY (rep_motivo_salida) REFERENCES motivo_salida(ms_id),
+        FOREIGN KEY (rep_tipo_novedad) REFERENCES tipo_novedad(tn_id),
+        FOREIGN KEY (rep_tipo_carta) REFERENCES tipo_carta(tc_id),
+        FOREIGN KEY (rep_pais_solicita) REFERENCES pais(pais_id)
+
+    );
+
+    CREATE TABLE tipo_documento(
+        td_id INT IDENTITY(1,1) PRIMARY KEY,
+        td_nombre NVARCHAR(100) NOT NULL,
+        td_estado CHAR(1) NOT NULL DEFAULT 'A'
+    )
+
+    CREATE TABLE reporte_documento(
+        rd_id INT IDENTITY(1,1) PRIMARY KEY,
+        rd_id_reporte INT NOT NULL,
+        rd_id_tipo_documento INT NOT NULL,
+        rd_documento VARBINARY(MAX) NOT NULL,
+        FOREIGN KEY (rd_id_reporte) REFERENCES reporte(rep_id),
+        FOREIGN KEY (rd_id_tipo_documento) REFERENCES tipo_documento(td_id)
+    )
 
     END

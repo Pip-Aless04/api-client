@@ -11,9 +11,10 @@ import { corsMiddleware } from "./middlewares/cors.middleware.js";
 import { rateLimiter } from "./middlewares/rateLimiter.middleware.js";
 import { appRoutes } from "./routes/index.routes.js";
 
+
 const numCPUs = (availableParallelism()/2);
 
-export const createApp = ({ColaboradorModel, ReportesModel, EvaluacionModel}) => {
+export const createApp = ({AuthModel, ReportesModel, EvaluacionModel}) => {
 
     if (cluster.isPrimary) {
         console.log(`Master ${process.pid} is running`);
@@ -46,12 +47,13 @@ export const createApp = ({ColaboradorModel, ReportesModel, EvaluacionModel}) =>
         app.set('views', path.join(__dirname, 'views'))
         app.use(express.static('public'));
 
-        app.use("/", (req,res,next) => {
+        
+        app.get("/", (req,res,next) => {
             res.redirect("/dhcoapp");
             next();
         });
 
-        app.use("/dhcoapp", appRoutes({ ColaboradorModel, ReportesModel, EvaluacionModel }));
+        app.use("/dhcoapp", appRoutes({ AuthModel, ReportesModel, EvaluacionModel }));
 
         /*
         app.get("/prueba", (req, res) => {
