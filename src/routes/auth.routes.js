@@ -9,9 +9,9 @@ export const createAuthRoutes = ({AuthModel}) => {
 
     authRouter.post("/login",authController.authLogin); 
     authRouter.post("/register", authController.register);
-    authRouter.post("/solicitar-cambio-clave", authUserJWT, authController.changePassword); 
-    authRouter.patch("/changePassword", authUserJWT, authController.changePassword); 
-    authRouter.post("/logout", authUserJWT, authController.logout);
+    authRouter.post("/requestPasswordReset", authUserJWT, authController.requestPasswordReset);
+    authRouter.post("/setNewPassword", authUserJWT, authController.setNewPassword);
+    authRouter.get("/logout", authUserJWT, authController.logout);
 
     authRouter.post("/changePasswordPrueba", authController.changePasswordPrueba);
 

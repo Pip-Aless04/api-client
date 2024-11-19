@@ -2,30 +2,28 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
     const ident = document.getElementById('ident').value;
-    const password = document.getElementById('password').value;
     const button = document.getElementById('loginButton');
     const originalText = button.textContent;
-    button.textContent = 'Iniciando sesión...';
+    button.textContent = 'Signing in...';
     button.disabled = true;
 
-    // Hacer la solicitud POST
-    fetch('http://localhost:3000/dhcoapp/auth/login', {
+    // Hacer la solicitud POST con la identificación
+    fetch('http://localhost:3000/dhcoapp/auth/requestChangePassword', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            ident: ident,
-            clave: password
+            ident: ident
         }),
     })
     .then(response => {
         if (response.ok) {
             // Si la respuesta es exitosa, redirigir a otra página
-            window.location.href = '/dhcoapp/inicio'; // Cambia '/dashboard' por la página a la que deseas redirigir
+            window.location.href = 'dhcoapp/resetPassword'; // Cambia '/request-password-change' por la página a la que deseas redirigir
         } else {
             // Si la respuesta es un error
-            alert('Login failed. Please check your credentials.');
+            alert('');
             button.textContent = originalText;
             button.disabled = false;
         }
@@ -36,11 +34,6 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
         button.textContent = originalText;
         button.disabled = false;
     });
-});
-
-//olvido contraseña
-document.getElementById('forgot-password').addEventListener('click', function() {
-    window.location.href = '/dhcoapp/requestChangePassword';
 });
 
 // Animación para el logo al pasar el ratón

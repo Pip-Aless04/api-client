@@ -8,7 +8,9 @@ export const createViewsRoutes = ({}) => {
     const viewController = new ViewController();
 
     viewsRouter.get("/", viewController.login); 
-    viewsRouter.get("/inicio", viewController.inicio);
+    viewsRouter.get("/requestChangePassword", viewController.requestChangePassword);
+    viewsRouter.get("/resetPassword", viewController.resetPassword);
+    viewsRouter.get("/inicio", authUserJWT, viewController.inicio);
 
     return viewsRouter;
 };

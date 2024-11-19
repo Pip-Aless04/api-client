@@ -259,33 +259,35 @@ export class AuthModel{
         }
     }
 
-    static async validateChangePasswordInfo({ident}){
+    static async validateChangePasswordInfo({ ident }) {
         try {
             let query = `
-            SELECT 
-                C.col_id AS id,
-                C.col_identificacion AS identificacion,
-                C.col_email AS email,
-            FROM colaborador C
-            WHERE C.col_identificacion = @ident
-        `;
-
-        const result = await connection
-            .request()
-            .input('ident', sql.NVarChar, ident )
-            .query(query);
-
-        if (result.recordset.length === 0) {
-            return { success: false, error: 'El colaborador no existe' };
-        }
-
-        return { success: true, col_info: result.recordset };
-
+                SELECT 
+                    C.col_id AS id,
+                    C.col_identificacion AS identificacion,
+                    C.col_email AS email
+                FROM colaborador C
+                WHERE C.col_identificacion = @ident
+            `;
+    
+            const result = await connection
+                .request()
+                .input('ident', sql.NVarChar, ident)
+                .query(query);
+    
+            if (result.recordset.length === 0) {
+                return { success: false, error: 'El colaborador no existe' };
+            }
+    
+            // Retornando solo el primer registro encontrado (por seguridad)
+            return { success: true, col_info: result.recordset[0] };
+    
         } catch (error) {
             console.error('Error al validar la información de cambio de clave:', error.message, error.stack);
             throw new Error('Error al validar la información de cambio de clave');
         }
     }
+    
 
     static async changePasswordPrueba({ident, clave}){
         
@@ -322,7 +324,7 @@ export class AuthModel{
                     lcc_fecha_expiracion
                 )
                 VALUES(
-                    SELECT col_id FROM colaborador WHERE col_email = @email AND col_identificacion = @ident,
+                    (SELECT col_id FROM colaborador WHERE col_email = @email AND col_identificacion = @ident),
                     @code,
                     GETDATE(),
                     @fecha_expiracion

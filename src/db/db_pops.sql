@@ -1,5 +1,5 @@
 IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
-  BEGIN
+    BEGIN
     CREATE DATABASE Pops;
     
     USE Pops;
@@ -146,7 +146,11 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         depto_estado CHAR(1) NOT NULL DEFAULT 'A',
     );
 
-    /*
+    GO
+
+    --/*
+    INSERT INTO departamento(depto_nombre, depto_estado)
+    VALUES
     ('ABASTECIMIENTO','A'),
     ('ADM. GENERAL DE MANTENIMIENTO','A'),
     ('ADM. GENERAL DE PLANTA','A'),
@@ -171,7 +175,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     ('TI','A'),
     ('TRANSPORTES','A'),
     ('VENDEDORES','A');
-    */
+    --*/
 
 /*##########################################################################*/
 
@@ -183,7 +187,11 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY(dir_depto_id) REFERENCES Departamento(depto_id)
     );
 
-    /*
+    GO
+
+    --/*
+    INSERT INTO direccion(dir_nombre, dir_depto_id, dir_estado)
+    VALUES
     ('CDA',1,'A'),
     ('MANTENIMIENTO',2,'A'),
     ('CDA',3,'A'),
@@ -209,7 +217,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     ('COMERCIAL',22,'A'),
     ('CDA',23,'A'),
     ('COMERCIAL',24,'A');
-    */
+    --*/
 
 /*##########################################################################*/
 
@@ -239,6 +247,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY(col_jefatura_id) REFERENCES Jefatura(jef_id)
     );
     
+    GO
 
 /*##########################################################################*/
     CREATE TABLE talento(
@@ -247,7 +256,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         tal_estado CHAR(1) NOT NULL DEFAULT 'A'
     );
 
-    /*
+    --/*
     INSERT INTO talento(Nombre)
     VALUES
     (N'adaptabilidad'),
@@ -259,19 +268,20 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     (N'pasión_por_el_invitado_y_el_consumidor'),
     (N'sentido_colectivo'),
     (N'rendimiento_individual')
-    */
+    --*/
 
 /*##########################################################################*/
-CREATE TABLE detalle_talento(
-    det_tal_id INT IDENTITY(1,1) PRIMARY KEY,
-    det_tal_tal_id INT NOT NULL,
-    det_tal_texto NVARCHAR(MAX) NOT NULL,
-    det_tal_personal_a_cargo CHAR(1) NOT NULL,
-    det_tal_estado CHAR(1) NOT NULL DEFAULT 'A',
-    FOREIGN KEY(det_tal_tal_id) REFERENCES talento(tal_id)
-);
+    CREATE TABLE detalle_talento(
+        det_tal_id INT IDENTITY(1,1) PRIMARY KEY,
+        det_tal_tal_id INT NOT NULL,
+        det_tal_texto NVARCHAR(MAX) NOT NULL,
+        det_tal_personal_a_cargo CHAR(1) NOT NULL,
+        det_tal_estado CHAR(1) NOT NULL DEFAULT 'A',
+        FOREIGN KEY(det_tal_tal_id) REFERENCES talento(tal_id)
+    );
 
-/*
+    GO
+--/*
     INSERT INTO detalle_talento(det_tal_tal_id, det_tal_texto, det_tal_personal_a_cargo, det_tal_estado)
     VALUES
     (1, N'Propone e incorpora de forma ágil y simple nuevas prácticas que le permiten actuar de forma efectiva.', 'N', 'A'),
@@ -345,7 +355,7 @@ CREATE TABLE detalle_talento(
     (9, N'Conocimiento de su trabajo: El nivel de experiencia y apropiación de los temas y actividades propios de su puesto.', 'S', 'A'),
     (9, N'Calidad: El nivel de entrega de trabajos o proyectos que realiza en el puesto.', 'S', 'A'),
     (9, N'Rendimiento: Cumple con sus tareas en forma aceptable y completa, utilizando adecuadamente el tiempo y los recursos asignados.', 'S', 'A');
-*/
+--*/
 
 /*##########################################################################*/
     CREATE TABLE tipo_evaluation(
@@ -354,11 +364,13 @@ CREATE TABLE detalle_talento(
         te_estado CHAR(1) NOT NULL DEFAULT 'A'
     );
 
-    /*
+    GO
+    
+    --/*
     INSERT INTO tipo_evaluation(te_nombre)
     VALUES
-    (N'Evaluación de calidad')
-    */
+    (N'Evaluación de desempeño')
+    --*/
 
 /*##########################################################################*/
     CREATE TABLE evaluacion(
@@ -370,12 +382,16 @@ CREATE TABLE detalle_talento(
         FOREIGN KEY(ev_tipo_evaluation) REFERENCES tipo_evaluation(te_id)
     );
 
-    /*
+    GO
+
+    --/*
     INSERT INTO evaluacion(ev_tipo_evaluation, ev_fecha, ev_categoria)
     VALUES
     (1,  GETDATE(), 'Subordinado'),
     (1,  GETDATE(), 'Jefe a cargo')
-    */
+    --*/
+
+    GO
 
 /*##########################################################################*/
     CREATE TABLE evaluacion_detalle(
@@ -390,6 +406,8 @@ CREATE TABLE detalle_talento(
         FOREIGN KEY(evd_talento) REFERENCES talento(tal_id),
         FOREIGN KEY(evd_detalle_talento) REFERENCES detalle_talento(det_tal_id)
     )
+
+    GO
 
     /*
     INSERT INTO evaluacion_detalle(evd_evaluacion, evd_talento, evd_detalle_talento, valor_talento, pordentaje_talento, valor_detalle_talento)
@@ -460,14 +478,18 @@ CREATE TABLE detalle_talento(
         nota_estado CHAR(1) NOT NULL DEFAULT 'A'
     )
 
-    /*
+    GO
+
+    --/*
     INSERT INTO nota(nota_nombre, nota_valor)
     VALUES
     ('Supera', 1),
     ('Cumple', 0.85),
     ('Cumple parcialmente', 0.65),
     ('No cumple', 0);
-    */
+    --*/
+
+    GO
 
 /*##########################################################################*/
     CREATE TABLE calificacion(
@@ -498,13 +520,17 @@ CREATE TABLE detalle_talento(
         apdi_estado CHAR(1) NOT NULL DEFAULT 'A'
     )
 
-    /*
+    GO
+
+    --/*
     INSERT INTO aspecto_pdi(apdi_nombre, apdi_estado)
     VALUES
     (N'Aprendizaje a través de la prácitca'),
     (N'Interacciones con otros para aprender'),
     (N'Aprendizaje formal')
-    */
+    --*/
+
+    GO
 
 /*##########################################################################*/
     CREATE TABLE detalle_pdi(
@@ -519,13 +545,17 @@ CREATE TABLE detalle_talento(
         FOREIGN KEY (de_pdi_talento) REFERENCES talento(tal_id)
     );
 
-    /*
+    GO
+
+    --/*
     INSERT INTO aspecto_pdi_detalle(apdid_apdi_id, apdid_texto, apdid_estado)
     VALUES
     (1, N'Actividades o tareas a desarrollar en el trabajo diario o proyectos especiales, que nos permitan un aprendizaje integrado en el flujo de trabajo', 'A'),
     (2, N'Coaching, mentoring o acompañamiento del jefe. Actividades que requieren compartir conocimiento con otros, interacción y aprendizaje de otras personas', 'A'),
     (3, N'Formaciones, seminarios, talleres, capacitaciones', 'A')
-    */
+        --*/
+    
+    GO
 
 /*##########################################################################*/
     CREATE TABLE pdi (
@@ -560,20 +590,112 @@ CREATE TABLE detalle_talento(
     (1,7,2),
 */  
 
-    CREATE TABLE log_cambio_clave(
-        lcc_id INT IDENTITY(1,1) PRIMARY KEY,
-        lcc_col_id INT NOT NULL,
-        lcc_codigo INT NOT NULL,
-        lcc_fecha DATE NOT NULL,
-        lcc_fecha_expiracion DATE NOT NULL,
-        FOREIGN KEY (lcc_col_id) REFERENCES colaborador(col_id)
+/*##############################################################################*/
+
+    CREATE TABLE historico_cambio_jefe(
+        hcj_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        hcj_col_subordinado_id UNIQUEIDENTIFIER NOT NULL,
+        hcj_col_jefe_id UNIQUEIDENTIFIER NOT NULL,
+        hcj_fecha DATE NOT NULL,
+        FOREIGN KEY(hcj_col_subordinado_id) REFERENCES colaborador(col_id),
+        FOREIGN KEY(hcj_col_jefe_id) REFERENCES colaborador(col_id)
     );
 
-    CREATE TABLE log_cambio_depto(
-        lcd_id INT IDENTITY(1,1) PRIMARY KEY,
-        lcd_col_id UNIQUEIDENTIFIER,
-        lcd_depto_id INT,
-        lcd_fecha DATE
+    CREATE TRIGGER trg_update_colaborador_jefatura
+    ON colaborador
+    AFTER UPDATE
+    AS
+    BEGIN
+        -- Verificar si el campo col_jefatura_id fue modificado
+        IF UPDATE(col_jefatura_id)
+        BEGIN
+            INSERT INTO historico_cambio_jefe (hcj_col_subordinado_id, hcj_col_jefe_id, hcj_fecha)
+            SELECT 
+                i.col_id, -- ID del colaborador (subordinado)
+                i.col_jefatura_id, -- Nuevo jefe
+                GETDATE() -- Fecha actual
+            FROM 
+                inserted i
+            INNER JOIN 
+                deleted d ON i.col_id = d.col_id
+            WHERE 
+                i.col_jefatura_id <> d.col_jefatura_id; -- Solo insertar si hay un cambio real
+        END
+    END;
+
+/*##########################################################################*/
+
+    CREATE TABLE historico_cambio_depto(
+        hcd_id INT IDENTITY(1,1) PRIMARY KEY,
+        hcd_col_id UNIQUEIDENTIFIER,
+        hcd_depto_id INT,
+        hcd_fecha DATE,
+        FOREIGN KEY(hcd_col_id) REFERENCES colaborador(col_id),
+        FOREIGN KEY(hcd_depto_id) REFERENCES departamento(depto_id)
+    );
+
+    CREATE TRIGGER trg_update_colaborador_departamento
+    ON colaborador
+    AFTER UPDATE
+    AS
+    BEGIN
+        -- Verificar si el campo col_depto_id fue modificado
+        IF UPDATE(col_depto_id)
+        BEGIN
+            INSERT INTO historico_cambio_depto (hcd_col_id, hcd_depto_id, hcd_fecha)
+            SELECT 
+                i.col_id, -- ID del colaborador
+                i.col_depto_id, -- Nuevo departamento
+                GETDATE() -- Fecha actual
+            FROM 
+                inserted i
+            INNER JOIN 
+                deleted d ON i.col_id = d.col_id
+            WHERE 
+                i.col_depto_id <> d.col_depto_id; -- Solo insertar si hay un cambio real
+        END
+    END;
+
+/*##########################################################################*/
+
+    CREATE TABLE historico_cambio_direccion(
+        hcd_id INT IDENTITY(1,1) PRIMARY KEY,
+        hcd_col_id INT NOT NULL,
+        hcd_direccion_id INT NOT NULL,
+        hcd_fecha DATETIME2 NOT NULL,
+        FOREIGN KEY (hcd_col_id) REFERENCES colaborador(col_id),
+        FOREIGN KEY (hcd_direccion_id) REFERENCES direccion(dir_id)
+    );
+
+    CREATE TRIGGER trg_update_colaborador_direccion
+    ON colaborador
+    AFTER UPDATE
+    AS
+    BEGIN
+        -- Verificar si el campo col_direccion_id fue modificado
+        IF UPDATE(col_direccion_id)
+        BEGIN
+            INSERT INTO historico_cambio_direccion (hcd_col_id, hcd_direccion_id, hcd_fecha)
+            SELECT 
+                i.col_id, -- ID del colaborador
+                i.col_direccion_id, -- Nuevo direccion
+                GETDATE() -- Fecha actual
+            FROM 
+                inserted i
+            INNER JOIN 
+                deleted d ON i.col_id = d.col_id
+            WHERE 
+                i.col_direccion_id <> d.col_direccion_id; -- Solo insertar si hay un cambio real
+        END
+/*##########################################################################*/
+
+    CREATE TABLE historico_cambio_clave(
+        hcc_id INT IDENTITY(1,1) PRIMARY KEY,
+        hcc_col_id INT NOT NULL,
+        hcc_codigo INT NOT NULL,
+        hcc_fecha DATETIME2 NOT NULL,
+        hcc_fecha_expiracion DATETIME2 NOT NULL,
+        FOREIGN KEY (lcc_col_id) REFERENCES colaborador(col_id)
     );
 
 /*##############################TABLAS REPORTES############################################*/

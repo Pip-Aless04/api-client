@@ -3,13 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Inicio</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f0f2f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
         header {
             background-color: #ffffff;
@@ -29,69 +32,18 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
         }
-        .logo-icon {
-            width: 32px;
-            height: 32px;
-            background-color: #4a90e2;
-            border-radius: 4px;
+        .logo img {
+            height: 70px;
+            width: auto;
         }
-        .logo-text {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #333;
-        }
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-        }
-        .nav-links a {
-            color: #666;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-        .nav-links a:hover {
-            color: #4a90e2;
-        }
-        .user-menu {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background-color: #f0f2f5;
-            padding: 0.5rem 1rem;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .user-info:hover {
-            background-color: #e4e6e9;
-        }
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background-color: #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #666;
-        }
-        .user-name {
-            font-weight: bold;
-            color: #333;
+        .settings-menu {
+            position: relative;
         }
         .settings-icon {
+            width: 50px;
+            height: 50px;
             background-color: #f0f2f5;
-            width: 40px;
-            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -102,15 +54,21 @@
         .settings-icon:hover {
             background-color: #e4e6e9;
         }
+        .settings-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: #333;
+        }
         .dropdown {
             display: none;
             position: absolute;
-            right: 1rem;
+            right: 0;
             top: 100%;
             background-color: #fff;
             border-radius: 4px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             padding: 0.5rem 0;
+            min-width: 150px;
         }
         .dropdown a {
             display: block;
@@ -121,17 +79,11 @@
         .dropdown a:hover {
             background-color: #f0f2f5;
         }
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
         main {
             max-width: 1200px;
             margin: 2rem auto;
             padding: 0 1rem;
+            flex: 1;
         }
         h1 {
             color: #333;
@@ -143,11 +95,11 @@
             gap: 1.5rem;
         }
         .card {
-            background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             padding: 1.5rem;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            color: white;
         }
         .card:hover {
             transform: translateY(-5px);
@@ -155,33 +107,32 @@
         }
         .card h2 {
             margin-top: 0;
-            color: #333;
         }
         .card p {
-            color: #666;
             margin-bottom: 0;
+            opacity: 0.8;
         }
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                background-color: #ffffff;
-                flex-direction: column;
-                padding: 1rem;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            }
-            .nav-links.active {
-                display: flex;
-            }
-            .menu-toggle {
-                display: block;
-            }
-            .user-menu {
-                margin-left: auto;
-            }
+        .card:nth-child(1) {
+            background: linear-gradient(135deg, #00b3b3, #008080);
+        }
+        .card:nth-child(2) {
+            background: linear-gradient(135deg, #ff4d4d, #cc0000);
+        }
+        .card:nth-child(3) {
+            background: linear-gradient(135deg, #3399ff, #0066cc);
+        }
+        .card:nth-child(4) {
+            background: linear-gradient(135deg, #ff9933, #cc6600);
+        }
+        .footer {
+            width: 100%;
+            margin-top: auto;
+        }
+        .footer img {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin-top: 2rem;
         }
     </style>
 </head>
@@ -189,37 +140,25 @@
     <header>
         <nav>
             <div class="logo">
-                <div class="logo-icon"></div>
-                <span class="logo-text">Dashboard</span>
+                <img src="../img/logo_pops_2024.webp" alt="POPS Logo">
             </div>
-            <div class="nav-links">
-                <a href="#">Home</a>
-                <a href="#">About</a>
-                <a href="#">Contact</a>
-            </div>
-            <button class="menu-toggle" aria-label="Toggle menu">☰</button>
-            <div class="user-menu">
-                <div class="user-info">
-                    <div class="user-avatar">JD</div>
-                    <span class="user-name">John Doe</span>
-                </div>
+            <div class="settings-menu">
                 <div class="settings-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
                     </svg>
+                </div>
+                <div class="dropdown">
+                    <a href="#">Profile</a>
+                    <a href="#">Settings</a>
+                    <a href="#">Cerrar sesión</a>
                 </div>
             </div>
         </nav>
-        <div class="dropdown">
-            <a href="#">Profile</a>
-            <a href="#">Settings</a>
-            <a href="#">Logout</a>
-        </div>
     </header>
 
     <main>
-        <h1>Welcome, John Doe</h1>
+        <h1>Bienvenido, <%= user.nombre %></h1>
         <div class="card-grid">
             <div class="card" data-page="autoevaluation">
                 <h2>Autoevaluation</h2>
@@ -233,44 +172,22 @@
                 <h2>Profile</h2>
                 <p>Manage your personal information</p>
             </div>
+            <div class="card" data-page="settings">
+                <h2>Settings</h2>
+                <p>Customize your dashboard preferences</p>
+            </div>
         </div>
     </main>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const cards = document.querySelectorAll('.card');
-            const userInfo = document.querySelector('.user-info');
-            const settingsIcon = document.querySelector('.settings-icon');
-            const dropdown = document.querySelector('.dropdown');
-            const menuToggle = document.querySelector('.menu-toggle');
-            const navLinks = document.querySelector('.nav-links');
-
-            cards.forEach(card => {
-                card.addEventListener('click', function() {
-                    const page = this.dataset.page;
-                    alert(`Navigating to ${page} page`);
-                    // Here you would typically use window.location.href to navigate to the actual page
-                });
-            });
-
-            userInfo.addEventListener('click', function() {
-                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-            });
-
-            settingsIcon.addEventListener('click', function() {
-                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-            });
-
-            document.addEventListener('click', function(event) {
-                if (!userInfo.contains(event.target) && !settingsIcon.contains(event.target) && !dropdown.contains(event.target)) {
-                    dropdown.style.display = 'none';
-                }
-            });
-
-            menuToggle.addEventListener('click', function() {
-                navLinks.classList.toggle('active');
-            });
-        });
-    </script>
+    <footer class="footer">
+        <img src="../img/footer.webp" alt="footer">
+    </footer>
 </body>
+<script src="../js/inicio.js">
+
+    //cerrar sesión
+    
+
+
+</script>
 </html>

@@ -24,14 +24,14 @@ export class AuthController {
             }
     
             const token = await createToken(authUser.col_info, '1d');
-            res.cookie('acces_token', token, { 
+            res.cookie('access_token', token, { 
                 httpOnly: true, 
                 sameSite: 'strict', 
                 secure: false, /*true en produccion*/
                 maxAge: 86400000 /*1 día*/
             });
             req.user = authUser.col_info;
-            
+            console.log(req.user);
             return res.status(200).json({ message: 'Iniciando sesión...', user: authUser.col_info });
             
         } catch (error) {
@@ -74,23 +74,38 @@ export class AuthController {
         }
     }
 
-    changePassword = async (req, res) => {
+    requestPasswordReset = async (req, res) => {
         const {ident} = req.body;
         try {
-            const validate = validatePartialColaborador({ident});
+
+            console.log("entro al contoller")
+
+            console.log(ident)
+
+            const validate = await validatePartialAuth({ident});
             if (!validate.success) return res.status(400).json({ error: validate.error });
+
+            console.log({validate})
             
-            const itExist = await this.authModel.validateChangePasswordInfo({ident});
-
+            const itExist = await this.authModel.validateChangePasswordInfo({ ident });
+            if (!itExist.success) {
+                return res.status(404).json({ error: itExist.error });
+            }
+            
+            console.log({itExist})
+            // Extraer la información del colaborador
+            const { email, id } = itExist.col_info;
+            
+            // Continuar con el resto del código
             const code = generateCode(6);
-            const expires = Date.now() + 10 * 60 * 1000;
-
+            const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutos desde ahora
+            
             const col_info = await this.authModel.storeResetCode({
-                ident: ident,
-                email: itExist.col_info.email,
-                id: itExist.col_info.id,
-                code: code,
-                expires: expires
+                ident,
+                email,
+                id,
+                code,
+                expires
             });
             
             if (!col_info.success) return res.status(400).json({ error: col_info.error });
@@ -131,19 +146,6 @@ export class AuthController {
     }
 
 
-    validateChangePasswordCode = async (req, res) => {
-        try {
-            const {code} = req.body;
-            
-            const result = await this.authModel.validateChangePasswordCode({code});
-
-            return res.status(200).json(result);
-
-        } catch (error) {
-            
-        }
-    };
-
     setNewPassword = async (req, res) => {
         try {
             const code = generateCode(6);
@@ -168,7 +170,7 @@ export class AuthController {
     logout = async (req, res) => {
         try {
             res.clearCookie('acces_token');
-            return res.status(200).json({ message: 'Sesión cerrada correctamente' }).redirect('/dhcoapp');
+            return res.status(200).redirect('/dhcoapp');
         } catch (error) {
             console.error('Error al cerrar sesión:', error.message);
             return res.status(500).json({ error: 'Error al cerrar sesión' });
