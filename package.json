@@ -20,13 +20,11 @@
     "ejs": "^3.1.10",
     "express": "^4.21.0",
     "express-rate-limit": "^7.4.1",
-    "express-session": "^1.18.0",
     "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "mssql": "^11.0.1",
     "node-worker-threads-pool": "^1.5.1",
     "redis": "^4.7.0",
-    "resend": "^4.0.1-alpha.0",
     "zod": "^3.23.8"
   }
 }

@@ -1,6 +1,6 @@
 IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     BEGIN
-    CREATE DATABASE Pops;
+    CREATE DROP DATABASE Pops
     
     USE Pops;
 
@@ -12,7 +12,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         pais_estado CHAR(1) NOT NULL DEFAULT 'A'
     );
 
-    INSERT INTO Pais(pais_nombre, pais_acronimo) 
+    INSERT INTO pais(pais_nombre, pais_acronimo) 
     VALUES
     ('Costa Rica', 'CRC'),
     ('Guatemala', 'GTM'),
@@ -26,8 +26,8 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         pue_estado CHAR(1) NOT NULL DEFAULT 'A'
     );
 
-    /*
-    INSERT INTO Puesto(Nombre, Abreviatura)
+    
+    INSERT INTO puesto(pue_nombre)
     VALUES
     (N'ANALISTA DE SALUD OCUPACIONAL'),
     (N'JEFE DE SALUD OCUPACIONAL Y SERV GENERALES'),
@@ -137,7 +137,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     (N'ANALISTA DE SERVICIOS FINANCIEROS'),
     (N'AUXILIAR LOGISTICO'),
     (N'COORDINADOR DE MERCADEO Y VENTAS')
-    */
+    --*/
 
 /*##########################################################################*/
     CREATE TABLE departamento(
@@ -146,7 +146,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         depto_estado CHAR(1) NOT NULL DEFAULT 'A',
     );
 
-    GO
+    
 
     --/*
     INSERT INTO departamento(depto_nombre, depto_estado)
@@ -187,7 +187,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY(dir_depto_id) REFERENCES Departamento(depto_id)
     );
 
-    GO
+    
 
     --/*
     INSERT INTO direccion(dir_nombre, dir_depto_id, dir_estado)
@@ -231,23 +231,21 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         col_genero CHAR(1) NOT NULL,
         col_email NVARCHAR(50) NOT NULL,
         col_pais_id INT NOT NULL,
-        col_pais_labura INT NOT NULL,
         col_puesto_id INT NOT NULL,
         col_depto_id INT NOT NULL,
         col_direccion_id INT NOT NULL,
         col_fecha_ingreso DATE NOT NULL,
-        col_jefatura_id INT NOT NULL,
+        col_jefatura_id UNIQUEIDENTIFIER NOT NULL,
         col_a_cargo CHAR(1) NOT NULL,
         col_estado CHAR(1) NOT NULL DEFAULT 'A',
+        col_clave NVARCHAR(50) NOT NULL,
         PRIMARY KEY(col_id), 
-        FOREIGN KEY(col_pais_id) REFERENCES Pais(pais_id),
-        FOREIGN KEY(col_puesto_id) REFERENCES Puesto(pue_id),
-        FOREIGN KEY(col_depto_id) REFERENCES Departamento(depto_id),
-        FOREIGN KEY(col_direccion_id) REFERENCES Direccion(dir_id),
-        FOREIGN KEY(col_jefatura_id) REFERENCES Jefatura(jef_id)
+        FOREIGN KEY(col_pais_id) REFERENCES pais(pais_id),
+        FOREIGN KEY(col_puesto_id) REFERENCES puesto(pue_id),
+        FOREIGN KEY(col_depto_id) REFERENCES departamento(depto_id),
+        FOREIGN KEY(col_direccion_id) REFERENCES direccion(dir_id),
     );
-    
-    GO
+
 
 /*##########################################################################*/
     CREATE TABLE talento(
@@ -257,7 +255,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     );
 
     --/*
-    INSERT INTO talento(Nombre)
+    INSERT INTO talento(tal_nombre)
     VALUES
     (N'adaptabilidad'),
     (N'desarrollo_de_si_mismo_y_de_otros'),
@@ -280,7 +278,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY(det_tal_tal_id) REFERENCES talento(tal_id)
     );
 
-    GO
+    
 --/*
     INSERT INTO detalle_talento(det_tal_tal_id, det_tal_texto, det_tal_personal_a_cargo, det_tal_estado)
     VALUES
@@ -364,7 +362,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         te_estado CHAR(1) NOT NULL DEFAULT 'A'
     );
 
-    GO
+    
     
     --/*
     INSERT INTO tipo_evaluation(te_nombre)
@@ -382,7 +380,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY(ev_tipo_evaluation) REFERENCES tipo_evaluation(te_id)
     );
 
-    GO
+    
 
     --/*
     INSERT INTO evaluacion(ev_tipo_evaluation, ev_fecha, ev_categoria)
@@ -391,7 +389,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     (1,  GETDATE(), 'Jefe a cargo')
     --*/
 
-    GO
+    
 
 /*##########################################################################*/
     CREATE TABLE evaluacion_detalle(
@@ -407,7 +405,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY(evd_detalle_talento) REFERENCES detalle_talento(det_tal_id)
     )
 
-    GO
+    
 
     /*
     INSERT INTO evaluacion_detalle(evd_evaluacion, evd_talento, evd_detalle_talento, valor_talento, pordentaje_talento, valor_detalle_talento)
@@ -478,7 +476,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         nota_estado CHAR(1) NOT NULL DEFAULT 'A'
     )
 
-    GO
+    
 
     --/*
     INSERT INTO nota(nota_nombre, nota_valor)
@@ -489,13 +487,13 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     ('No cumple', 0);
     --*/
 
-    GO
+    
 
 /*##########################################################################*/
     CREATE TABLE calificacion(
         cal_id INT IDENTITY(1,1) PRIMARY KEY,
-        cal_col_subordinado INT NOT NULL,
-        cal_col_jefe_a_cargo INT NOT NULL,
+        cal_col_subordinado UNIQUEIDENTIFIER NOT NULL,
+        cal_col_jefe_a_cargo UNIQUEIDENTIFIER NOT NULL,
         cal_calificacion_subordinado INT NOT NULL,
         cal_calificacion_jefe INT NOT NULL,
         FOREIGN KEY (cal_id) REFERENCES evaluacion_detalle(evd_id),
@@ -520,17 +518,17 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         apdi_estado CHAR(1) NOT NULL DEFAULT 'A'
     )
 
-    GO
+    
 
     --/*
-    INSERT INTO aspecto_pdi(apdi_nombre, apdi_estado)
+    INSERT INTO aspecto_pdi(apdi_nombre, apdi_descripcion)
     VALUES
-    (N'Aprendizaje a través de la prácitca'),
-    (N'Interacciones con otros para aprender'),
-    (N'Aprendizaje formal')
+    (N'Aprendizaje a través de la prácitca', N'Actividades o tareas a desarrollar en el trabajo diario o proyectos especiales, que nos permitan un aprendizaje integrado en el flujo de trabajo'),
+    (N'Interacciones con otros para aprender', N'Coaching, mentoring o acompañamiento del jefe. Actividades que requieren compartir conocimiento con otros, interacción y aprendizaje de otras personas,'),
+    (N'Aprendizaje formal', N'Formaciones, seminarios, talleres, capacitaciones')
     --*/
 
-    GO
+    
 
 /*##########################################################################*/
     CREATE TABLE detalle_pdi(
@@ -545,17 +543,8 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY (de_pdi_talento) REFERENCES talento(tal_id)
     );
 
-    GO
-
-    --/*
-    INSERT INTO aspecto_pdi_detalle(apdid_apdi_id, apdid_texto, apdid_estado)
-    VALUES
-    (1, N'Actividades o tareas a desarrollar en el trabajo diario o proyectos especiales, que nos permitan un aprendizaje integrado en el flujo de trabajo', 'A'),
-    (2, N'Coaching, mentoring o acompañamiento del jefe. Actividades que requieren compartir conocimiento con otros, interacción y aprendizaje de otras personas', 'A'),
-    (3, N'Formaciones, seminarios, talleres, capacitaciones', 'A')
-        --*/
     
-    GO
+
 
 /*##########################################################################*/
     CREATE TABLE pdi (
@@ -601,6 +590,8 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY(hcj_col_jefe_id) REFERENCES colaborador(col_id)
     );
 
+    
+
     CREATE TRIGGER trg_update_colaborador_jefatura
     ON colaborador
     AFTER UPDATE
@@ -634,6 +625,9 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY(hcd_depto_id) REFERENCES departamento(depto_id)
     );
 
+
+    
+
     CREATE TRIGGER trg_update_colaborador_departamento
     ON colaborador
     AFTER UPDATE
@@ -660,12 +654,14 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
 
     CREATE TABLE historico_cambio_direccion(
         hcd_id INT IDENTITY(1,1) PRIMARY KEY,
-        hcd_col_id INT NOT NULL,
+        hcd_col_id UNIQUEIDENTIFIER NOT NULL,
         hcd_direccion_id INT NOT NULL,
         hcd_fecha DATETIME2 NOT NULL,
         FOREIGN KEY (hcd_col_id) REFERENCES colaborador(col_id),
         FOREIGN KEY (hcd_direccion_id) REFERENCES direccion(dir_id)
     );
+
+    
 
     CREATE TRIGGER trg_update_colaborador_direccion
     ON colaborador
@@ -687,15 +683,16 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
             WHERE 
                 i.col_direccion_id <> d.col_direccion_id; -- Solo insertar si hay un cambio real
         END
+    END
 /*##########################################################################*/
 
     CREATE TABLE historico_cambio_clave(
         hcc_id INT IDENTITY(1,1) PRIMARY KEY,
-        hcc_col_id INT NOT NULL,
+        hcc_col_id UNIQUEIDENTIFIER NOT NULL,
         hcc_codigo INT NOT NULL,
         hcc_fecha DATETIME2 NOT NULL,
         hcc_fecha_expiracion DATETIME2 NOT NULL,
-        FOREIGN KEY (lcc_col_id) REFERENCES colaborador(col_id)
+        FOREIGN KEY (hcc_col_id) REFERENCES colaborador(col_id)
     );
 
 /*##############################TABLAS REPORTES############################################*/

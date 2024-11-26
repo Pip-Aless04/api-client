@@ -104,6 +104,7 @@ export class AuthModel{
                         C.col_id AS id,
                         C.col_identificacion AS identificacion,
                         C.col_nombre AS nombre,
+                        C.col_segundo_nombre AS segundo_nombre,
                         C.col_primer_apellido AS primer_apellido,
                         C.col_segundo_apellido AS segundo_apellido,
                         P.pue_nombre AS puesto,
@@ -111,16 +112,18 @@ export class AuthModel{
                         C.col_estado AS estado,
                         DEP.depto_nombre AS departamento,
                         DIR.dir_nombre AS direccion,
-                        C.col_personal_cargo AS a_cargo,
+                        C.col_a_cargo AS a_cargo,
                         CONCAT(C2.col_nombre, ' ', C2.col_primer_apellido, ' ', C2.col_segundo_apellido) AS nombre_jefe,
-                        C.col_fecha_ingreso AS fecha_ingreso,
+                        C.col_fecha_ingreso AS fecha_ingreso
+                        /*
                         C.col_respuesta AS respuesta,
                         C.col_calificado AS calificado
+                        */
                     FROM colaborador C
-                    INNER JOIN puesto P ON C.col_puesto = P.pue_id
-                    INNER JOIN departamento DEP ON C.col_depto_pertenece = DEP.depto_id
-                    INNER JOIN direccion DIR ON C.col_dir_pertenece = DIR.dir_id
-                    INNER JOIN colaborador C2 ON C.col_jefe_id = C2.col_id
+                    INNER JOIN puesto P ON C.col_puesto_id = P.pue_id
+                    INNER JOIN departamento DEP ON C.col_depto_id = DEP.depto_id
+                    INNER JOIN direccion DIR ON C.col_direccion_id = DIR.dir_id
+                    INNER JOIN colaborador C2 ON C.col_jefatura_id = C2.col_id
                     WHERE C.col_identificacion = @ident
                 `);
     
@@ -141,7 +144,7 @@ export class AuthModel{
     }
     
 
-    static async register({ ident, nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, clave, a_cargo, jefe_id, fec_ingreso }) {
+    static async register({ ident, nombre, s_nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, clave, a_cargo, jefe_id, fec_ingreso }) {
         try {
             const uuidResult = await connection.query('SELECT NEWID() AS uuid;');
             const [{ uuid }] = uuidResult.recordset;
@@ -151,7 +154,7 @@ export class AuthModel{
     
             // Log para verificar valores
             console.log('Valores recibidos:', {
-                ident, nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, clave, a_cargo, jefeUUID, fec_ingreso
+                ident, nombre, s_nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, clave, a_cargo, jefeUUID, fec_ingreso
             });
     
             // Si jefe_id no está vacío, verifica que el jefe existe en la base de datos
@@ -191,24 +194,26 @@ export class AuthModel{
                     col_id,
                     col_identificacion,
                     col_nombre,
+                    col_segundo_nombre,
                     col_primer_apellido,
                     col_segundo_apellido,
                     col_genero,
-                    col_puesto,
+                    col_puesto_id,
                     col_email,
                     col_estado,
-                    col_depto_pertenece,
-                    col_dir_pertenece,
-                    col_pais,
-                    col_clave,
-                    col_personal_cargo,
-                    col_jefe_id,
-                    col_fecha_ingreso
+                    col_depto_id,
+                    col_direccion_id,
+                    col_pais_id,
+                    col_a_cargo,
+                    col_jefatura_id,
+                    col_fecha_ingreso,
+                    col_clave
                 )
                 VALUES(
                     @uuid,
                     @ident,
                     @nombre,
+                    @s_nombre,
                     @p_ape,
                     @s_ape,
                     @genero,
@@ -218,10 +223,10 @@ export class AuthModel{
                     @depto,
                     @dir,
                     @pais,
-                    @hashedPassword,
                     @a_cargo,
                     @jefe_id,
-                    @fec_ingreso
+                    @fec_ingreso,
+                    @hashedPassword
                 );
             `;
             
@@ -232,6 +237,7 @@ export class AuthModel{
                 .input('uuid', sql.UniqueIdentifier, uuid)
                 .input('ident', sql.NVarChar, ident)
                 .input('nombre', sql.NVarChar, nombre)
+                .input('s_nombre', sql.NVarChar, s_nombre)
                 .input('p_ape', sql.NVarChar, p_ape)
                 .input('s_ape', sql.NVarChar, s_ape)
                 .input('genero', sql.Char, genero)
@@ -241,10 +247,10 @@ export class AuthModel{
                 .input('depto', sql.Int, depto)
                 .input('dir', sql.Int, dir)
                 .input('pais', sql.Int, pais)
-                .input('hashedPassword', sql.NVarChar, hashedPassword)
                 .input('a_cargo', sql.NVarChar, a_cargo)
                 .input('jefe_id', jefeUUID ? sql.UniqueIdentifier : sql.NULL, jefeUUID)
                 .input('fec_ingreso', sql.DateTime, fec_ingreso)
+                .input('hashedPassword', sql.NVarChar, hashedPassword)
                 .query(insertQuery);
     
             if (!insertResult || insertResult.rowsAffected.length === 0) {

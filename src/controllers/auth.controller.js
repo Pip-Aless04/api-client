@@ -42,12 +42,28 @@ export class AuthController {
     
     register = async (req, res) => {
         try {
-            const validate = validatePartialAuth(req.body);
+
+            console.log('Registrando usuario...');
+
+            const {ident, nombre, s_nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, clave, a_cargo, jefe_id, fec_ingreso} = req.body;
+
+            console.log(req.body);
+
+            const validate = await validateAuth(req.body);
+
+            console.log(validate);
+
             if (!validate.success) {
-                return res.status(400).json({ error: validate.error });
+                console.error('Errores de validación:', validate.error.errors); // Asegúrate de loguear todos los detalles
+                return res.status(400).json({ 
+                    message: 'Errores en los datos proporcionados',
+                    errors: validate.error.errors 
+                });
             }
-    
-            const authUser = await this.authModel.register(req.body);
+            
+            console.log(validate);
+
+            const authUser = await this.authModel.register({ident, nombre, s_nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, clave, a_cargo, jefe_id, fec_ingreso});
             if (!authUser.success) {
                 return res.status(400).json({ error: authUser.error });
             }

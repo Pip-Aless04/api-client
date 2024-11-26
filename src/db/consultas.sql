@@ -317,8 +317,11 @@ VALUES
 
 
 UPDATE colaborador
-SET  col_jefe_id = '52DC0839-0BE8-47A5-9BCD-EBCDB4F17266'  WHERE col_id = 'C86198EA-0767-4EAE-9824-10091D6E2930'
+SET  col_a_cargo = 'si'  WHERE col_identificacion = '119160949' 
 
 
 SELECT * FROM colaborador 
-WHERE col_jefe_id = 'C7D001F5-AAD7-4087-8BAE-06A85D142C38'
+WHERE col_identificacion = '207170622' 
+
+
+
