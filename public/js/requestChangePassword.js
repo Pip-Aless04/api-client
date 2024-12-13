@@ -2,13 +2,14 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
     const ident = document.getElementById('ident').value;
+    console.log(ident);
     const button = document.getElementById('loginButton');
     const originalText = button.textContent;
     button.textContent = 'Signing in...';
     button.disabled = true;
 
     // Hacer la solicitud POST con la identificación
-    fetch('http://localhost:3000/dhcoapp/auth/requestChangePassword', {
+    fetch('http://localhost:3000/dhcoapp/auth/requestPasswordReset', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -20,10 +21,11 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     .then(response => {
         if (response.ok) {
             // Si la respuesta es exitosa, redirigir a otra página
-            window.location.href = 'dhcoapp/resetPassword'; // Cambia '/request-password-change' por la página a la que deseas redirigir
+            window.location.href = 'resetPassword'; // Cambia '/request-password-change' por la página a la que deseas redirigir
         } else {
             // Si la respuesta es un error
-            alert('');
+            alert(response);
+            console.log(response);
             button.textContent = originalText;
             button.disabled = false;
         }

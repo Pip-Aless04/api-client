@@ -3,154 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" id="appIcon" type="image/x-icon" href="https://cms.blumewebsites.com/pops/website/favicon.png">
+    <link rel="stylesheet" href="../css/inicio.css">
     <title>Inicio</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f2f5;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        header {
-            background-color: #ffffff;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
-        .logo {
-            display: flex;
-            align-items: center;
-        }
-        .logo img {
-            height: 70px;
-            width: auto;
-        }
-        .settings-menu {
-            position: relative;
-        }
-        .settings-icon {
-            width: 50px;
-            height: 50px;
-            background-color: #f0f2f5;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .settings-icon:hover {
-            background-color: #e4e6e9;
-        }
-        .settings-icon svg {
-            width: 24px;
-            height: 24px;
-            fill: #333;
-        }
-        .dropdown {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background-color: #fff;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 0.5rem 0;
-            min-width: 150px;
-        }
-        .dropdown a {
-            display: block;
-            padding: 0.5rem 1rem;
-            color: #333;
-            text-decoration: none;
-        }
-        .dropdown a:hover {
-            background-color: #f0f2f5;
-        }
-        main {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-            flex: 1;
-        }
-        h1 {
-            color: #333;
-            margin-bottom: 2rem;
-        }
-        .card-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-        .card {
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            padding: 1.5rem;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            color: white;
-        }
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        }
-        .card h2 {
-            margin-top: 0;
-        }
-        .card p {
-            margin-bottom: 0;
-            opacity: 0.8;
-        }
-        .card:nth-child(1) {
-            background: linear-gradient(135deg, #00b3b3, #008080);
-        }
-        .card:nth-child(2) {
-            background: linear-gradient(135deg, #ff4d4d, #cc0000);
-        }
-        .card:nth-child(3) {
-            background: linear-gradient(135deg, #3399ff, #0066cc);
-        }
-        .card:nth-child(4) {
-            background: linear-gradient(135deg, #ff9933, #cc6600);
-        }
-        .footer {
-            width: 100%;
-            margin-top: auto;
-        }
-        .footer img {
-            width: 100%;
-            height: auto;
-            display: block;
-            margin-top: 2rem;
-        }
-    </style>
 </head>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.logo img {
+    height: 50px;
+    width: auto;
+}
+
+.settings-menu {
+    position: relative;
+}
+
+.settings-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #f0f2f5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.settings-icon:hover {
+    background-color: #e4e6e9;
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 0.5rem 0;
+    min-width: 150px;
+}
+
+.dropdown a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #333;
+    text-decoration: none;
+}
+
+.dropdown a:hover {
+    background-color: #f0f2f5;
+}
+
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    flex: 1;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+.section {
+    margin-bottom: 2rem;
+}
+.section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background-color: #e4e6e9;
+    border-radius: 8px;
+    margin-left: -1rem;
+}
+.card-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+.card {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    color: white;
+}
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}
+.card h2 {
+    margin-top: 0;
+    font-size: 1.2rem;
+}
+.card p {
+    margin-bottom: 0;
+    opacity: 0.8;
+}
+.card:nth-child(4n+1) {
+    background: linear-gradient(135deg, #00b3b3, #008080);
+}
+.card:nth-child(4n+2) {
+    background: linear-gradient(135deg, #ff4d4d, #cc0000);
+}
+.card:nth-child(4n+3) {
+    background: linear-gradient(135deg, #3399ff, #0066cc);
+}
+.card:nth-child(4n+4) {
+    background: linear-gradient(135deg, #ff9933, #cc6600);
+}
+.footer {
+    width: 100%;
+    margin-top: auto;
+}
+.footer img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+@media (max-width: 768px) {
+    .card-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media (max-width: 480px) {
+    .card-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+.pending-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    overflow: hidden;
+}
+.pending-table th, .pending-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e4e6e9;
+}
+.pending-table th {
+    background-color: #f0f2f5;
+    font-weight: bold;
+    color: #333;
+}
+.pending-table tr:last-child td {
+    border-bottom: none;
+}
+.pending-table tr:hover {
+    background-color: #f8f9fa;
+}
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+.accept-btn, .reject-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+.accept-btn {
+    background-color: #00b3b3;
+    color: white;
+}
+.accept-btn:hover {
+    background-color: #008080;
+}
+.reject-btn {
+    background-color: #ff4d4d;
+    color: white;
+}
+.reject-btn:hover {
+    background-color: #cc0000;
+}
+</style>
 <body>
     <header>
         <nav>
             <div class="logo">
-                <img src="../img/logo_pops_2024.webp" alt="POPS Logo">
+                <a href="inicio">
+                    <img src="../img/logo_pops_2024.webp" alt="POPS Logo">
+                </a>
             </div>
             <div class="settings-menu">
                 <div class="settings-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
                     </svg>
                 </div>
                 <div class="dropdown">
-                    <a href="#">Profile</a>
-                    <a href="#">Settings</a>
+                    <a href="#">Perfil</a>
+                    <a href="#">Configuración</a>
                     <a href="#">Cerrar sesión</a>
                 </div>
             </div>
@@ -159,35 +243,77 @@
 
     <main>
         <h1>Bienvenido, <%= user.nombre %></h1>
-        <div class="card-grid">
-            <div class="card" data-page="autoevaluation">
-                <h2>Autoevaluation</h2>
-                <p>Complete your self-assessment</p>
-            </div>
-            <div class="card" data-page="reports">
-                <h2>Reports</h2>
-                <p>View and analyze your reports</p>
-            </div>
-            <div class="card" data-page="profile">
-                <h2>Profile</h2>
-                <p>Manage your personal information</p>
-            </div>
-            <div class="card" data-page="settings">
-                <h2>Settings</h2>
-                <p>Customize your dashboard preferences</p>
+        <div class="section">
+            <div class="section-title">Evaluaciones</div>
+            <div class="card-container">
+                <div class="card" data-page="profile">
+                    <h2>Evaluacion de desempeño</h2>
+                    <p>Realiza tu evaluacion de desempeño</p>
+                </div>
             </div>
         </div>
-    </main>
 
+        <div class="section">
+            <div class="section-title">Solicitudes</div>
+            <div class="card-container">
+                <div class="card" data-page="bienestar-integral/salida_personal">
+                    <h2>Salida de personal</h2>
+                    <p>Registre las salidas de personal a tu cargo</p>
+                </div>
+                <div class="card" data-page="bienestar-integral/solicitud_vacaciones">
+                    <h2>Solicitud de vacaciones</h2>
+                    <p>Solicite sus días de vacaciones</p>
+                </div>
+                <div class="card" data-page="bienestar-integral/traslado_personal">
+                    <h2>Traslado de personal</h2>
+                    <p>Regidtre el traslado de personal</p>
+                </div>
+                <div class="card" data-page="bienestar-integral/reporte_incapacidad">
+                    <h2>Incapacidades y licencias</h2>
+                    <p>Reporte sus Incapacidades y Licencias</p>
+                </div>
+                <div class="card" data-page="bienestar-integral/solicitud_cartas">
+                    <h2>Solicitudes de cartas</h2>
+                    <p>Haga solicitud de sus carta</p>
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title">Pendientes</div>
+            <table class="pending-table">
+                <thead>
+                    <tr>
+                        <th>Colaborador</th>
+                        <th>Fecha inicio</th>
+                        <th>Fecha fin</th>
+                        <th>Detalle</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% pendientes.forEach(pendiente => { %>
+                        <% if (pendiente.estado === 'S') { %>
+                            <tr data-id="<%= pendiente.id %>" data-estado="<%= pendiente.estado %>">
+                                <td><%= pendiente.nombreSolicitante %></td>
+                                <td><%= new Date(pendiente.fecha_inicio).toLocaleDateString('es-ES', { timeZone: 'UTC' }) %></td>
+                                <td><%= new Date(pendiente.fecha_fin).toLocaleDateString('es-ES', { timeZone: 'UTC' }) %></td>                                
+                                <td><%= pendiente.detalle_reporte ? pendiente.detalle_reporte : 'Sin detalle' %></td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <button class="accept-btn" value="1">Aceptar</button>
+                                        <button class="reject-btn" value="0">Rechazar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% } %>
+                    <% }) %>                                      
+                </tbody>                                                      
+            </table>
+        </div>
+    </main>
     <footer class="footer">
         <img src="../img/footer.webp" alt="footer">
     </footer>
 </body>
-<script src="../js/inicio.js">
-
-    //cerrar sesión
-    
-
-
-</script>
+<script src="../js/inicio.js"></script>
 </html>

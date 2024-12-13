@@ -40,12 +40,25 @@ export const createApp = ({AuthModel, ReportesModel, EvaluacionModel}) => {
         app.use(cookieParser());
         app.use(corsMiddleware());
         app.use(compression());
-        app.use(helmet());
+        //app.use(helmet());
+        /*
+        app.use(
+            helmet({
+                contentSecurityPolicy: {
+                    directives: {
+                    "script-src": ["'self'", "localhost", "'sha256-<hash_generado>'"],
+                    "style-src": ["'self'", "localhost", "'sha256-+5gngJFeHzaHdBT/sZ+QeQrbT9yuCliU/bQpvalnrXs='", "'unsafe-hashes'"],
+                    },
+                },
+            })
+        );
+        */
         app.use(rateLimiter);
 
         app.set('view engine', 'ejs');
         app.set('views', path.join(__dirname, 'views'))
         app.use(express.static('public'));
+        app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
         
         app.get("/", (req,res,next) => {

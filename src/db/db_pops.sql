@@ -12,6 +12,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         pais_estado CHAR(1) NOT NULL DEFAULT 'A'
     );
 
+
     INSERT INTO pais(pais_nombre, pais_acronimo) 
     VALUES
     ('Costa Rica', 'CRC'),
@@ -187,8 +188,6 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY(dir_depto_id) REFERENCES Departamento(depto_id)
     );
 
-    
-
     --/*
     INSERT INTO direccion(dir_nombre, dir_depto_id, dir_estado)
     VALUES
@@ -220,7 +219,18 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     --*/
 
 /*##########################################################################*/
+    CREATE TABLE permiso(
+        pr_id TINYINT IDENTITY(1,1) PRIMARY KEY,
+        pr_nombre NVARCHAR(50) NOT NULL,
+        pr_estado CHAR(1) NOT NULL DEFAULT 'A'
+    );
 
+    INSERT INTO permiso(pr_nombre)
+    VALUES
+    ('colaborador'),
+    ('dhco')
+
+/*##########################################################################*/
     CREATE TABLE colaborador(
         col_id UNIQUEIDENTIFIER,
         col_identificacion NVARCHAR(50) NOT NULL,
@@ -239,13 +249,14 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         col_a_cargo CHAR(1) NOT NULL,
         col_estado CHAR(1) NOT NULL DEFAULT 'A',
         col_clave NVARCHAR(50) NOT NULL,
+        col_permiso_id TINYINT NOT NULL,
         PRIMARY KEY(col_id), 
         FOREIGN KEY(col_pais_id) REFERENCES pais(pais_id),
         FOREIGN KEY(col_puesto_id) REFERENCES puesto(pue_id),
         FOREIGN KEY(col_depto_id) REFERENCES departamento(depto_id),
         FOREIGN KEY(col_direccion_id) REFERENCES direccion(dir_id),
+        FOREIGN KEY(col_permiso_id) REFERENCES permiso(pr_id)
     );
-
 
 /*##########################################################################*/
     CREATE TABLE talento(
@@ -379,7 +390,6 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         ev_estado CHAR(1) NOT NULL DEFAULT 'A',
         FOREIGN KEY(ev_tipo_evaluation) REFERENCES tipo_evaluation(te_id)
     );
-
     
 
     --/*
@@ -589,7 +599,6 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY(hcj_col_subordinado_id) REFERENCES colaborador(col_id),
         FOREIGN KEY(hcj_col_jefe_id) REFERENCES colaborador(col_id)
     );
-
     
 
     CREATE TRIGGER trg_update_colaborador_jefatura
@@ -625,8 +634,6 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY(hcd_depto_id) REFERENCES departamento(depto_id)
     );
 
-
-    
 
     CREATE TRIGGER trg_update_colaborador_departamento
     ON colaborador
@@ -695,6 +702,8 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY (hcc_col_id) REFERENCES colaborador(col_id)
     );
 
+
+    SELECT * FROM historico_cambio_clave
 /*##############################TABLAS REPORTES############################################*/
 
     CREATE TABLE tipo_salida(
@@ -703,17 +712,55 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         ts_estado CHAR(1) NOT NULL DEFAULT 'A'
     );
 
+    INSERT INTO tipo_salida(ts_nombre)
+    VALUES
+    ('Renuncia'),
+    ('Abandono de trabajo'),
+    ('Despido sin responsabilidad'),
+    ('Despidp periodo de prueba'),
+    ('Despido con responsabilidad'),
+    ('Mutuo acuerdo'),
+    ('Fallecimiento'),
+    ('Jubilacion'),
+    ('Termino de contrato')
+
     CREATE TABLE motivo_salida(
         ms_id INT IDENTITY(1,1) PRIMARY KEY,
         ms_nombre NVARCHAR(100) NOT NULL,
         ms_estado CHAR(1) NOT NULL DEFAULT 'A'
     );
 
+    INSERT INTO motivo_salida(ms_nombre)
+    VALUES
+    ('Motivos personales'),
+    ('Mal abiente laboral'),
+    ('No cumple el perfil'),
+    ('No cumple procedimientos'),
+    ('Hurto'),
+    ('Horarios'),
+    ('Cuido de hijos'),
+    ('Salario'),
+    ('Mejor oportunidad laboral'),
+    ('Cambio de residencia'),
+    ('Enfermedad'),
+    ('Cuido de parientes'),
+    ('Termino de contrato'),
+    ('Otro')
+
     CREATE TABLE tipo_novedad(
         tn_id INT IDENTITY(1,1) PRIMARY KEY,
         tn_nombre NVARCHAR(100) NOT NULL,
         tn_estado CHAR(1) NOT NULL DEFAULT 'A'
     );
+
+    INSERT INTO tipo_novedad(tn_nombre)
+    VALUES
+    ('Incapacidad CCSS'),
+    ('Incapacidad INS'),
+    ('Licencia de maternidad'),
+    ('Licencia de paternidad'),
+    ('Permiso con goce'),
+    ('Permiso sin goce');
     
     CREATE TABLE tipo_carta(
         tc_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -721,18 +768,39 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         tc_estado CHAR(1) NOT NULL DEFAULT 'A'
     );
     
+    INSERT INTO tipo_carta(tc_nombre)
+    VALUES
+    ('Carta para retiro de FCL'),
+    ('Constancia salarial'),
+    ('Carta para justificación de horarios'),
+    ('Carta por traslado de compañía'),
+    ('Carta para licencias'),
+    ('Constancia de tiempo laborado'),
+    ('Carta para apertura de cuenta bancaria'),
+    ('Otro')
+
+
     CREATE TABLE tipo_reporte(
         tr_id INT IDENTITY(1,1) PRIMARY KEY,
         tr_nombre NVARCHAR(100) NOT NULL,
-        tr_creado_por UNIQUEIDENTIFIER NOT NULL,
+        tr_creado_por UNIQUEIDENTIFIER NOT NULL DEFAULT '00000000-0000-0000-0000-000000000000',
         tr_creado_fecha DATETIME NOT NULL,
-        tr_estado CHAR(1) NOT NULL DEFAULT 'A'
+        tr_estado CHAR(1) NOT NULL DEFAULT 'A',
+        FOREIGN KEY (tr_creado_por) REFERENCES colaborador(col_id)
     );
+
+    INSERT INTO tipo_reporte (tr_nombre, tr_creado_por, tr_creado_fecha, tr_estado) 
+    VALUES 
+    ('salida_de_personal', '7be72975-2974-461a-a5e3-7243d3024a9f', '2022-01-01', 'A'),
+    ('solicitud_de_vacaciones', '7be72975-2974-461a-a5e3-7243d3024a9f', '2022-01-01', 'A'),
+    ('traslado_de_personal', '7be72975-2974-461a-a5e3-7243d3024a9f', '2022-01-01', 'A'),
+    ('incapacidades_y_licencias', '7be72975-2974-461a-a5e3-7243d3024a9f', '2022-01-01', 'A'),    
+    ('solicitud_de_cartas', '7be72975-2974-461a-a5e3-7243d3024a9f', '2022-01-01', 'A');
 
     CREATE TABLE reporte(
         rep_id INT IDENTITY(1,1) PRIMARY KEY,
         rep_col_id_solicita UNIQUEIDENTIFIER NOT NULL,
-        rep_col_jefe_inmediato UNIQUEIDENTIFIER,
+        rep_col_jefe_inmediato UNIQUEIDENTIFIER NOT NULL,
         rep_tipo_reporte INT NOT NULL,
         rep_detalle_reporte NVARCHAR(MAX),
         rep_tipo_salida INT,
@@ -744,10 +812,11 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         rep_fec_fin DATE,
         rep_area_actual INT,
         rep_area_traslado INT,
-        rep_fec_envio_documentos DATE,
+        rep_fec_envio_doc DATE,
         rep_otro NVARCHAR(MAX),
         rep_email_envio VARCHAR(50),
         rep_estado CHAR(1) NOT NULL DEFAULT 'S',
+        rep_fecha_transaccion DATETIME,
         FOREIGN KEY (rep_col_id_solicita) REFERENCES colaborador(col_id),
         FOREIGN KEY (rep_col_jefe_inmediato) REFERENCES colaborador(col_id),
         FOREIGN KEY (rep_tipo_reporte) REFERENCES tipo_reporte(tr_id),
@@ -756,22 +825,37 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY (rep_tipo_novedad) REFERENCES tipo_novedad(tn_id),
         FOREIGN KEY (rep_tipo_carta) REFERENCES tipo_carta(tc_id),
         FOREIGN KEY (rep_pais_solicita) REFERENCES pais(pais_id)
-
     );
+
+
+
+    UPDATE reporte SET rep_detalle_reporte = 'alnweigw fierwieg qonfierwleg owrfno ioe og we gwi';
 
     CREATE TABLE tipo_documento(
         td_id INT IDENTITY(1,1) PRIMARY KEY,
         td_nombre NVARCHAR(100) NOT NULL,
         td_estado CHAR(1) NOT NULL DEFAULT 'A'
-    )
+    );
+
+    INSERT INTO tipo_documento(td_nombre)
+    VALUES
+    ('carta_autorizacion_pago'),
+    ('comprobante_entrega_uniformes'),
+    ('cedula'),
+    ('carta_despido_o_renuncia'),
+    ('accion_de_personal');
 
     CREATE TABLE reporte_documento(
         rd_id INT IDENTITY(1,1) PRIMARY KEY,
         rd_id_reporte INT NOT NULL,
         rd_id_tipo_documento INT NOT NULL,
-        rd_documento VARBINARY(MAX) NOT NULL,
+        rd_documento VARBINARY(MAX) NOT NULL, /*contenido del documento*/
+        rd_nombre_documento VARCHAR(50) NOT NULL, /*nombre del documento*/
+        rd_fecha_documento DATETIME NOT NULL, /*fecha de envío del documento*/
         FOREIGN KEY (rd_id_reporte) REFERENCES reporte(rep_id),
         FOREIGN KEY (rd_id_tipo_documento) REFERENCES tipo_documento(td_id)
-    )
+    );
+
 
     END
+

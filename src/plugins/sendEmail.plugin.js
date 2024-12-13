@@ -9,7 +9,7 @@ export class EmailPlugin {
             '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'
         );
         this.sendSmtpEmail = new brevo.SendSmtpEmail();
-        this.from = '';
+        this.from = 'alantiaribal2404@gmail.com';
     }
 
     sendEmailTest = async ({to, subject, html}) => {

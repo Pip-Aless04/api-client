@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { AuthController } from "../controllers/auth.controller.js";
 import { authUserJWT } from "../middlewares/validateUserJwt.middleware.js";
-//import { saveUserInfo } from "../middlewares/saveUserInfo.middlaware.js";
+import { authChangePasswordJWT } from "../middlewares/validateChangePasswordJwt.js";
+
 
 export const createAuthRoutes = ({AuthModel}) => {
     const authRouter = Router();
@@ -9,11 +10,11 @@ export const createAuthRoutes = ({AuthModel}) => {
 
     authRouter.post("/login",authController.authLogin); 
     authRouter.post("/register", authController.register);
-    authRouter.post("/requestPasswordReset", authUserJWT, authController.requestPasswordReset);
-    authRouter.post("/setNewPassword", authUserJWT, authController.setNewPassword);
+    authRouter.post("/requestPasswordReset", authController.requestPasswordReset);
+    authRouter.post("/setNewPassword", authChangePasswordJWT, authController.setNewPassword);
     authRouter.get("/logout", authUserJWT, authController.logout);
 
-    authRouter.post("/changePasswordPrueba", authController.changePasswordPrueba);
+    authRouter.post("/changePasswordHot", authController.changePasswordHot);
 
     return authRouter;
 };

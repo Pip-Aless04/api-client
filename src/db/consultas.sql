@@ -26,9 +26,11 @@ ON C.col_jefe_id = C2.col_id
 WHERE 1=1
 
 
+UPDATE colaborador
+SET col_a_cargo = 'S'
 
-SELECT * FROM colaborador
-WHERE col_identificacion = '111'
+SELECT * FROM reporte WHERE rep_col_id_solicita = '71fc6e2f-7028-412c-9904-96bd380824d1'
+WHERE col_jefe_id = 'D594E981-410A-4085-90F5-EFE2A3BAE951'
 
 
 SELECT * FROM descripcion_talento
@@ -317,7 +319,9 @@ VALUES
 
 
 UPDATE colaborador
-SET  col_a_cargo = 'si'  WHERE col_identificacion = '119160949' 
+SET  col_respuesta = '0'
+SELECT * FROM colaborador
+WHERE col_id = '52DC0839-0BE8-47A5-9BCD-EBCDB4F17266' 
 
 
 SELECT * FROM colaborador 
@@ -325,3 +329,17 @@ WHERE col_identificacion = '207170622'
 
 
 
+SELECT * FROM respuesta 
+WHERE res_col_id_subordinado = '52DC0839-0BE8-47A5-9BCD-EBCDB4F17266'
+
+DELETE FROM respuesta
+WHERE res_id > 3243 
+AND res_id < 3271 
+
+
+                    SELECT 
+                    TS.ts_id AS id,
+                    TS.ts_nombre AS nombre,
+                    TS.ts_estado AS estado
+                    FROM tipo_salida TS
+                    WHERE 1=1

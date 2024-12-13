@@ -15,8 +15,8 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            ident: ident,
-            clave: password
+            ident,
+            password
         }),
     })
     .then(response => {

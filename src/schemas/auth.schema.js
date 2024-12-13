@@ -13,11 +13,12 @@ const authSchema = z.object({
     depto: z.number({required_error:'El departamento es obligatorio', invalid_type_error: 'El departamento debe ser un número'}),
     dir: z.number({required_error:'El dirección es obligatorio', invalid_type_error: 'El dirección debe ser un número'}),
     pais: z.number({required_error:'El país es obligatorio', invalid_type_error: 'El país debe ser un número'}).int().max(3),
-    clave: z.string({required_error:'La clave es obligatoria', invalid_type_error: 'La clave debe ser una cadena de texto'}).min(8, { message: 'La clave debe contener mínimo 8 caracteres' }),
+    password: z.string({required_error:'La clave es obligatoria', invalid_type_error: 'La clave debe ser una cadena de texto'}).min(8, { message: 'La clave debe contener mínimo 8 caracteres' }),
     a_cargo: z.enum(['S', 'N'], {required_error:'El cargo es obligatorio', invalid_type_error: 'El cargo debe ser una cadena de texto'}),
     jefe_id: z.string({invalid_type_error: 'El jefe debe ser una cadena de texto'}).optional(),
     fec_ingreso: z.string().date({required_error:'La fecha de ingreso es obligatoria', invalid_type_error: 'La fecha de ingreso debe ser una fecha',message:'El formato de la fehca de ingreso es: YYYY-MM-DD'}),
-});
+  
+  });
 
 export async function validateAuth(input) {
     return authSchema.safeParse(input);

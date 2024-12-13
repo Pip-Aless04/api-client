@@ -5,13 +5,15 @@ import { bcryptPlugin } from '../plugins/encrypt.plugin.js';
 
 export class AuthModel{
 
-    static async getAll({ ident, name, p_ape, s_ape, puesto, email, estado, depto, dir, pais, a_cargo, jefe, res }) {
+    static async getAll({ ident, name, s_name, p_ape, s_ape, puesto, email, estado, depto, dir, pais, a_cargo, jefe }) {
         try {
+            console.log(jefe);
             let query = `
                 SELECT 
                     C.col_id AS id,
                     C.col_identificacion AS identificacion,
                     C.col_nombre AS nombre,
+                    C.col_segundo_nombre AS segundo_nombre,
                     C.col_primer_apellido AS primer_apellido,
                     C.col_segundo_apellido AS segundo_apellido,
                     PUE.pue_nombre AS puesto,
@@ -21,26 +23,26 @@ export class AuthModel{
                     DIR.dir_nombre AS direccion,
                     PAIS.pais_acronimo AS pais,
                     /*C.col_clave AS clave,*/
-                    C.col_personal_cargo AS a_cargo,
+                    C.col_a_cargo AS a_cargo,
                     CONCAT(C2.col_nombre, ' ', C2.col_primer_apellido, ' ', C2.col_segundo_apellido) AS nombre_jefe,
-                    C.col_fecha_ingreso AS fecha_ingreso,
-                    C.col_respuesta AS respuesta
+                    C.col_fecha_ingreso AS fecha_ingreso
                 FROM colaborador C
                 INNER JOIN puesto PUE
-                ON C.col_puesto = PUE.pue_id
+                ON C.col_puesto_id = PUE.pue_id
                 INNER JOIN departamento DEP
-                ON C.col_depto_pertenece = DEP.depto_id
+                ON C.col_depto_id = DEP.depto_id
                 INNER JOIN direccion DIR
-                ON C.col_dir_pertenece = DIR.dir_id
+                ON C.col_direccion_id = DIR.dir_id
                 INNER JOIN pais PAIS
-                ON C.col_pais = PAIS.pais_id
+                ON C.col_pais_id = PAIS.pais_id
                 INNER JOIN colaborador C2
-                ON C.col_jefe_id = C2.col_id
+                ON C.col_jefatura_id = C2.col_id
                 WHERE 1=1
             `;
     
             if (ident) query += ` AND LOWER(C.col_identificacion) = LOWER(@ident)`;
             if (name) query += ` AND LOWER(C.col_nombre) LIKE LOWER(@name)`;
+            if (s_name) query += ` AND LOWER(C.col_segundo_nombre) LIKE LOWER(@s_name)`;
             if (p_ape) query += ` AND LOWER(C.col_primer_apellido) LIKE LOWER(@p_ape)`;
             if (s_ape) query += ` AND LOWER(C.col_segundo_apellido) LIKE LOWER(@s_ape)`;
             if (puesto) query += ` AND LOWER(PUE.pue_nombre) LIKE LOWER(@puesto)`;
@@ -49,14 +51,14 @@ export class AuthModel{
             if (depto) query += ` AND LOWER(DEP.depto_nombre) = @depto`;
             if (dir) query += ` AND LOWER(DIR.dir_nombre) = @dir`;
             if (pais) query += ` AND LOWER(PAIS.pais_acronimo) LIKE LOWER(@pais)`;
-            if (a_cargo) query += ` AND LOWER(C.col_personal_cargo) LIKE LOWER(@a_cargo)`;
-            if (jefe) query += ` AND C.col_jefe_id = @jefe`;
-            if (res) query += ` AND LOWER(C.col_respuesta) LIKE LOWER(@res)`;
-    
+            if (a_cargo) query += ` AND LOWER(C.col_a_cargo) LIKE LOWER(@a_cargo)`;
+            if (jefe) query += ` AND C.col_jefatura_id = @jefe AND C.col_id <> @jefe`;
+
             const result = await connection
                 .request()
                 .input('ident', sql.NVarChar, ident || null)
                 .input('name', sql.NVarChar, name || null)
+                .input('s_name', sql.NVarChar, s_name || null)
                 .input('p_ape', sql.NVarChar, p_ape || null)
                 .input('s_ape', sql.NVarChar, s_ape || null)
                 .input('puesto', sql.NVarChar, puesto || null)
@@ -67,17 +69,20 @@ export class AuthModel{
                 .input('pais', sql.NVarChar, pais || null)
                 .input('a_cargo', sql.NVarChar, a_cargo || null)
                 .input('jefe', sql.UniqueIdentifier, jefe || null)
-                .input('res', sql.NVarChar, res || null)
                 .query(query);
 
-            return res.status(200).json({ success: true, message: 'Colaboradores obtenidos', col_info: result.recordset });
+                return { success: true, message: 'Colaboradores obtenidos', cols_info: result.recordset };
         } catch (err) {
             console.error('Error al obtener los colaboradores:', err.message);
             throw new Error('Error al obtener los colaboradores');
         }
     }
     
-    static async login(ident, clave) {
+    static async login(ident, password) {
+
+        console.log('entro al modelo');
+        console.log(ident, password);
+
         const validateQuery = `SELECT col_identificacion, col_clave, col_estado FROM colaborador WHERE col_identificacion = @ident`;
         
         try {
@@ -92,8 +97,13 @@ export class AuthModel{
                 return { success: false, error: 'Colaborador inactivo' };
             }
 
-            const isValid = await bcrypt.compare(clave, result.recordset[0].col_clave);
+            //console.log(result);
+
+            console.log('siguiente bycript')
+            const isValid = await bcryptPlugin(bcrypt)(password);
             if (!isValid) return { success: false, error: 'Contraseña incorrecta' };
+            
+            //console.log(isValid);
             
             // Obtener la información del colaborador
             const col_info = await connection
@@ -107,12 +117,14 @@ export class AuthModel{
                         C.col_segundo_nombre AS segundo_nombre,
                         C.col_primer_apellido AS primer_apellido,
                         C.col_segundo_apellido AS segundo_apellido,
+                        PA.pais_nombre AS pais,
                         P.pue_nombre AS puesto,
                         C.col_email AS email,
                         C.col_estado AS estado,
                         DEP.depto_nombre AS departamento,
                         DIR.dir_nombre AS direccion,
                         C.col_a_cargo AS a_cargo,
+                        C.col_jefatura_id AS jefe_id,
                         CONCAT(C2.col_nombre, ' ', C2.col_primer_apellido, ' ', C2.col_segundo_apellido) AS nombre_jefe,
                         C.col_fecha_ingreso AS fecha_ingreso
                         /*
@@ -120,12 +132,15 @@ export class AuthModel{
                         C.col_calificado AS calificado
                         */
                     FROM colaborador C
+                    INNER JOIN pais PA ON C.col_pais_id = PA.pais_id
                     INNER JOIN puesto P ON C.col_puesto_id = P.pue_id
                     INNER JOIN departamento DEP ON C.col_depto_id = DEP.depto_id
                     INNER JOIN direccion DIR ON C.col_direccion_id = DIR.dir_id
                     INNER JOIN colaborador C2 ON C.col_jefatura_id = C2.col_id
                     WHERE C.col_identificacion = @ident
                 `);
+
+            console.log(col_info);
     
             if (col_info.recordset.length === 0) {
                 return { success: false, error: 'Colaborador no encontrado' };
@@ -144,7 +159,7 @@ export class AuthModel{
     }
     
 
-    static async register({ ident, nombre, s_nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, clave, a_cargo, jefe_id, fec_ingreso }) {
+    static async register({ ident, nombre, s_nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, password, a_cargo, jefe_id, fec_ingreso }) {
         try {
             const uuidResult = await connection.query('SELECT NEWID() AS uuid;');
             const [{ uuid }] = uuidResult.recordset;
@@ -154,7 +169,7 @@ export class AuthModel{
     
             // Log para verificar valores
             console.log('Valores recibidos:', {
-                ident, nombre, s_nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, clave, a_cargo, jefeUUID, fec_ingreso
+                ident, nombre, s_nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, password, a_cargo, jefeUUID, fec_ingreso
             });
     
             // Si jefe_id no está vacío, verifica que el jefe existe en la base de datos
@@ -185,7 +200,7 @@ export class AuthModel{
     
             if (existResult.recordset.length > 0) throw new Error('El colaborador ya está registrado');
             
-            const hashedPassword = await bcryptPlugin(bcrypt)(clave);
+            const hashedPassword = await bcryptPlugin(bcrypt)(password);
 
             if (jefeUUID === null) jefeUUID = uuid;
     
@@ -270,7 +285,7 @@ export class AuthModel{
             let query = `
                 SELECT 
                     C.col_id AS id,
-                    C.col_identificacion AS identificacion,
+                    C.col_identificacion AS ident,
                     C.col_email AS email
                 FROM colaborador C
                 WHERE C.col_identificacion = @ident
@@ -293,25 +308,100 @@ export class AuthModel{
             throw new Error('Error al validar la información de cambio de clave');
         }
     }
-    
 
-    static async changePasswordPrueba({ident, clave}){
-        
+
+    static async storeResetCode({ id, code, expires }) {
+        try {
+            const insertQuery = `
+                INSERT INTO historico_cambio_clave (hcc_col_id, hcc_codigo, hcc_fecha, hcc_fecha_expiracion)
+                VALUES (@id, @code, GETDATE(), @fecha_expiracion)
+            `;
+    
+            await connection
+                .request()
+                .input('id', sql.UniqueIdentifier, id)
+                .input('code', sql.NVarChar, code)
+                .input('fecha_expiracion', sql.DateTime, expires)
+                .query(insertQuery);
+    
+            return { success: true };
+        } catch (error) {
+            console.error('Error al guardar el código de restablecimiento:', error.message, error.stack);
+            return { success: false, error: 'Error al guardar el código de restablecimiento' };
+        }
+    }
+
+    static async validateResetCode({ id, code }) {
         try {
 
-            const passwordHash = await bcryptPlugin(bcrypt)(clave);
+            console.log('entro al validar el código');
+            console.log(id, code);
 
-            const query = 'UPDATE colaborador SET col_clave = @passwordHash WHERE col_identificacion = @ident';
+            const validateQuery = `
+                SELECT TOP 1
+                    hcc_codigo AS storedCode,
+                    hcc_fecha_expiracion AS expires
+                FROM historico_cambio_clave
+                WHERE hcc_col_id = @id
+                ORDER BY hcc_fecha DESC
+            `;
+    
             const result = await connection
                 .request()
-                .input('ident', sql.NVarChar, ident)
+                .input('id', sql.UniqueIdentifier, id)
+                .query(validateQuery);
+            
+            console.log(result);
+
+            if (result.recordset.length === 0) {
+                return { success: false, error: 'No se encontró un código registrado para este usuario.' };
+            }
+    
+            const { storedCode, expires } = result.recordset[0];
+
+            // Validar el código y la fecha de expiración
+            if (storedCode.toString() !== code.toString()) {
+                return { success: false, error: 'El código ingresado no es válido.' };
+            }
+    
+            if (new Date(expires) < new Date()) {
+                return { success: false, error: 'El código ha expirado.' };
+            }
+            console.log('El código es válido');
+            return { success: true, message: 'El código es válido' };
+        } catch (error) {
+            console.error('Error al validar el código:', error.message);
+            return { success: false, error: 'Error al validar el código.' };
+        }
+    }    
+
+    static async resetNewPassword({ id, password }) {
+        try {
+            console.log('entro a reset password');
+            console.log(id, password);
+    
+            // Hashear la contraseña
+            const passwordHash = await bcryptPlugin(bcrypt)(password);
+            console.log('Contraseña hasheada:', passwordHash);
+    
+            const query = `
+                UPDATE colaborador
+                SET col_clave = @passwordHash
+                WHERE col_id = @id
+            `;
+    
+            const result = await connection
+                .request()
+                .input('id', sql.UniqueIdentifier, id)
                 .input('passwordHash', sql.NVarChar, passwordHash)
                 .query(query);
-
-            if (result.length === 0) {
-                return { success: false, error: 'El colaborador no existe' };
+    
+            console.log('Resultado de la query:', result);
+    
+            if (result.rowsAffected[0] === 0) {
+                return { success: false, error: 'El colaborador no existe o no se pudo actualizar la contraseña' };
             }
-
+    
             return { success: true, message: 'Contraseña cambiada correctamente' };
         } catch (error) {
             console.error('Error al cambiar la contraseña:', error.message, error.stack);
@@ -319,68 +409,51 @@ export class AuthModel{
         }
     }
 
-    static async storeResetCode({ident, email, code, expires}){
+    static async changePasswordHot({ident, password}) {
         try {
+            console.log('entro a change password');
+            console.log(ident, password);    
+            const validateQuery = `SELECT col_identificacion, col_clave, col_estado FROM colaborador WHERE col_identificacion = @ident AND col_estado = 'A'`;
             
-            const insertQuery = `
-                INSERT INTO log_cambio_clave(
-                    lcc_col_id,
-                    lcc_codigo,
-                    lcc_fecha,
-                    lcc_fecha_expiracion
-                )
-                VALUES(
-                    (SELECT col_id FROM colaborador WHERE col_email = @email AND col_identificacion = @ident),
-                    @code,
-                    GETDATE(),
-                    @fecha_expiracion
-                );
-            `;
-            
-            const insertResult = await connection
-                .request()
-                .input('ident', sql.NVarChar, ident)
-                .input('email', sql.NVarChar, email)
-                .input('code', sql.NVarChar, code)
-                .input('fecha_expiracion', sql.DateTime, expires)
-                .query(insertQuery);    
-                
-            if (!insertResult || insertResult.rowsAffected.length === 0) {
-                return { success: false, error: 'No se pudo registrar el cambio de clave' };
-            }
-            
-            return { success: true, message: 'Registro de colaborador exitoso' };
-
-        } catch (error) {
-            console.error('Error al registrar el cambio de clave:', error.message, error.stack);
-            throw new Error('Error al registrar el cambio de clave');
-        }
-    }
-
-    static async validateChangePasswordCode({code}){
-        try {
-            const query = `
-                SELECT
-                    lcc_col_id AS col_id,
-                    lcc_codigo AS code,
-                    lcc_fecha AS date,
-                    lcc_fecha_expiracion AS expires
-                FROM log_cambio_clave
-                WHERE lcc_codigo = @code AND lcc_fecha_expiracion > GETDATE()
-            `;
-
             const result = await connection
                 .request()
-                .input('code', sql.NVarChar, code)
-                .query(query);
+                .input('ident', sql.NVarChar, ident)
+                .query(validateQuery);
+            
+            console.log({result});
 
             if (result.recordset.length === 0) {
-                return { success: false, error: 'Código de cambio de clave no encontrado' };
+                return { success: false, error: 'El colaborador no existe' };
             }
+            
+
+            const hashedPassword = await bcryptPlugin(bcrypt)(password);
+            console.log('Contraseña hasheada:', hashedPassword);
+    
+            const query = `
+                UPDATE colaborador
+                SET col_clave = @passwordHash
+                WHERE col_identificacion = @ident
+            `;
+    
+            const updateResult = await connection
+                .request()
+                .input('ident', sql.NVarChar, ident)
+                .input('passwordHash', sql.NVarChar, hashedPassword)
+                .query(query);
+    
+            console.log('Resultado de la query:', updateResult);
+    
+            if (updateResult.rowsAffected[0] === 0) {
+                return { success: false, error: 'El colaborador no existe o no se pudo actualizar la contraseña' };
+            }
+    
+            return { success: true, message: 'Contraseña cambiada correctamente' };
         } catch (error) {
-            console.error('Error al validar el código de cambio de clave:', error.message, error.stack);
-            throw new Error('Error al validar el código de cambio de clave');
+            console.error('Error al cambiar la contraseña:', error.message);
+            throw new Error('Error al cambiar la contraseña');
         }
     }
+    
         
 }

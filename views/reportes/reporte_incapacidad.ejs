@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident Report Form</title>
+    <link rel="stylesheet" href="../../css/reportes/reporte_incapacidades.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="/dhcoapp/inicio">
+                    <img src="../../img/logo_pops_2024.webp" alt="POPS Logo">
+                </a>
+            </div>
+            <div class="settings-menu">
+                <div class="settings-icon" id="settingsIcon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </div>
+                <div class="dropdown" id="settingsDropdown">
+                    <a href="#">Perfil</a>
+                    <a href="#">Configuración</a>
+                    <a href="#">Cerrar sesión</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="form-container">
+            <div class="form-header">
+                <h1>Solicitud de Incapacidades</h1>
+                <p>Por favor, complete el formulario para reportar una licencia o una incapacidad.</p>
+            </div>
+            <form class="form-content">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="correo">Correo</label>
+                        <input type="email" id="correo" name="correo" placeholder="<%= user.email %>" value="<%= user.email %>" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="ident">Identificación</label>
+                        <input type="text" id="ident" name="ident" placeholder="<%= user.identificacion %>" value="<%= user.identificacion %>" disabled>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Nombre</label>
+                        <input type="text" id="name" name="name" placeholder="<%= user.nombre %> <%= user.segundo_nombre %> <%= user.primer_apellido %> <%= user.segundo_apellido %>" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="area">Área o heladería:</label>
+                        <input type="text" id="area" name="area" placeholder="<%= user.departamento %>" disabled>           
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="incident-type">Tipo de novedad</label>
+                        <select id="incident-type" name="incident-type" required>
+                            <option value="">Seleccionar</option>
+                            <% if (reportData && reportData.novedades) { %>
+                                <% reportData.novedades.forEach(novedad => { %>
+                                    <option value="<%= novedad.id %>"><%= novedad.nombre %></option>
+                                <% }) %>
+                            <% } else { %>
+                                <option value="no-data">No hay datos disponibles</option>
+                            <% } %>
+                        </select>
+                    </div>                    
+                    <div class="form-group">
+                        <label for="start-date">Fecha de inicio</label>
+                        <input type="date" id="start-date" name="start-date" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="end-date">Fecha final</label>
+                        <input type="date" id="end-date" name="end-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="file-upload">Adjuntar acción de personal</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="file-upload" name="file-upload" required>
+                            <span class="file-input-button">Adjuntar archivo</span>
+                        </div>
+                        <div class="file-input-name" id="file-input-name">No archivo adjunto</div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="document-date">Fecha de envió de documento en físico</label>
+                        <input type="date" id="document-date" name="document-date" required>
+                    </div>
+                </div>
+                <button type="submit">Enviar</button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <img src="../../img/footer.webp" alt="Decorative footer with waves">
+        </div>
+    </footer>
+</body>
+<script src="../../js/reportes/incapacidades_y_licencias.js"></script>
+</html>
