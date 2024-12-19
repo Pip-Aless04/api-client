@@ -118,7 +118,7 @@
                 }
                 
                 if (filters.estado) {
-                    query += ` AND R.rep_estado = @estado`;
+                    query += `AND R.rep_estado = @estado`;
                     request.input('estado', sql.NVarChar, filters.estado);
                 }
                 
@@ -418,6 +418,7 @@
                 console.log('Entrando a saveReport');
                 console.log('Datos del reporte:', reportData);
                 console.log('Datos del archivo:', fileData);
+                console.log(reportData.fecha_envio_doc);
                 
                 
                 const fields = [];
@@ -490,14 +491,6 @@
                     index++;
                 }
 
-                /*
-                if (reportData.tipo_documento) {
-                    fields.push('rep_tipo_documento');
-                    values.push(`@param${index}`);
-                    parameters[`param${index}`] = reportData.tipo_documento;
-                    index++;
-                }
-                */
 
                 if (reportData.pais_solicita) {
                     console.log('pais_solicita', reportData.pais_solicita);
@@ -539,8 +532,8 @@
                     index++;
                 }
         
-                if (reportData.rep_fec_envio_doc) {
-                    console.log('rep_fec_envio_doc', reportData.fecha_envio_doc);
+                if (reportData.fecha_envio_doc) {
+                    console.log('fecha_envio_doc', reportData.fecha_envio_doc);
                     fields.push('rep_fec_envio_doc');
                     values.push(`@param${index}`);
                     parameters[`param${index}`] = reportData.fecha_envio_doc;
@@ -645,6 +638,72 @@
                 console.error('Error al actualizar el estado del pendiente:', err.message);
                 throw new Error('Error al actualizar el estado del pendiente');
             }
-        }         
+        }       
+        
+        static async getHistoricoVacaciones() {
+            try {
+                const query = `
+                SELECT 
+                    C.col_identificacion as identificacion,
+                    CONCAT(C.col_nombre, ' ', C.col_segundo_nombre,' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS solicitante,
+                    CONCAT(C2.col_nombre, ' ', C2.col_segundo_nombre,' ', C2.col_primer_apellido, ' ', C2.col_segundo_apellido) AS jefe,
+                    CONVERT (varchar(10), R.rep_fec_inicio, 103) AS fecha_inicio,
+                    CONVERT (varchar(10), R.rep_fec_fin, 103) AS fecha_fin,
+                    R.rep_detalle_reporte as detalle_reporte,
+                    CONVERT (varchar(10), R.rep_fec_envio_doc, 103) AS fecha_envio_doc,
+                    R.rep_estado as estado,
+                    RD.rd_nombre_documento as nombre_documento,
+                    RD.rd_documento as documento
+                FROM reporte_documento RD
+                RIGHT JOIN reporte R ON RD.rd_id_reporte = R.rep_id
+                INNER JOIN colaborador C ON R.rep_col_id_solicita = C.col_id
+                INNER JOIN colaborador C2 ON R.rep_col_jefe_inmediato = C2.col_id
+                `;
+                const request = connection.request();
+                const result = await request.query(query);
+
+                return result.recordset;
+            } catch (err) {
+                console.error('Error al obtener el historico de las vacaciones:', err.message);
+                throw new Error('Error al obtener el historico de las vacaciones');
+            }
+        }
+
+        static async getVacacionesReports(filters={}) {
+            try {
+                let query = `
+                    SELECT 
+                        R.rep_id as id,
+                        CONCAT(C.col_nombre, ' ', C.col_segundo_nombre,' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS nombreSolicitante,
+                        R.rep_fec_inicio as fecha_inicio,
+                        R.rep_fec_fin as fecha_fin,
+                        R.rep_detalle_reporte as detalle_reporte,
+                        R.rep_estado as estado
+                    FROM reporte R
+                    INNER JOIN colaborador C ON R.rep_col_id_solicita = C.col_id
+                    INNER JOIN colaborador C2 ON R.rep_col_jefe_inmediato = C2.col_id
+                    WHERE R.rep_tipo_reporte = 2
+                    `;
+                    
+                const request = connection.request();
+                
+                if (filters.col_jefe_inmediato) {
+                    query += `AND R.rep_col_jefe_inmediato = @col_jefe_inmediato `;
+                    request.input('col_jefe_inmediato', sql.UniqueIdentifier, filters.col_jefe_inmediato);
+                }
+
+                if (filters.estado) {
+                    query += ` AND R.rep_estado = @estado`;
+                    request.input('estado', sql.NVarChar, filters.estado);
+                }
+
+                const result = await request.query(query);
+
+                return result.recordset;
+            } catch (error) {
+                console.error('Error al obtener los colaboradores:', error.message);
+                throw new Error('Error al obtener los colaboradores');
+            }
+        }
 
     }

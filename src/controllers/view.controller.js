@@ -39,31 +39,54 @@ export class ViewController {
 
     inicio = async (req, res) => {
         try {
-            const user = req.user.info;
-            console.log('user', user.id);
+            const user = req.user?.info;
     
-            // Asegurarte de extraer la lista de subordinados desde req.user.subordinados.info
-            const subordinados = Array.isArray(req.user.subordinados.info) ? req.user.subordinados.info : [];
-            console.log('Subordinados:', subordinados); // Verifica los datos de subordinados
+            if (!user) {
+                return res.status(400).json({ error: 'Información del usuario no encontrada' });
+            }
     
-            const pendientes = await this.reportesModel.getAllReports({ tipo_reporte: 2, col_jefe_inmediato: user.id });
-            console.log('Pendientes:', pendientes); // Verifica los datos de pendientes
+            console.log('Usuario:', user.id);
     
-            // Mapear pendientes para agregar el nombre del solicitante
-            const pendientesConNombres = pendientes.map(pendiente => {
-                const solicitante = subordinados.find(sub => String(sub.id) === String(pendiente.col_id_solicita));
-                return {
-                    ...pendiente,
-                    nombreSolicitante: solicitante ? solicitante.nombre : 'Desconocido'
-                };
+            // Si el usuario no tiene subordinados a cargo, renderiza directamente
+            if (user.a_cargo !== 'S') {
+                return res.render('inicio', { user, pendientes: [] });
+            }
+    
+            // Verifica y extrae los subordinados del usuario
+            const subordinados = Array.isArray(req.user?.subordinados?.info) 
+                ? req.user.subordinados.info 
+                : [];
+    
+            console.log('Subordinados:', subordinados);
+    
+            // Obtiene los reportes pendientes
+            let pendientes;
+
+            if (user.permiso === 2) {
+                // Si el usuario es un jefe, obtiene los reportes pendientes de todos los reportes
+                pendientes = await this.reportesModel.getVacacionesReports({ 
+                    estado : 'P'
+                });
+            } else {
+                // Si el usuario es un subordinado, obtiene los reportes pendientes de los reportes que tiene asignado
+                pendientes = await this.reportesModel.getVacacionesReports({ 
+                    col_jefe_inmediato: user.id,
+                    estado : 'S'
+                });
+            }
+    
+            console.log('Pendientes:', pendientes);
+    
+    
+            // Renderiza la vista con los datos preparados
+            res.render('inicio', { 
+                user, 
+                subordinados, 
+                pendientes
             });
-    
-            console.log('Pendientes con nombres:', pendientesConNombres);
-    
-            res.render('inicio', { user, subordinados, pendientes: pendientesConNombres });
         } catch (error) {
             console.error('Error al iniciar sesión:', error.message);
-            return res.status(500).json({ error: 'Error al iniciar sesión' });
+            res.status(500).json({ error: 'Error al iniciar sesión' });
         }
     };    
     

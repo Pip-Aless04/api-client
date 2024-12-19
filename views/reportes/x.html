@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POPS Filter Modal</title>
+    <style>
+        :root {
+            --color-teal: #2DD4BF;
+            --color-red: #EF4444;
+            --color-blue: #3B82F6;
+            --color-orange: #F97316;
+            --color-background: #ffffff;
+            --color-text: #1F2937;
+            --color-border: #E5E7EB;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f3f4f6;
+            color: var(--color-text);
+        }
+
+        #openModalBtn {
+            background: linear-gradient(135deg, 
+                var(--color-teal) 0%, 
+                var(--color-red) 33%, 
+                var(--color-blue) 66%, 
+                var(--color-orange) 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        #openModalBtn:hover {
+            transform: translateY(-2px);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-content {
+            background-color: var(--color-background);
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            position: relative;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-10%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            color: #9CA3AF;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close:hover {
+            color: var(--color-text);
+        }
+
+        h2 {
+            margin: 0 0 1.5rem 0;
+            color: var(--color-text);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .filters-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .filters-header::before {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(to bottom, 
+                var(--color-teal),
+                var(--color-blue));
+            border-radius: 2px;
+        }
+
+        .filter-section {
+            background-color: #F9FAFB;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-section h3 {
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            color: var(--color-text);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--color-text);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            outline: none;
+            background-color: white;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="date"]:focus,
+        select:focus {
+            border-color: var(--color-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        input[type="checkbox"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            border-radius: 4px;
+            border: 2px solid var(--color-border);
+            cursor: pointer;
+            appearance: none;
+            background-color: white;
+            display: grid;
+            place-content: center;
+        }
+
+        input[type="checkbox"]::before {
+            content: "";
+            width: 0.65em;
+            height: 0.65em;
+            transform: scale(0);
+            transition: 120ms transform ease-in-out;
+            box-shadow: inset 1em 1em var(--color-blue);
+            transform-origin: center;
+            clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        }
+
+        input[type="checkbox"]:checked::before {
+            transform: scale(1);
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, 
+                var(--color-teal) 0%, 
+                var(--color-blue) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1rem;
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 640px) {
+            .modal-content {
+                margin: 0;
+                height: 100%;
+                max-height: 100vh;
+                border-radius: 0;
+                overflow-y: auto;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button id="openModalBtn">Open Filters</button>
+
+    <div id="filterModal" class="modal">
+        <div class="modal-content">
+            <div class="filters-header">
+                <h2>Filter Options</h2>
+            </div>
+            <form id="filterForm">
+                <div class="filter-section">
+                    <h3>Search and Category</h3>
+                    <div class="filter-grid">
+                        <div class="form-group">
+                            <label for="searchTerm">Search</label>
+                            <input type="text" id="searchTerm" name="searchTerm" placeholder="Enter keywords...">
+                        </div>
+                        <div class="form-group">
+                            <label for="category">Category</label>
+                            <select id="category" name="category">
+                                <option value="">Select a category</option>
+                                <option value="electronics">Electronics</option>
+                                <option value="clothing">Clothing</option>
+                                <option value="books">Books</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h3>Price Range</h3>
+                    <div class="filter-grid">
+                        <div class="form-group">
+                            <label for="minPrice">Min Price</label>
+                            <input type="number" id="minPrice" name="minPrice" min="0" placeholder="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="maxPrice">Max Price</label>
+                            <input type="number" id="maxPrice" name="maxPrice" min="0" placeholder="1000">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h3>Date Range</h3>
+                    <div class="filter-grid">
+                        <div class="form-group">
+                            <label for="startDate">Start Date</label>
+                            <input type="date" id="startDate" name="startDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="endDate">End Date</label>
+                            <input type="date" id="endDate" name="endDate">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="filter-section">
+                    <h3>Additional Filters</h3>
+                    <div class="form-group">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="inStock" name="inStock">
+                            <label for="inStock">In Stock</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit">Apply Filters</button>
+            </form>
+            <span class="close">&times;</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('filterModal');
+            const openModalBtn = document.getElementById('openModalBtn');
+            const closeBtn = document.getElementsByClassName('close')[0];
+            const filterForm = document.getElementById('filterForm');
+
+            openModalBtn.onclick = function() {
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+
+            closeBtn.onclick = function() {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            }
+
+            filterForm.onsubmit = function(e) {
+                e.preventDefault();
+                const formData = new FormData(filterForm);
+                const filters = Object.fromEntries(formData.entries());
+                
+                filters.inStock = filters.inStock === 'on';
+                filters.minPrice = filters.minPrice ? Number(filters.minPrice) : 0;
+                filters.maxPrice = filters.maxPrice ? Number(filters.maxPrice) : Infinity;
+
+                console.log('Applying filters:', filters);
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+

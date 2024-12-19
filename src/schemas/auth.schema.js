@@ -7,16 +7,17 @@ const authSchema = z.object({
     p_ape: z.string({required_error:'El primer apellido es obligatorio', invalid_type_error: 'El primer apellido debe ser una cadena de texto'}),
     s_ape: z.string({required_error:'El segundo apellido es obligatorio', invalid_type_error: 'El segundo apellido debe ser una cadena de texto'}),
     genero: z.enum(['M', 'F'], {required_error:'El género es obligatorio', invalid_type_error: 'El género debe ser una cadena de texto'}),
-    puesto: z.number({required_error:'El puesto es obligatorio', invalid_type_error: 'El puesto debe ser un número'}),
+    puesto: z.number({required_error:'El puesto es obligatorio', invalid_type_error: 'El puesto debe ser un número'}).int().positive(),
     email: z.string().email({required_error:'El correo electrónico es obligatorio', invalid_type_error: 'El correo electrónico debe ser una cadena de texto'}),
     estado: z.enum(['A', 'I'], {required_error:'El estado es obligatorio', invalid_type_error: 'El estado debe ser una cadena de texto'}),
-    depto: z.number({required_error:'El departamento es obligatorio', invalid_type_error: 'El departamento debe ser un número'}),
-    dir: z.number({required_error:'El dirección es obligatorio', invalid_type_error: 'El dirección debe ser un número'}),
-    pais: z.number({required_error:'El país es obligatorio', invalid_type_error: 'El país debe ser un número'}).int().max(3),
+    depto: z.number({required_error:'El departamento es obligatorio', invalid_type_error: 'El departamento debe ser un número'}).int().positive(),
+    dir: z.number({required_error:'El dirección es obligatorio', invalid_type_error: 'El dirección debe ser un número'}).int().positive(),
+    pais: z.number({required_error:'El país es obligatorio', invalid_type_error: 'El país debe ser un número'}).int().positive().max(3),
     password: z.string({required_error:'La clave es obligatoria', invalid_type_error: 'La clave debe ser una cadena de texto'}).min(8, { message: 'La clave debe contener mínimo 8 caracteres' }),
     a_cargo: z.enum(['S', 'N'], {required_error:'El cargo es obligatorio', invalid_type_error: 'El cargo debe ser una cadena de texto'}),
     jefe_id: z.string({invalid_type_error: 'El jefe debe ser una cadena de texto'}).optional(),
     fec_ingreso: z.string().date({required_error:'La fecha de ingreso es obligatoria', invalid_type_error: 'La fecha de ingreso debe ser una fecha',message:'El formato de la fehca de ingreso es: YYYY-MM-DD'}),
+    permiso: z.number({required_error:'El permiso es obligatorio', invalid_type_error: 'El permiso debe ser un número'}).int().positive(),
   
   });
 

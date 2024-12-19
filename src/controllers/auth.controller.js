@@ -95,7 +95,7 @@ export class AuthController {
         try {
             console.log('Registrando usuario...');
 
-            const {ident, nombre, s_nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, password, a_cargo, jefe_id, fec_ingreso} = req.body;
+            const {ident, nombre, s_nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, password, a_cargo, jefe_id, fec_ingreso, permiso} = req.body;
             console.log(req.body);
 
             const validate = await validateAuth(req.body);
@@ -111,7 +111,7 @@ export class AuthController {
             
             console.log(validate);
 
-            const authUser = await this.authModel.register({ident, nombre, s_nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, password, a_cargo, jefe_id, fec_ingreso});
+            const authUser = await this.authModel.register({ident, nombre, s_nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, password, a_cargo, jefe_id, fec_ingreso, permiso});
             if (!authUser.success) {
                 return res.status(400).json({ error: authUser.error });
             }

@@ -3,12 +3,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const settingsIcon = document.querySelector('.settings-icon');
     const dropdown = document.querySelector('.dropdown');
     const tableRows = document.querySelectorAll('.pending-table tr[data-id]'); // Selecciona filas con data-id
+    const filterForm = document.getElementById('filterForm');
+
+    console.log(tableRows);
 
     // Navegación por las tarjetas
     cards.forEach(card => {
         card.addEventListener('click', function () {
             const page = this.dataset.page;
-            window.location.href = page;
+            window.location.href = `bienestar-integral/${page}`;	
         });
     });
 
@@ -65,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         // Actualizar visualmente el estado en la tabla o eliminar la fila
                         row.dataset.estado = newStatus; // Actualizar el estado en el atributo
-                        if (newStatus === 'D' || newStatus === 'A'|| newStatus === 'P') {
+                        if (newStatus === 'D' || newStatus === 'A' || newStatus === 'P') {
                             row.remove(); // Eliminar la fila si ya no es relevante
                         }
                     })
@@ -73,4 +76,5 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
-});
+}); // Cierre del bloque DOMContentLoaded
+

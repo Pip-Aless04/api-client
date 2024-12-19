@@ -126,7 +126,8 @@ export class AuthModel{
                         C.col_a_cargo AS a_cargo,
                         C.col_jefatura_id AS jefe_id,
                         CONCAT(C2.col_nombre, ' ', C2.col_primer_apellido, ' ', C2.col_segundo_apellido) AS nombre_jefe,
-                        C.col_fecha_ingreso AS fecha_ingreso
+                        C.col_fecha_ingreso AS fecha_ingreso,
+                        C.col_permiso_id AS permiso
                         /*
                         C.col_respuesta AS respuesta,
                         C.col_calificado AS calificado
@@ -159,7 +160,7 @@ export class AuthModel{
     }
     
 
-    static async register({ ident, nombre, s_nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, password, a_cargo, jefe_id, fec_ingreso }) {
+    static async register({ ident, nombre, s_nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, password, a_cargo, jefe_id, fec_ingreso, permiso }) {
         try {
             const uuidResult = await connection.query('SELECT NEWID() AS uuid;');
             const [{ uuid }] = uuidResult.recordset;
@@ -169,7 +170,7 @@ export class AuthModel{
     
             // Log para verificar valores
             console.log('Valores recibidos:', {
-                ident, nombre, s_nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, password, a_cargo, jefeUUID, fec_ingreso
+                ident, nombre, s_nombre, p_ape, s_ape, genero, puesto, email, estado, depto, dir, pais, password, a_cargo, jefeUUID, fec_ingreso, permiso
             });
     
             // Si jefe_id no está vacío, verifica que el jefe existe en la base de datos
@@ -222,7 +223,8 @@ export class AuthModel{
                     col_a_cargo,
                     col_jefatura_id,
                     col_fecha_ingreso,
-                    col_clave
+                    col_clave,
+                    col_permiso_id
                 )
                 VALUES(
                     @uuid,
@@ -241,7 +243,8 @@ export class AuthModel{
                     @a_cargo,
                     @jefe_id,
                     @fec_ingreso,
-                    @hashedPassword
+                    @hashedPassword,
+                    @permiso
                 );
             `;
             
@@ -266,6 +269,7 @@ export class AuthModel{
                 .input('jefe_id', jefeUUID ? sql.UniqueIdentifier : sql.NULL, jefeUUID)
                 .input('fec_ingreso', sql.DateTime, fec_ingreso)
                 .input('hashedPassword', sql.NVarChar, hashedPassword)
+                .input('permiso', sql.Int, permiso)
                 .query(insertQuery);
     
             if (!insertResult || insertResult.rowsAffected.length === 0) {

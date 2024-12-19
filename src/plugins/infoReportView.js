@@ -29,6 +29,25 @@ export const infoReportView = async ({view, model}) => {
             novedades,
             needInfo:true
         };
+    
+    } else if (view === 'historico') {
+        console.log('entro a historico')
+        const historicoVacaciones = await model.getHistoricoVacaciones();
+        console.log(historicoVacaciones)
+        //const historicoTraslados = await model.getHistoricoTraslados();
+        //const historicoSalidas = await model.getHistoricoSalidas();
+        //const historicoIncapacidades = await model.getHistoricoIncapacidades();
+        //const historicoCartas = await model.getHistoricoCartas();
+        return {
+            historicoVacaciones,
+            /*
+            historicoTraslados,
+            historicoSalidas,
+            historicoIncapacidades,
+            historicoCartas,
+            */
+            needInfo:true
+        };
     } else{
         return {
             needInfo:false

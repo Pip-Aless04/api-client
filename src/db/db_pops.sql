@@ -1,7 +1,7 @@
 IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     BEGIN
     CREATE DROP DATABASE Pops
-    
+    END
     USE Pops;
 
 /*##########################################################################*/
@@ -147,8 +147,6 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         depto_estado CHAR(1) NOT NULL DEFAULT 'A',
     );
 
-    
-
     --/*
     INSERT INTO departamento(depto_nombre, depto_estado)
     VALUES
@@ -164,7 +162,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     ('FINANCIERA','A'),
     ('GERENCIA DE PAIS','A'),
     ('GERENCIA GENERAL','A'),
-    ('HELADOS','A'),
+    ('HELADOS','A'),--'HELADOS',
     ('LABORATORIO','A'),
     ('LIDERES DE EQUIPO','A'),
     ('LOGISTICA','A'),
@@ -258,6 +256,10 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY(col_permiso_id) REFERENCES permiso(pr_id)
     );
 
+    ALTER TABLE colaborador ALTER COLUMN col_clave NVARCHAR(255);  
+
+    SELECT * FROM colaborador
+    
 /*##########################################################################*/
     CREATE TABLE talento(
         tal_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -372,8 +374,6 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         te_nombre NVARCHAR(50) NOT NULL,
         te_estado CHAR(1) NOT NULL DEFAULT 'A'
     );
-
-    
     
     --/*
     INSERT INTO tipo_evaluation(te_nombre)
@@ -390,7 +390,6 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         ev_estado CHAR(1) NOT NULL DEFAULT 'A',
         FOREIGN KEY(ev_tipo_evaluation) REFERENCES tipo_evaluation(te_id)
     );
-    
 
     --/*
     INSERT INTO evaluacion(ev_tipo_evaluation, ev_fecha, ev_categoria)
@@ -413,9 +412,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY(evd_evaluacion) REFERENCES evaluacion(ev_id),
         FOREIGN KEY(evd_talento) REFERENCES talento(tal_id),
         FOREIGN KEY(evd_detalle_talento) REFERENCES detalle_talento(det_tal_id)
-    )
-
-    
+    );
 
     /*
     INSERT INTO evaluacion_detalle(evd_evaluacion, evd_talento, evd_detalle_talento, valor_talento, pordentaje_talento, valor_detalle_talento)
@@ -484,9 +481,9 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         nota_nombre VARCHAR(20) NOT NULL,
         nota_valor DECIMAL(3,2) NOT NULL,
         nota_estado CHAR(1) NOT NULL DEFAULT 'A'
-    )
+    );
 
-    
+    SELECT * FROM nota
 
     --/*
     INSERT INTO nota(nota_nombre, nota_valor)
@@ -511,7 +508,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY(cal_col_jefe_a_cargo) REFERENCES colaborador(col_id),
         FOREIGN KEY(cal_calificacion_subordinado) REFERENCES nota(nota_id),
         FOREIGN KEY(cal_calificacion_jefe) REFERENCES nota(nota_id)
-    )
+    );
 
     /*
     INSERT INTO calificacion(cal_col_subordinado, cal_col_jefe_a_cargo, cal_calificacion_subordinado, cal_calificacion_jefe)
@@ -526,9 +523,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         apdi_nombre NVARCHAR(50) NOT NULL,
         apdi_descripcion NVARCHAR(MAX) NOT NULL,
         apdi_estado CHAR(1) NOT NULL DEFAULT 'A'
-    )
-
-    
+    );
 
     --/*
     INSERT INTO aspecto_pdi(apdi_nombre, apdi_descripcion)
@@ -552,9 +547,6 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY (de_pdi_col_id) REFERENCES colaborador(col_id),
         FOREIGN KEY (de_pdi_talento) REFERENCES talento(tal_id)
     );
-
-    
-
 
 /*##########################################################################*/
     CREATE TABLE pdi (
@@ -668,8 +660,6 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY (hcd_direccion_id) REFERENCES direccion(dir_id)
     );
 
-    
-
     CREATE TRIGGER trg_update_colaborador_direccion
     ON colaborador
     AFTER UPDATE
@@ -703,7 +693,6 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     );
 
 
-    SELECT * FROM historico_cambio_clave
 /*##############################TABLAS REPORTES############################################*/
 
     CREATE TABLE tipo_salida(
@@ -791,11 +780,11 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
 
     INSERT INTO tipo_reporte (tr_nombre, tr_creado_por, tr_creado_fecha, tr_estado) 
     VALUES 
-    ('salida_de_personal', '7be72975-2974-461a-a5e3-7243d3024a9f', '2022-01-01', 'A'),
-    ('solicitud_de_vacaciones', '7be72975-2974-461a-a5e3-7243d3024a9f', '2022-01-01', 'A'),
-    ('traslado_de_personal', '7be72975-2974-461a-a5e3-7243d3024a9f', '2022-01-01', 'A'),
-    ('incapacidades_y_licencias', '7be72975-2974-461a-a5e3-7243d3024a9f', '2022-01-01', 'A'),    
-    ('solicitud_de_cartas', '7be72975-2974-461a-a5e3-7243d3024a9f', '2022-01-01', 'A');
+    ('salida_de_personal', 'e952e0c6-2236-4ae5-acf6-58f0c9c889e3', '2024-04-01', 'A'),
+    ('solicitud_de_vacaciones', 'e952e0c6-2236-4ae5-acf6-58f0c9c889e3', '2024-04-01', 'A'),
+    ('traslado_de_personal', 'e952e0c6-2236-4ae5-acf6-58f0c9c889e3', '2024-04-01', 'A'),
+    ('incapacidades_y_licencias', 'e952e0c6-2236-4ae5-acf6-58f0c9c889e3', '2024-04-01', 'A'),    
+    ('solicitud_de_cartas', 'e952e0c6-2236-4ae5-acf6-58f0c9c889e3', '2024-04-01', 'A');
 
     CREATE TABLE reporte(
         rep_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -827,10 +816,6 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY (rep_pais_solicita) REFERENCES pais(pais_id)
     );
 
-
-
-    UPDATE reporte SET rep_detalle_reporte = 'alnweigw fierwieg qonfierwleg owrfno ioe og we gwi';
-
     CREATE TABLE tipo_documento(
         td_id INT IDENTITY(1,1) PRIMARY KEY,
         td_nombre NVARCHAR(100) NOT NULL,
@@ -856,6 +841,4 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY (rd_id_tipo_documento) REFERENCES tipo_documento(td_id)
     );
 
-
     END
-

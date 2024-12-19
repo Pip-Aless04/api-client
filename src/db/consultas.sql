@@ -325,7 +325,7 @@ WHERE col_id = '52DC0839-0BE8-47A5-9BCD-EBCDB4F17266'
 
 
 SELECT * FROM colaborador 
-WHERE col_identificacion = '207170622' 
+WHERE col_id = 'D594E981-410A-4085-90F5-EFE2A3BAE951' 
 
 
 
@@ -343,3 +343,87 @@ AND res_id < 3271
                     TS.ts_estado AS estado
                     FROM tipo_salida TS
                     WHERE 1=1
+
+
+SELECT 
+rep_id as id,
+rep_col_id_solicita as solicitante,
+rep_col_jefe_inmediato as jefe,
+rep_tipo_reporte as tipo_reporte,
+rep_detalle_reporte as detalle_reporte,
+
+FROM reporte 
+
+
+
+                SELECT 
+                    RD.rd_nombre_documento as nombre_documento,
+                    RD.rd_documento as documento,
+                    C.col_identificacion as identificacion,
+                    CONCAT(C.col_nombre, ' ', C.col_segundo_nombre,' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS solicitante,
+                    CONCAT(C2.col_nombre, ' ', C2.col_segundo_nombre,' ', C2.col_primer_apellido, ' ', C2.col_segundo_apellido) AS jefe,
+                    R.rep_fec_inicio as fecha_inicio,
+                    R.rep_fec_fin as fecha_fin,
+                    R.rep_detalle_reporte as detalle_reporte,
+                    R.rep_fec_envio_doc as fecha_envio_doc,
+                    R.rep_estado as estado
+                FROM reporte_documento RD
+                RIGHT JOIN reporte R ON RD.rd_id_reporte = R.rep_id
+                INNER JOIN colaborador C ON R.rep_col_id_solicita = C.col_id
+                INNER JOIN colaborador C2 ON R.rep_col_jefe_inmediato = C2.col_id
+
+SELECT * FROM tipo_documento
+
+SELECT * FROM colaborador
+
+SELECT * FROM reporte
+
+                SELECT 
+                    RD.rd_nombre_documento as nombre_documento,
+                    RD.rd_documento as documento,
+                    C.col_identificacion as identificacion,
+                    CONCAT(C.col_nombre, ' ', C.col_segundo_nombre,' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS solicitante,
+                    D.depto_nombre as departamento,
+                    TN.tn_nombre,
+                    R.rep_fec_inicio as fecha_inicio,
+                    R.rep_fec_fin as fecha_fin,
+                    R.rep_detalle_reporte as detalle_reporte,
+                    R.rep_fec_envio_doc as fecha_envio_doc,
+                    R.rep_estado as estado
+                FROM reporte_documento RD
+                RIGHT JOIN reporte R ON RD.rd_id_reporte = R.rep_id
+                INNER JOIN colaborador C ON R.rep_col_id_solicita = C.col_id
+                INNER JOIN departamento D ON C.col_depto_id = D.depto_id
+                INNER JOIN tipo_novedad TN ON R.rep_tipo_novedad = TN.tn_id
+
+                SELECT 
+                    C.col_identificacion as identificacion,
+                    CONCAT(C.col_nombre, ' ', C.col_segundo_nombre,' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS solicitante,
+                    CONCAT(C2.col_nombre, ' ', C2.col_segundo_nombre,' ', C2.col_primer_apellido, ' ', C2.col_segundo_apellido) AS jefe,
+                    CONVERT (varchar(10), R.rep_fec_inicio, 103) AS fecha_inicio,
+                    CONVERT (varchar(10), R.rep_fec_fin, 103) AS fecha_fin,
+                    R.rep_detalle_reporte as detalle_reporte,
+                    CONVERT (varchar(10), R.rep_fec_envio_doc, 103) AS fecha_envio_doc,
+                    R.rep_estado as estado,
+                    RD.rd_nombre_documento as nombre_documento,
+                    RD.rd_documento as documento
+                FROM reporte_documento RD
+                RIGHT JOIN reporte R ON RD.rd_id_reporte = R.rep_id
+                INNER JOIN colaborador C ON R.rep_col_id_solicita = C.col_id
+                INNER JOIN colaborador C2 ON R.rep_col_jefe_inmediato = C2.col_id
+
+
+SELECT * FROM puesto
+
+SELECT 
+    R.rep_id as id,
+    R.REP
+    CONCAT(C.col_nombre, ' ', C.col_segundo_nombre,' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS solicitante,
+    CONCAT(C2.col_nombre, ' ', C2.col_segundo_nombre,' ', C2.col_primer_apellido, ' ', C2.col_segundo_apellido) AS jefe,
+    R.rep_fec_inicio as fecha_inicio,
+    R.rep_fec_fin as fecha_fin,
+    R.rep_detalle_reporte as detalle_reporte,
+    R.rep_estado as estado
+FROM reporte R
+INNER JOIN colaborador C ON R.rep_col_id_solicita = C.col_id
+INNER JOIN colaborador C2 ON R.rep_col_jefe_inmediato = C2.col_id
