@@ -596,8 +596,8 @@
                 // Insertar el documento si existe
                 if (fileData) {
                     const documentQuery = `
-                        INSERT INTO reporte_documento (rd_id_reporte, rd_id_tipo_documento, rd_documento, rd_nombre_documento, rd_fecha_documento)
-                        VALUES (@reportId, @docType, @docContent, @docName, @docDate);
+                        INSERT INTO reporte_documento (rd_id_reporte, rd_id_tipo_documento, rd_documento, rd_nombre_documento, rd_extension_documento, rd_fecha_documento)
+                        VALUES (@reportId, @docType, @docContent, @docName, @docExtension, @docDate);
                     `;
         
                     await connection.request()
@@ -605,6 +605,7 @@
                         .input('docType', sql.Int, fileData.docType)
                         .input('docContent', sql.VarBinary, fileData.content)
                         .input('docName', sql.VarChar, fileData.name)
+                        .input('docExtension', sql.VarChar, fileData.extension)
                         .input('docDate', sql.DateTime, fileData.date)
                         .query(documentQuery);
                 }
@@ -652,8 +653,8 @@
                     R.rep_detalle_reporte as detalle_reporte,
                     CONVERT (varchar(10), R.rep_fec_envio_doc, 103) AS fecha_envio_doc,
                     R.rep_estado as estado,
-                    RD.rd_nombre_documento as nombre_documento,
-                    RD.rd_documento as documento
+                    RD.rd_id as documento_id,
+                    RD.rd_nombre_documento as nombre_documento1
                 FROM reporte_documento RD
                 RIGHT JOIN reporte R ON RD.rd_id_reporte = R.rep_id
                 INNER JOIN colaborador C ON R.rep_col_id_solicita = C.col_id
@@ -706,4 +707,26 @@
             }
         }
 
-    }
+        static async getFileReportById({id}) {
+            try {
+                let query = `
+                    SELECT  
+                        RD.rd_nombre_documento as nombre_documento,
+                        RD.rd_documento as documento,
+                        RD.rd_extension_documento as extension
+                    FROM reporte_documento RD
+                    WHERE RD.rd_id = @id
+                `;
+
+                const request = connection.request();
+                request.input('id', sql.Int, id);
+                const result = await request.query(query);
+
+                return result.recordset;
+            }
+            catch (error) {
+                console.error('Error al obtener el archivo:', error.message);
+                throw new Error('Error al obtener el archivo');
+            }
+        }
+}

@@ -93,20 +93,17 @@ export class ViewController {
     solicitud = async (req, res) =>{
         try {
             const { solicitud } = req.params;
-            console.log(solicitud)
             const user = req.user.info;
-            const userSubordinados = req.user.subordinados;
-            console.log(user)
-            console.log(solicitud)
-            console.log(userSubordinados)
+            const userSubordinados = req?.user?.subordinados;
+            //console.log(user)
+            //console.log(solicitud)
+            //console.log(userSubordinados)
             const reportData = await infoReportView({view: solicitud, model: this.reportesModel});
             
             if (!reportData.needInfo) {
                 return res.render(`reportes/${solicitud}`, {user});
             }
-
-            console.log(reportData)
-            res.render(`reportes/${solicitud}`, {user , 
+            res.render(`reportes/${solicitud}`, {user, 
                                                 userSubordinados,
                                                 reportData
                                                 });
@@ -114,4 +111,23 @@ export class ViewController {
             console.log(error)
         }
     }
+
+    pruebaHistorico = async (req, res) => {
+        try {
+            const data  = [
+                { id: '1', name: 'John Doe', email: 'john@example.com', role: 'Admin', status: 'Active', joinedDate: '2023-01-15' },
+                { id: '2', name: 'Jane Smith', email: 'jane@example.com', role: 'User', status: 'Active', joinedDate: '2023-02-20' },
+                { id: '3', name: 'Bob Johnson', email: 'bob@example.com', role: 'Editor', status: 'Inactive', joinedDate: '2023-03-10' },
+                { id: '4', name: 'Alice Brown', email: 'alice@example.com', role: 'User', status: 'Active', joinedDate: '2023-04-05' },
+                { id: '5', name: 'Charlie Wilson', email: 'charlie@example.com', role: 'Admin', status: 'Active', joinedDate: '2023-05-12' },
+            ];
+            const columns = Object.keys(data[0]); // Obtén las columnas dinámicamente
+            res.render('reportes/historico2', { data, columns });  // Cambié `mockData` por `data`
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('Error interno del servidor');
+        }
+    };
+    
+    
 }

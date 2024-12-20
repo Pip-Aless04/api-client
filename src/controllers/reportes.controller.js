@@ -58,20 +58,24 @@ export class ReportesController {
                 const fileBinary = await fileToBinary(req.file);
                 reportData.documento = {
                     docType: reportData.tipo_documento,
+                    extension: req.file.mimetype,
                     content: fileBinary,
                     name: req.file.originalname,
                     date: new Date(),
                 };
             }
             
-    
+            console.log(reportData.documento);
+
             // Guardar el reporte utilizando el modelo
+            
             const result = await this.reportesModel.saveReports({reportData, fileData:reportData.documento});
             console.log(result);
             return res.status(200).send({
                 success: true,
                 message: 'Reporte enviado exitosamente',
                 reportId: result.reportId,
+                
             });
     
         } catch (error) {
@@ -105,4 +109,21 @@ export class ReportesController {
             return res.status(500).json({ error: 'Error al actualizar el estado del pendiente' });
         }
     }
+
+    getFileReportById = async (req, res) => {
+        try {
+            const { id } = req.params;
+            const [result] = await this.reportesModel.getFileReportById({id});
+
+            console.log(result);
+
+            res.setHeader('Content-Type', `inline; filename="${result.nombre_documento}"`);
+            res.setHeader('Content-Type', result.extension);
+            res.send(result.documento);
+
+        } catch (error) {
+            console.error('Error al obtener el archivo:', error.message);
+            return res.status(500).json({ error: 'Error al obtener el archivo' });
+        }
+    };
 };

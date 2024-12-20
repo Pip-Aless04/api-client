@@ -12,6 +12,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         pais_estado CHAR(1) NOT NULL DEFAULT 'A'
     );
 
+    SELECT * FROM colaborador 
 
     INSERT INTO pais(pais_nombre, pais_acronimo) 
     VALUES
@@ -836,6 +837,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         rd_id_tipo_documento INT NOT NULL,
         rd_documento VARBINARY(MAX) NOT NULL, /*contenido del documento*/
         rd_nombre_documento VARCHAR(50) NOT NULL, /*nombre del documento*/
+        rd_extension_documento VARCHAR(10), /*extension del documento*/
         rd_fecha_documento DATETIME NOT NULL, /*fecha de envío del documento*/
         FOREIGN KEY (rd_id_reporte) REFERENCES reporte(rep_id),
         FOREIGN KEY (rd_id_tipo_documento) REFERENCES tipo_documento(td_id)

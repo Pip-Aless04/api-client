@@ -33,7 +33,12 @@ export const infoReportView = async ({view, model}) => {
     } else if (view === 'historico') {
         console.log('entro a historico')
         const historicoVacaciones = await model.getHistoricoVacaciones();
-        console.log(historicoVacaciones)
+        historicoVacaciones.forEach(element => {
+            if (element.documento){
+            element.documento = element.documento.toString('base64');
+            }
+        });
+        //console.log(historicoVacaciones)
         //const historicoTraslados = await model.getHistoricoTraslados();
         //const historicoSalidas = await model.getHistoricoSalidas();
         //const historicoIncapacidades = await model.getHistoricoIncapacidades();

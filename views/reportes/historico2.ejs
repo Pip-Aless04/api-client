@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Datatable</title>
+    <link rel="stylesheet" href="/css/reportes/historico2.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Dynamic User Management</h1>
+        <div class="controls">
+            <input type="text" id="search" placeholder="Search...">
+            <select id="roleFilter">
+                <option value="all">All Roles</option>
+                <option value="Admin">Admin</option>
+                <option value="User">User</option>
+                <option value="Editor">Editor</option>
+            </select>
+        </div>
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <% columns.forEach(column => { %>
+                        <th data-sort="<%= column %>">
+                            <%= column.charAt(0).toUpperCase() + column.slice(1) %>
+                            <span class="sort-icon">&#8597;</span>
+                        </th>
+                    <% }) %>
+                </tr>
+            </thead>            
+            <tbody>
+                <% data.forEach(item => { %>  <!-- Cambié `mockData` por `data` -->
+                    <tr>
+                        <% columns.forEach(column => { %>
+                            <td>
+                                <% if (column === 'status') { %>
+                                    <span class="status-badge status-<%= item[column].toLowerCase() %>"><%= item[column] %></span>
+                                <% } else { %>
+                                    <%= item[column] %>
+                                <% } %>
+                            </td>
+                        <% }) %>
+                    </tr>
+                <% }) %>
+            </tbody>                       
+        </table>
+    </div>
+    <script type="module">
+        import renderTable from '/../../js/reportes/historico2.js';
+        const mockData = <%- JSON.stringify(data)%>  // Usa `data` aquí
+        console.log(mockData);
+        renderTable(mockData);
+    </script>
+    
+    
+</body>
+</html>

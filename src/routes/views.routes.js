@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { ViewController } from "../controllers/view.controller.js";
 import { authUserJWT } from "../middlewares/validateUserJwt.middleware.js";
+import { validateUserAccesPermission } from "../middlewares/validateUserAccesPermission.middleware.js";
 //import { saveUserInfo } from "../middlewares/saveUserInfo.middlaware.js";
 
 export const createViewsRoutes = ({ReportesModel, EvaluacionModel}) => {
@@ -11,7 +12,8 @@ export const createViewsRoutes = ({ReportesModel, EvaluacionModel}) => {
     viewsRouter.get("/requestChangePassword", viewController.requestChangePassword);
     viewsRouter.get("/resetPassword", viewController.resetPassword);
     viewsRouter.get("/inicio", authUserJWT, viewController.inicio);
-    viewsRouter.get("/bienestar-integral/:solicitud", authUserJWT, viewController.solicitud);
+    viewsRouter.get("/bienestar-integral/:solicitud", authUserJWT, validateUserAccesPermission, viewController.solicitud);
+    viewsRouter.get("/pruebaHistorico", authUserJWT, viewController.pruebaHistorico);
 
     return viewsRouter;
 };

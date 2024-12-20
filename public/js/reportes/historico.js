@@ -9,14 +9,13 @@ export const init = (tables) => {
 
     // Crear los botones dinámicamente en base a las claves de las tablas
     Object.keys(tables).forEach(tableKey => {
-        const btn = document.createElement('button');
+        const btn = document.createElement('button1');
         btn.classList.add('btn');
         btn.dataset.table = tableKey;
         btn.textContent = formatTableName(tableKey);
         tableSwitcher.appendChild(btn);
     });
 
-    // Resto de tu código sigue igual...
     const table = document.getElementById('dataTable');
     const tbody = table.querySelector('tbody');
     let currentTable = Object.keys(tables)[0]; // Toma el primer nombre de las tablas
@@ -35,6 +34,8 @@ export const init = (tables) => {
         });
 
         allKeys.forEach(key => {
+            if (key === 'documento' || key === 'extension' || key === 'documento_id') return; // Omitir estas columnas
+
             const th = document.createElement('th');
             th.textContent = formatTableName(key); // Reemplaza guiones bajos en los headers
             th.dataset.sort = key;
@@ -54,6 +55,8 @@ export const init = (tables) => {
         });
 
         allKeys.forEach(key => {
+            if (key === 'documento' || key === 'extension' || key === 'documento_id') return; // Omitir estas columnas
+
             const input = document.createElement('input');
             input.type = 'text';
             input.placeholder = `Filtrar por ${formatTableName(key)}`; // Reemplaza guiones bajos en el filtro
@@ -88,9 +91,16 @@ export const init = (tables) => {
         }
 
         tbody.innerHTML = filteredData.map(row =>
-            `<tr>${Object.values(row).map(value =>
-                `<td>${value ?? '-'}</td>`
-            ).join('')}</tr>`
+            `<tr>${Object.entries(row).map(([key, value]) => {
+                if (key === 'documento' || key === 'extension' || key === 'documento_id') return ''; // Ignorar estas columnas
+                if (key === 'nombre_documento') {
+                    // Mostrar solo el enlace si hay archivo
+                    return value 
+                        ? `<td><a href="/dhcoapp/bienestar-integral/ver-archivo/${row.documento_id}" target="_blank">${value}</a></td>` 
+                        : `<td>-</td>`;
+                }
+                return `<td>${value ?? '-'}</td>`;
+            }).join('')}</tr>`
         ).join('');
 
         updateHeaderStyles();
@@ -169,6 +179,22 @@ export const init = (tables) => {
     // Inicializar botones de descarga
     document.getElementById('downloadCsvBtn').addEventListener('click', downloadCSV);
     document.getElementById('downloadExcelBtn').addEventListener('click', downloadExcel);
+
+
+    // Cambiar entre tablas
+    document.querySelectorAll('.table-switcher .btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            currentTable = btn.dataset.table;
+            currentTableSpan.textContent = formatTableName(currentTable); // Cambia el título cuando se cambia de tabla
+
+            document.querySelectorAll('.table-switcher .btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            updateTableHeaders();
+            updateFilterPlaceholders();
+            renderTable();
+        });
+    });
 
     // Inicializar tabla
     updateTableHeaders();
