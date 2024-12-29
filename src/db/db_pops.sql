@@ -787,9 +787,10 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     ('incapacidades_y_licencias', 'e952e0c6-2236-4ae5-acf6-58f0c9c889e3', '2024-04-01', 'A'),    
     ('solicitud_de_cartas', 'e952e0c6-2236-4ae5-acf6-58f0c9c889e3', '2024-04-01', 'A');
 
+
     CREATE TABLE reporte(
         rep_id INT IDENTITY(1,1) PRIMARY KEY,
-        rep_col_id_solicita UNIQUEIDENTIFIER NOT NULL,
+        rep_col_id_subordinado UNIQUEIDENTIFIER NOT NULL,
         rep_col_jefe_inmediato UNIQUEIDENTIFIER NOT NULL,
         rep_tipo_reporte INT NOT NULL,
         rep_detalle_reporte NVARCHAR(MAX),
@@ -807,7 +808,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         rep_email_envio VARCHAR(50),
         rep_estado CHAR(1) NOT NULL DEFAULT 'S',
         rep_fecha_transaccion DATETIME,
-        FOREIGN KEY (rep_col_id_solicita) REFERENCES colaborador(col_id),
+        FOREIGN KEY (rep_col_id_subordinado) REFERENCES colaborador(col_id),
         FOREIGN KEY (rep_col_jefe_inmediato) REFERENCES colaborador(col_id),
         FOREIGN KEY (rep_tipo_reporte) REFERENCES tipo_reporte(tr_id),
         FOREIGN KEY (rep_tipo_salida) REFERENCES tipo_salida(ts_id),
@@ -816,6 +817,8 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY (rep_tipo_carta) REFERENCES tipo_carta(tc_id),
         FOREIGN KEY (rep_pais_solicita) REFERENCES pais(pais_id)
     );
+
+    SELECT * FROM colaborador
 
     CREATE TABLE tipo_documento(
         td_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -844,3 +847,29 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     );
 
     END
+
+
+                SELECT 
+                    C.col_identificacion as identificacion,
+                    CONCAT(C.col_nombre, ' ', C.col_segundo_nombre,' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS solicitante,
+                    CONCAT(C2.col_nombre, ' ', C2.col_segundo_nombre,' ', C2.col_primer_apellido, ' ', C2.col_segundo_apellido) AS jefe,
+                    CONVERT (varchar(10), R.rep_fec_inicio, 103) AS fecha_inicio,
+                    CONVERT (varchar(10), R.rep_fec_fin, 103) AS fecha_fin,
+                    R.rep_detalle_reporte as detalle_reporte,
+                    CONVERT (varchar(10), R.rep_fec_envio_doc, 103) AS fecha_envio_doc,
+                    CASE    
+                        WHEN R.rep_estado = 'S' THEN 'Solicitado'
+                        WHEN R.rep_estado = 'A' THEN 'Aprobado'
+                        WHEN R.rep_estado = 'R' THEN 'Rechazado'
+                        WHEN R.rep_estado = 'P' THEN 'Pendiente'
+                        ELSE 'Otro Estado'
+                    END AS estado,
+                    RD.rd_id as documento_id,
+                    RD.rd_nombre_documento as nombre_documento1
+                FROM reporte_documento RD
+                RIGHT JOIN reporte R ON RD.rd_id_reporte = R.rep_id
+                INNER JOIN colaborador C ON R.rep_col_id_subordinado = C.col_id
+                INNER JOIN colaborador C2 ON R.rep_col_jefe_inmediato = C2.col_id
+
+
+SELECT * FROM colaborador

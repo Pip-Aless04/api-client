@@ -1,6 +1,6 @@
 import { validateAuth, validatePartialAuth } from "../schemas/auth.schema.js";
 import { createToken } from "../plugins/createJwt.plugin.js";
-import { EmailPlugin } from "../plugins/sendEmail.plugin.js";
+//import { EmailPlugin } from "../plugins/sendEmail.plugin.js";
 import { generateCode } from "../plugins/generateCode.plugin.js";
 
 export class AuthController {
@@ -170,7 +170,8 @@ export class AuthController {
             });
     
             if (!col_info.success) return res.status(400).json({ error: col_info.error });
-    
+            
+            /*
             const emailMessage = new EmailPlugin();
             await emailMessage.sendEmailChangePasswordCode({
                 to: email,
@@ -180,7 +181,7 @@ export class AuthController {
                         <br/>
                         <p>Si no ha solicitado cambio de clave, comuníquese con el departamento de transformación digital.</p>`,
             });
-    
+            */
             const token = await createToken(
                 {
                     id,

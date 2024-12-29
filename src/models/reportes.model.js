@@ -12,7 +12,7 @@
                 let query = `
                     SELECT 
                         R.rep_id AS id,
-                        R.rep_col_id_solicita AS col_id_solicita,
+                        R.rep_col_id_subordinado AS col_id_solicita,
                         R.rep_col_jefe_inmediato AS col_jefe_inmediato,
                         R.rep_tipo_reporte AS tipo_reporte,
                         R.rep_detalle_reporte AS detalle_reporte,
@@ -43,7 +43,7 @@
                 }
                 
                 if (filters.col_id_solicita) {
-                    query += ` AND R.rep_col_id_solicita = @col_id_solicita`;
+                    query += ` AND R.rep_col_id_subordinado = @col_id_solicita`;
                     request.input('col_id_solicita', sql.UniqueIdentifier, filters.col_id_solicita);
                 }
 
@@ -129,6 +129,46 @@
             } catch (error) {
                 console.error('Error obteniendo todos los reportes:', error.message);
                 return { success: false, error: 'Error obteniendo todos los reportes' };
+            }
+        }
+
+        static async getAllTipoReporte (filters={}) {
+            try {
+                let query = `
+                    SELECT 
+                    TR.tr_id AS id,
+                    REPLACE(TR.tr_nombre, '_', ' ') AS nombre,
+                    TR.tr_estado AS estado
+                    FROM tipo_reporte TR
+                    WHERE 1=1
+                `;
+        
+                const params = [];
+        
+                // Agregar condiciones dinámicas basadas en los filtros
+                if (filters.id) {
+                    query += ` AND LOWER(TR.tr_id) LIKE LOWER(@id)`;
+                    params.push({ name: 'id', type: sql.Int, value: filters.id });
+                }
+                if (filters.nombre) {
+                    query += ` AND LOWER(TR.tr_nombre) LIKE LOWER(@nombre)`;
+                    params.push({ name: 'nombre', type: sql.NVarChar, value: `%${filters.nombre}%` });
+                }
+                if (filters.estado) {
+                    query += ` AND LOWER(TR.tr_estado) LIKE LOWER(@estado)`;
+                    params.push({ name: 'estado', type: sql.NVarChar, value: filters.estado });
+                }
+        
+                // Preparar y ejecutar la consulta con los parámetros
+                const request = connection.request();
+                params.forEach(param => request.input(param.name, param.type, param.value));
+                const result = await request.query(query);
+
+                return result.recordset;
+        
+            } catch (err) {
+                console.error('Error al obtener los colaboradores:', err.message);
+                throw new Error('Error al obtener los colaboradores');
             }
         }
 
@@ -412,6 +452,50 @@
             }
         }
         
+        static async getAllPais(filters={}){
+            try {
+                let query = `
+                    SELECT 
+                    pais_nombre AS nombre,
+                    pais_acronimo AS acronimo,
+                    pais_estado AS estado
+                    FROM pais
+                    WHERE 1=1
+                `;
+        
+                const params = [];
+        
+                // Agregar condiciones dinámicas basadas en los filtros
+                if (filters.id) {
+                    query += ` AND LOWER(pais_id) LIKE LOWER(@id)`;
+                    params.push({ name: 'id', type: sql.Int, value: filters.id });
+                }
+                if (filters.nombre) {
+                    query += ` AND LOWER(pais_nombre) LIKE LOWER(@nombre)`;
+                    params.push({ name: 'nombre', type: sql.NVarChar, value: `%${filters.nombre}%` });
+                }
+                if (filters.acrónimo) {
+                    query += ` AND LOWER(pais_acronimo) LIKE LOWER(@acronimo)`;
+                    params.push({ name: 'acronimo', type: sql.NVarChar, value: `%${filters.acrónimo}%` });
+                }
+                if (filters.estado) {
+                    query += ` AND LOWER(pais_estado) LIKE LOWER(@estado)`;
+                    params.push({ name: 'estado', type: sql.NVarChar, value: filters.estado });
+                }
+        
+                // Preparar y ejecutar la consulta con los parámetros
+                const request = connection.request();
+                params.forEach(param => request.input(param.name, param.type, param.value));
+                const result = await request.query(query);
+
+                return result.recordset;
+        
+            } catch (err) {
+                console.error('Error al obtener los colaboradores:', err.message);
+                throw new Error('Error al obtener los colaboradores');
+            }
+        }
+        
 
         static async saveReports({ reportData, fileData }) {
             try {
@@ -429,7 +513,7 @@
         
                 if (reportData.col_id_solicita) {
                     console.log('col_id_solicita', reportData.col_id_solicita);
-                    fields.push('rep_col_id_solicita');
+                    fields.push('rep_col_id_subordinado');
                     values.push(`@param${index}`);
                     parameters[`param${index}`] = reportData.col_id_solicita;
                     index++;
@@ -652,12 +736,18 @@
                     CONVERT (varchar(10), R.rep_fec_fin, 103) AS fecha_fin,
                     R.rep_detalle_reporte as detalle_reporte,
                     CONVERT (varchar(10), R.rep_fec_envio_doc, 103) AS fecha_envio_doc,
-                    R.rep_estado as estado,
+                    CASE    
+                        WHEN R.rep_estado = 'S' THEN 'Solicitado'
+                        WHEN R.rep_estado = 'A' THEN 'Aprobado'
+                        WHEN R.rep_estado = 'R' THEN 'Rechazado'
+                        WHEN R.rep_estado = 'P' THEN 'Pendiente'
+                        ELSE 'Otro Estado'
+                    END AS estado,
                     RD.rd_id as documento_id,
                     RD.rd_nombre_documento as nombre_documento1
                 FROM reporte_documento RD
                 RIGHT JOIN reporte R ON RD.rd_id_reporte = R.rep_id
-                INNER JOIN colaborador C ON R.rep_col_id_solicita = C.col_id
+                INNER JOIN colaborador C ON R.rep_col_id_subordinado = C.col_id
                 INNER JOIN colaborador C2 ON R.rep_col_jefe_inmediato = C2.col_id
                 `;
                 const request = connection.request();
@@ -681,7 +771,7 @@
                         R.rep_detalle_reporte as detalle_reporte,
                         R.rep_estado as estado
                     FROM reporte R
-                    INNER JOIN colaborador C ON R.rep_col_id_solicita = C.col_id
+                    INNER JOIN colaborador C ON R.rep_col_id_subordinado = C.col_id
                     INNER JOIN colaborador C2 ON R.rep_col_jefe_inmediato = C2.col_id
                     WHERE R.rep_tipo_reporte = 2
                     `;

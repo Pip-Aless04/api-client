@@ -3,303 +3,131 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elegant Filter Modal</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+    <title>Filter Modal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
-<style>
-    :root {
-    --primary-color: #D4AF37;
-    --primary-color-light: #E5C158;
-    --secondary-color: #2c3e50;
-    --background-color: #f8f9fa;
-    --text-color: #333;
-    --border-color: #ced4da;
-    --shadow-color: rgba(0, 0, 0, 0.1);
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    line-height: 1.6;
-    color: var(--text-color);
-    background: linear-gradient(135deg, #2c3e50, #34495e);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-    padding: 20px;
-}
-
-.open-modal-btn {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    font-size: 16px;
-    font-weight: 500;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 6px var(--shadow-color);
-}
-
-.open-modal-btn:hover {
-    background-color: var(--primary-color-light);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px var(--shadow-color);
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-content {
-    background-color: var(--background-color);
-    margin: 5% auto;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 30px var(--shadow-color);
-    width: 90%;
-    max-width: 800px;
-    animation: modalFadeIn 0.3s;
-}
-
-@keyframes modalFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid var(--primary-color);
-}
-
-.modal-header h2 {
-    font-size: 28px;
-    font-weight: 600;
-    color: var(--secondary-color);
-    margin: 0;
-}
-
-.close-btn {
-    font-size: 28px;
-    font-weight: bold;
-    color: var(--text-color);
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: color 0.3s ease;
-}
-
-.close-btn:hover {
-    color: var(--primary-color);
-}
-
-.filter-form {
-    display: grid;
-    gap: 20px;
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
-}
-
-label {
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 5px;
-    color: var(--secondary-color);
-}
-
-input[type="text"],
-input[type="number"],
-input[type="date"],
-select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    font-size: 14px;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-input[type="text"]:focus,
-input[type="number"]:focus,
-input[type="date"]:focus,
-select:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
-}
-
-.rating-container {
-    display: flex;
-    align-items: center;
-}
-
-input[type="range"] {
-    width: 70%;
-    margin-right: 10px;
-}
-
-.star {
-    color: var(--primary-color);
-    font-size: 18px;
-}
-
-.checkbox-group {
-    flex-direction: row;
-    align-items: center;
-}
-
-.checkbox-group input[type="checkbox"] {
-    margin-right: 10px;
-}
-
-.form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border-color);
-}
-
-.btn {
-    padding: 10px 20px;
-    font-size: 14px;
-    font-weight: 500;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btn-primary {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-color-light);
-}
-
-.btn-secondary {
-    background-color: #e74c3c;
-    color: white;
-}
-
-.btn-secondary:hover {
-    background-color: #c0392b;
-}
-
-@media (max-width: 768px) {
-    .form-row {
-        grid-template-columns: 1fr;
-    }
-
-    .modal-content {
-        padding: 20px;
-    }
-
-    .modal-header h2 {
-        font-size: 24px;
-    }
-}
-
-</style>
 <body>
-    <button id="openModalBtn" class="open-modal-btn">Open Elegant Filter</button>
+    <button id="openModalBtn">Open Filters</button>
 
     <div id="filterModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2>Refined Filters</h2>
-                <button id="closeModalBtn" class="close-btn">&times;</button>
-            </div>
-            <form id="filterForm" class="filter-form">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="name">Product Name</label>
-                        <input type="text" id="name" name="name" placeholder="Enter product name">
-                    </div>
-                    <div class="form-group">
-                        <label for="category">Category</label>
-                        <select id="category" name="category">
-                            <option value="">All Categories</option>
-                            <option value="electronics">Electronics</option>
-                            <option value="clothing">Clothing</option>
-                            <option value="books">Books</option>
-                            <option value="home">Home & Garden</option>
-                        </select>
-                    </div>
+            <h2>Filter Options</h2>
+            <form id="filterForm">
+                <div class="form-group">
+                    <label for="searchTerm">Search:</label>
+                    <input type="text" id="searchTerm" name="searchTerm">
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="minPrice">Minimum Price</label>
-                        <input type="number" id="minPrice" name="minPrice" placeholder="0" min="0">
-                    </div>
-                    <div class="form-group">
-                        <label for="maxPrice">Maximum Price</label>
-                        <input type="number" id="maxPrice" name="maxPrice" placeholder="1000" min="0">
-                    </div>
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <select id="category" name="category">
+                        <option value="">Select a category</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="clothing">Clothing</option>
+                        <option value="books">Books</option>
+                    </select>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="startDate">Start Date</label>
-                        <input type="date" id="startDate" name="startDate">
-                    </div>
-                    <div class="form-group">
-                        <label for="endDate">End Date</label>
-                        <input type="date" id="endDate" name="endDate">
-                    </div>
+                <div class="form-group">
+                    <label for="minPrice">Min Price:</label>
+                    <input type="number" id="minPrice" name="minPrice" min="0">
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="rating">Minimum Rating</label>
-                        <div class="rating-container">
-                            <input type="range" id="rating" name="rating" min="1" max="5" step="0.5" value="3">
-                            <span id="ratingValue">3</span>
-                            <span class="star">&#9733;</span>
-                        </div>
-                    </div>
-                    <div class="form-group checkbox-group">
-                        <input type="checkbox" id="inStock" name="inStock">
-                        <label for="inStock">In Stock Only</label>
-                    </div>
+                <div class="form-group">
+                    <label for="maxPrice">Max Price:</label>
+                    <input type="number" id="maxPrice" name="maxPrice" min="0">
                 </div>
-                <div class="form-actions">
-                    <button type="button" id="resetBtn" class="btn btn-secondary">Reset</button>
-                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                <div class="form-group">
+                    <label for="inStock">In Stock:</label>
+                    <input type="checkbox" id="inStock" name="inStock">
                 </div>
+                <div class="form-group">
+                    <label for="startDate">Start Date:</label>
+                    <input type="date" id="startDate" name="startDate">
+                </div>
+                <div class="form-group">
+                    <label for="endDate">End Date:</label>
+                    <input type="date" id="endDate" name="endDate">
+                </div>
+                <button type="submit">Apply Filters</button>
             </form>
+            <span class="close">&times;</span>
         </div>
     </div>
 
@@ -307,61 +135,43 @@ input[type="range"] {
         document.addEventListener('DOMContentLoaded', function() {
             const modal = document.getElementById('filterModal');
             const openModalBtn = document.getElementById('openModalBtn');
-            const closeModalBtn = document.getElementById('closeModalBtn');
+            const closeBtn = document.getElementsByClassName('close')[0];
             const filterForm = document.getElementById('filterForm');
-            const resetBtn = document.getElementById('resetBtn');
-            const ratingInput = document.getElementById('rating');
-            const ratingValue = document.getElementById('ratingValue');
-            const startDateInput = document.getElementById('startDate');
-            const endDateInput = document.getElementById('endDate');
 
-            openModalBtn.addEventListener('click', function() {
-                modal.style.display = 'flex';
-            });
+            openModalBtn.onclick = function() {
+                modal.style.display = 'block';
+            }
 
-            closeModalBtn.addEventListener('click', closeModal);
-
-            window.addEventListener('click', function(event) {
-                if (event.target === modal) {
-                    closeModal();
-                }
-            });
-
-            function closeModal() {
+            closeBtn.onclick = function() {
                 modal.style.display = 'none';
             }
 
-            ratingInput.addEventListener('input', function() {
-                ratingValue.textContent = this.value;
-            });
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = 'none';
+                }
+            }
 
-            startDateInput.addEventListener('change', function() {
-                endDateInput.min = this.value;
-            });
-
-            endDateInput.addEventListener('change', function() {
-                startDateInput.max = this.value;
-            });
-
-            filterForm.addEventListener('submit', function(e) {
+            filterForm.onsubmit = function(e) {
                 e.preventDefault();
                 const formData = new FormData(filterForm);
                 const filters = Object.fromEntries(formData.entries());
                 
-                // Here you would typically send the filters to your backend
-                // For this example, we'll just log them to the console
-                console.log('Applied Filters:', filters);
+                // Convert checkbox value to boolean
+                filters.inStock = filters.inStock === 'on';
                 
-                closeModal();
-            });
+                // Convert price values to numbers
+                filters.minPrice = filters.minPrice ? Number(filters.minPrice) : 0;
+                filters.maxPrice = filters.maxPrice ? Number(filters.maxPrice) : Infinity;
 
-            resetBtn.addEventListener('click', function() {
-                filterForm.reset();
-                ratingValue.textContent = '3';
-                startDateInput.max = '';
-                endDateInput.min = '';
-            });
+                console.log('Applying filters:', filters);
+                // Here you would typically make your API call with the filters
+                // For example: fetch('/api/products', { method: 'POST', body: JSON.stringify(filters) })
+
+                modal.style.display = 'none';
+            }
         });
     </script>
 </body>
 </html>
+

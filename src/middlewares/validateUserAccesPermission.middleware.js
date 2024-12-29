@@ -23,8 +23,13 @@ export const validateUserAccesPermission = (req, res, next) => {
 
         if (solicitud === 'historico') {
             if (req.user.info.permiso !== 2) { // Validar permiso correctamente
-                console.log('No tiene permiso');
-                return res.status(403).send('No tiene permiso para acceder a esta página');
+                res.status(403).render('errorPage', {
+                    title: '403 - Acceso denegado',
+                    message: 'No tienes permiso para acceder a esta página',
+                    errorCode: '403',
+                    backButtonText: 'Vuelve al inicio',
+                    backButtonHref: '/dhcoapp/inicio',
+                });
             }
         }
 

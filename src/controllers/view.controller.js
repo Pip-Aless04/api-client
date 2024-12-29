@@ -1,4 +1,5 @@
 import { infoReportView } from "../plugins/infoReportView.js";
+import { getFilterInfo } from "../plugins/filterInfo.plugin.js";
 export class ViewController {
     
     constructor({ ReportesModel, EvaluacionModel }) {
@@ -76,13 +77,15 @@ export class ViewController {
             }
     
             console.log('Pendientes:', pendientes);
-    
+            
+            const filterInputsInfo = await getFilterInfo({model: this.reportesModel});
     
             // Renderiza la vista con los datos preparados
             res.render('inicio', { 
                 user, 
                 subordinados, 
-                pendientes
+                pendientes,
+                filterInputsInfo
             });
         } catch (error) {
             console.error('Error al iniciar sesión:', error.message);

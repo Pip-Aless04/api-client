@@ -3,15 +3,32 @@ document.addEventListener('DOMContentLoaded', function () {
     const settingsIcon = document.querySelector('.settings-icon');
     const dropdown = document.querySelector('.dropdown');
     const tableRows = document.querySelectorAll('.pending-table tr[data-id]'); // Selecciona filas con data-id
-    const filterForm = document.getElementById('filterForm');
+    const modal = document.getElementById("filterModal");
+    const historico = document.querySelector('[data-page="historico"]'); 
+    const closeBtn = document.getElementsByClassName("close")[0];
+    const filterForm = document.getElementById("filterForm");
+    const ratingInput = document.getElementById("rating");
+    const ratingValue = document.getElementById("ratingValue");
+    //const startDateInput = document.getElementById("startDate");
+    const endDateInput = document.getElementById("endDate");
 
+    const reportTypes = {
+        1: 'salida-personal',
+        2: 'solicitud-vacaciones',
+        3: 'traslado-personal',
+        4: 'incapacidades-y-licencias',
+        5: 'solicitud-cartas',
+    }
+    
     console.log(tableRows);
 
     // Navegación por las tarjetas
     cards.forEach(card => {
         card.addEventListener('click', function () {
             const page = this.dataset.page;
-            window.location.href = `bienestar-integral/${page}`;	
+            if (page !== 'historico') {
+            window.location.href = `bienestar-integral/${page}`;
+            }	
         });
     });
 
@@ -76,5 +93,67 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     });
+
+    historico.onclick = function() {
+        modal.style.display = "block";
+        setTimeout(() => modal.classList.add("show"), 10);
+    }
+
+    closeBtn.onclick = function() {
+        closeModal();
+    }
+
+    function closeModal() {
+        modal.classList.remove("show");
+        setTimeout(() => modal.style.display = "none", 300);
+    }
+
+    /*
+
+    ratingInput.oninput = function() {
+        ratingValue.textContent = this.value;
+    }
+
+    startDateInput.onchange = function() {
+        endDateInput.min = this.value;
+    }
+
+    endDateInput.onchange = function() {
+        startDateInput.max = this.value;
+    }
+    */
+    filterForm.onsubmit = function(e) {
+        e.preventDefault();
+        const formData = new FormData(filterForm);
+        const filters = Object.fromEntries(formData.entries());
+        
+        // Here you would typically send the filters to your backend
+        // For this example, we'll just log them to the console
+        console.log("Applied Filters:", filters);
+        
+        closeModal();
+    }
+
+    filterForm.onreset = function() {
+        ratingValue.textContent = "3";
+        //startDateInput.max = "";
+        endDateInput.min = "";
+    }
+    document.getElementById('category').addEventListener('change', function() {
+        // Get the selected report type
+        const reportSelected = this.value;
+        
+        console.log('Report selected:', reportSelected);
+        console.log(`.${reportTypes[reportSelected]}`)
+
+        document.querySelectorAll(`.${reportTypes[reportSelected]}`).forEach(filter => filter.style.display = 'block');
+    });
+    
+    // Lógica para actualizar el valor del rango de calificación
+    /*
+    document.getElementById('rating').addEventListener('input', function() {
+        document.getElementById('ratingValue').textContent = this.value;
+    });
+    */  
 }); // Cierre del bloque DOMContentLoaded
 

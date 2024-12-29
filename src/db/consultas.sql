@@ -204,7 +204,7 @@ DROP TABLE jerarquia
 
 TRUNCATE TABLE respuesta
 
-SELECT * FROM puesto
+SELECT * FROM colaborador
 
 INSERT INTO puesto (pue_nombre)
 VALUES

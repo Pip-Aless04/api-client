@@ -1,6 +1,6 @@
 import { validatePartialReport, validateReport } from "../schemas/reports.schema.js";
 import { createToken } from "../plugins/createJwt.plugin.js";
-import { EmailPlugin } from "../plugins/sendEmail.plugin.js";
+//import { EmailPlugin } from "../plugins/sendEmail.plugin.js";
 import { generateCode } from "../plugins/generateCode.plugin.js";
 import { fileToBinary } from "../plugins/fileToBinary.plugin.js";
 

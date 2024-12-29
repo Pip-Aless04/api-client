@@ -1,191 +1,280 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" id="appIcon" type="image/x-icon" href="https://cms.blumewebsites.com/pops/website/favicon.png">
-    <link rel="stylesheet" href="../css/inicio.css">
-    <title>Inicio</title>
-</head>
-<body>
-    <header>
-        <nav>
-            <div class="logo">
-                <a href="inicio">
-                    <img src="../img/logo_pops_2024.webp" alt="POPS Logo">
-                </a>
-            </div>
-            <div class="settings-menu">
-                <div class="settings-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="3"></circle>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-                    </svg>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" id="appIcon" type="image/x-icon" href="https://cms.blumewebsites.com/pops/website/favicon.png">
+        <link rel="stylesheet" href="../css/inicio.css">
+        <title>Inicio</title>
+    </head>
+    <body>
+        <header>
+            <nav>
+                <div class="logo">
+                    <a href="inicio">
+                        <img src="../img/logo_pops_2024.webp" alt="POPS Logo">
+                    </a>
                 </div>
-                <div class="dropdown">
-                    <a href="#">Perfil</a>
-                    <a href="#">Configuración</a>
-                    <a href="#">Cerrar sesión</a>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <main>
-        <h1>Bienvenido, <%= user.nombre %></h1>
-        <div class="section">
-            <div class="section-title">Evaluaciones</div>
-            <div class="card-container">
-                <div class="card" data-page="profile">
-                    <h2>Evaluacion de desempeño</h2>
-                    <p>Realiza tu evaluacion de desempeño</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="section">
-            <div class="section-title">Solicitudes</div>
-            <div class="card-container">
-                <div class="card" data-page="salida_personal">
-                    <h2>Salida de personal</h2>
-                    <p>Registre las salidas de personal a tu cargo</p>
-                </div>
-                <div class="card" data-page="solicitud_vacaciones">
-                    <h2>Solicitud de vacaciones</h2>
-                    <p>Solicite sus días de vacaciones</p>
-                </div>
-                <div class="card" data-page="traslado_personal">
-                    <h2>Traslado de personal</h2>
-                    <p>Regidtre el traslado de personal</p>
-                </div>
-                <div class="card" data-page="reporte_incapacidad">
-                    <h2>Incapacidades y licencias</h2>
-                    <p>Reporte sus Incapacidades y Licencias</p>
-                </div>
-                <div class="card" data-page="solicitud_cartas">
-                    <h2>Solicitudes de cartas</h2>
-                    <p>Haga solicitud de sus carta</p>
-                </div>
-                <% if (user.permiso === 2) { %>
-                    <div class="card" data-page="historico">
-                        <h2>Historico</h2>
-                        <p>Visualiza el historico de solicitudes realizadas</p>
+                <div class="settings-menu">
+                    <div class="settings-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
                     </div>
-                <% } %>
-            </div>
-        </div>
-        <% if (user.a_cargo === 'S') { %>
-        <div class="section">
-            <div class="section-title">Pendientes</div>
-            <table class="pending-table">
-                <thead>
-                    <tr>
-                        <th>Colaborador</th>
-                        <th>Fecha inicio</th>
-                        <th>Fecha fin</th>
-                        <th>Detalle</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% if (!pendientes || pendientes.length === 0) { %>
-                        <tr>
-                            <td colspan="5">No hay pendientes</td>
-                        </tr>
-                    <% } else { %>
-                        <% pendientes.forEach(pendiente => { %>
-                            <% if (pendiente.estado !== 'D') { %>
-                                <tr data-id="<%= pendiente.id %>" data-estado="<%= pendiente.estado %>">
-                                    <td><%= pendiente.nombreSolicitante %></td>
-                                    <td><%= new Date(pendiente.fecha_inicio).toLocaleDateString('es-ES', { timeZone: 'UTC' }) %></td>
-                                    <td><%= new Date(pendiente.fecha_fin).toLocaleDateString('es-ES', { timeZone: 'UTC' }) %></td>                                
-                                    <td><%= pendiente.detalle_reporte ? pendiente.detalle_reporte : 'Sin detalle' %></td>
-                                    <td>
-                                        <div class="action-buttons">
-                                            <button class="accept-btn" value="1">Aceptar</button>
-                                            <button class="reject-btn" value="0">Rechazar</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            <% } %>
-                        <% }) %>
-                    <% } %>                     
-                </tbody>                                                      
-            </table>
-        </div>
-        <% } %>
-        <div id="filterModal" class="modal">
-            <div class="modal-content">
-                <div class="filters-header">
-                    <h2>Filter Options</h2>
+                    <div class="dropdown">
+                        <a href="#">Perfil</a>
+                        <a href="#">Configuración</a>
+                        <a href="/dhcoapp">Cerrar sesión</a>
+                    </div>
                 </div>
-                <form id="filterForm">
-                    <div class="filter-section">
-                        <h3>Search and Category</h3>
-                        <div class="filter-grid">
+            </nav>
+        </header>
+
+        <main>
+            <h1>Bienvenido, <%= user.nombre %></h1>
+            <div class="section">
+                <div class="section-title">Evaluaciones</div>
+                <div class="card-container">
+                    <div class="card" data-page="profile">
+                        <h2>Evaluacion de desempeño</h2>
+                        <p>Realiza tu evaluacion de desempeño</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">Solicitudes</div>
+                <div class="card-container">
+                    <div class="card" data-page="salida_personal">
+                        <h2>Salida de personal</h2>
+                        <p>Registre las salidas de personal a tu cargo</p>
+                    </div>
+                    <div class="card" data-page="solicitud_vacaciones">
+                        <h2>Solicitud de vacaciones</h2>
+                        <p>Solicite sus días de vacaciones</p>
+                    </div>
+                    <div class="card" data-page="traslado_personal">
+                        <h2>Traslado de personal</h2>
+                        <p>Regidtre el traslado de personal</p>
+                    </div>
+                    <div class="card" data-page="reporte_incapacidad">
+                        <h2>Incapacidades y licencias</h2>
+                        <p>Reporte sus Incapacidades y Licencias</p>
+                    </div>
+                    <div class="card" data-page="solicitud_cartas">
+                        <h2>Solicitudes de cartas</h2>
+                        <p>Haga solicitud de sus carta</p>
+                    </div>
+                    <% if (user.permiso === 2) { %>
+                        <div class="card" data-page="historico">
+                            <h2>Historico</h2>
+                            <p>Visualiza el historico de solicitudes realizadas</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            <% if (user.a_cargo === 'S') { %>
+            <div class="section">
+                <div class="section-title">Pendientes</div>
+                <table class="pending-table">
+                    <thead>
+                        <tr>
+                            <th>Colaborador</th>
+                            <th>Fecha inicio</th>
+                            <th>Fecha fin</th>
+                            <th>Detalle</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (!pendientes || pendientes.length === 0) { %>
+                            <tr>
+                                <td colspan="5">No hay pendientes</td>
+                            </tr>
+                        <% } else { %>
+                            <% pendientes.forEach(pendiente => { %>
+                                <% if (pendiente.estado !== 'D') { %>
+                                    <tr data-id="<%= pendiente.id %>" data-estado="<%= pendiente.estado %>">
+                                        <td><%= pendiente.nombreSolicitante %></td>
+                                        <td><%= new Date(pendiente.fecha_inicio).toLocaleDateString('es-ES', { timeZone: 'UTC' }) %></td>
+                                        <td><%= new Date(pendiente.fecha_fin).toLocaleDateString('es-ES', { timeZone: 'UTC' }) %></td>                                
+                                        <td><%= pendiente.detalle_reporte ? pendiente.detalle_reporte : 'Sin detalle' %></td>
+                                        <td>
+                                            <div class="action-buttons">
+                                                <button class="accept-btn" value="1">Aceptar</button>
+                                                <button class="reject-btn" value="0">Rechazar</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            <% }) %>
+                        <% } %>                     
+                    </tbody>                                                      
+                </table>
+            </div>
+            <% } %>
+            <div id="filterModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Filtros</h2>
+                    <form id="filterForm">
+                        <div class="form-row">
                             <div class="form-group">
-                                <label for="searchTerm">Search</label>
-                                <input type="text" id="searchTerm" name="searchTerm" placeholder="Enter keywords...">
-                            </div>
-                            <div class="form-group">
-                                <label for="category">Category</label>
+                                <label for="category">Tipo de reporte</label>
                                 <select id="category" name="category">
-                                    <option value="">Select a category</option>
-                                    <option value="electronics">Electronics</option>
-                                    <option value="clothing">Clothing</option>
-                                    <option value="books">Books</option>
+                                    <option value="Seleccionar" data-report-id="0">Seleccionar</option>
+                                    <% filterInputsInfo.tipoReporte.forEach(tipoReporte => { %>
+                                        <option value="<%= tipoReporte.id %>" data-report-id="<%= tipoReporte.id %>"><%= tipoReporte.nombre %></option>
+                                    <% }) %>
                                 </select>
                             </div>
                         </div>
-                    </div>
-    
-                    <div class="filter-section">
-                        <h3>Price Range</h3>
-                        <div class="filter-grid">
+                        <div class="form-row">
                             <div class="form-group">
-                                <label for="minPrice">Min Price</label>
-                                <input type="number" id="minPrice" name="minPrice" min="0" placeholder="0">
+                                <label for="ident_subordinado">Identificación del subordinado:</label>
+                                <input type="text" id="ident_subordinado" name="ident_subordinado" placeholder="Ingrese la identificación del subordinado">
                             </div>
                             <div class="form-group">
-                                <label for="maxPrice">Max Price</label>
-                                <input type="number" id="maxPrice" name="maxPrice" min="0" placeholder="1000">
+                                <label for="maxPrice">Identificación del jefe:</label>
+                                <input type="text" id="ident_jefe" name="ident_jefe" placeholder="Ingrese la identificación del jefe">
                             </div>
                         </div>
-                    </div>
-    
-                    <div class="filter-section">
-                        <h3>Date Range</h3>
-                        <div class="filter-grid">
+                        <div class="form-row">
                             <div class="form-group">
-                                <label for="startDate">Start Date</label>
-                                <input type="date" id="startDate" name="startDate">
+                                <label for="category">Departamento</label>
+                                <select id="category" name="category">
+                                    <option value="Seleccionar" data-report-id="0">Seleccionar</option>
+                                    <% filterInputsInfo.tipoReporte.forEach(tipoReporte => { %>
+                                        <option value="<%= tipoReporte.id %>" data-report-id="<%= tipoReporte.id %>"><%= tipoReporte.nombre %></option>
+                                    <% }) %>
+                                </select>
                             </div>
                             <div class="form-group">
-                                <label for="endDate">End Date</label>
-                                <input type="date" id="endDate" name="endDate">
+                                <label for="category">País</label>
+                                <select id="category" name="category">
+                                    <option value="Seleccionar" data-report-id="0">Seleccionar</option>
+                                    <% filterInputsInfo.tipoReporte.forEach(tipoReporte => { %>
+                                        <option value="<%= tipoReporte.id %>" data-report-id="<%= tipoReporte.id %>"><%= tipoReporte.nombre %></option>
+                                    <% }) %>
+                                </select>
                             </div>
                         </div>
-                    </div>
-    
-                    <div class="filter-section">
-                        <h3>Additional Filters</h3>
-                        <div class="form-group">
-                            <div class="checkbox-group">
-                                <input type="checkbox" id="inStock" name="inStock">
-                                <label for="inStock">In Stock</label>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <div class="form-group">
+                                    <label for="endDate">Fecha de solicitud:</label>
+                                    <input type="date" id="fec_solicitud" name="fec_solicitud">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="endDate">Fecha de solicitud:</label>
+                                <input type="date" id="fec_solicitud" name="fec_solicitud">
                             </div>
                         </div>
-                    </div>
-    
-                    <button type="submit">Apply Filters</button>
-                </form>
-                <span class="close">&times;</span>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="category">Puesto</label>
+                                <select id="category" name="category" required>
+                                    <option value="Seleccionar" data-report-id="0">Seleccionar</option>
+                                    <% filterInputsInfo.tipoReporte.forEach(tipoReporte => { %>
+                                        <option value="<%= tipoReporte.id %>" data-report-id="<%= tipoReporte.id %>"><%= tipoReporte.nombre %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                            <!--
+                                <div class="form-group">
+                                    <label for="rating">Calificación mínima:</label>
+                                    <input type="range" id="rating" name="rating" min="1" max="5" step="0.5" value="3">
+                                    <span id="ratingValue">3</span> estrellas
+                                </div>
+                            -->
+                            <div class="form-group">
+                                <label for="category">Estado</label>
+                                <select id="category" name="category" required>
+                                    <option value="Seleccionar" data-report-id="0">Seleccionar</option>
+                                    <% filterInputsInfo.tipoReporte.forEach(tipoReporte => { %>
+                                        <option value="<%= tipoReporte.id %>" data-report-id="<%= tipoReporte.id %>"><%= tipoReporte.nombre %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group solicitud-vacaciones traslado-personal" style="display: none;">
+                                <label for="endDate">Fecha de envio de documento</label>
+                                <input type="date" id="fec_solicitud" name="fec_solicitud">
+                            </div>
+                        </div>
+                        <!-- SALIDA DE PERSONAL -->
+                        <div class="form-row">
+                            <div class="form-group salida-personal" style="display: none;">
+                                <label for="endDate">Fecha de salida:</label>
+                                <input type="date" id="fec_solicitud" name="fec_solicitud">
+                            </div>
+                            <div class="form-group salida-personal" style="display: none;">
+                                <label for="category">Tipo de salida</label>
+                                <select id="category" name="category" required>
+                                    <option value="Seleccionar" data-report-id="0">Seleccionar</option>
+                                    <% filterInputsInfo.tipoReporte.forEach(tipoReporte => { %>
+                                        <option value="<%= tipoReporte.id %>" data-report-id="<%= tipoReporte.id %>"><%= tipoReporte.nombre %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group salida-personal" style="display: none;">
+                                <label for="endDate">Motivo de salida:</label>
+                                <input type="date" id="fec_solicitud" name="fec_solicitud">
+                            </div>
+                            <div class="form-group salida-personal" style="display: none;">
+                                <label for="category">Saldo de vacaciones:</label>
+                                <select id="category" name="category" required>
+                                    <option value="Seleccionar" data-report-id="0">Seleccionar</option>
+                                    <% filterInputsInfo.tipoReporte.forEach(tipoReporte => { %>
+                                        <option value="<%= tipoReporte.id %>" data-report-id="<%= tipoReporte.id %>"><%= tipoReporte.nombre %></option>
+                                    <% }) %>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- SOLICITUD DE VACACIONES -->
+                        <div class="form-row">
+                            <div class="form-group solicitud-vacaciones" style="display: none;">
+                                <label for="endDate">Fecha de inicio</label>
+                                <input type="date" id="fec_solicitud" name="fec_solicitud">
+                            </div>
+                            <div class="form-group solicitud-vacaciones" style="display: none;">
+                                <label for="endDate">Fecha final</label>
+                                <input type="date" id="fec_solicitud" name="fec_solicitud">
+                            </div>
+                        </div>
+
+                        <!-- TRASLADO DE PERSONAL -->
+                        <div class="form-row">
+                            <div class="form-group traslado-personal" style="display: none;">
+                                <label for="endDate">Fecha de traslado</label>
+                                <input type="date" id="fec_solicitud" name="fec_solicitud">
+                            </div>
+                            <div class="form-group traslado-personal" style="display: none;">
+                                <label for="endDate">Motivo de traslado</label>
+                                <input type="date" id="fec_solicitud" name="fec_solicitud">
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="reset">Resetear</button>
+                            <button type="submit">Aplicar filtros</button>
+                        </div>
+                    </form>
+                </div>
             </div>
-        </div>
-    </main>
-    <footer class="footer">
-        <img src="../img/footer.webp" alt="footer">
-    </footer>
-</body>
-<script src="../js/inicio.js"></script>
-</html>
+            
+        </main>
+        <footer class="footer">
+            <img src="../img/footer.webp" alt="footer">
+        </footer>
+    </body>
+    <script src="../js/inicio.js"></script>
+    <script>
+        console.log(<%- JSON.stringify(filterInputsInfo) %>);
+    </script>
+    </html>
