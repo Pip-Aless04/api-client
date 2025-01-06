@@ -3,7 +3,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const dropdown = document.getElementById('settingsDropdown');
     const fileInput = document.getElementById('file-upload-1');
     const fileInputName = document.getElementById('file-input-name-1');
-    const form = document.getElementById('incidentForm');
+    const form = document.getElementById('cartaForm');
+
+    if (!form) {
+        console.error('Formulario no encontrado');
+        return;
+    }
 
     // Mostrar/ocultar dropdown
     settingsIcon.addEventListener('click', function (event) {
@@ -17,77 +22,68 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Mejorar manejo de archivos
+    // Mostrar nombre del archivo seleccionado
     fileInput.addEventListener('change', function () {
-        const fileNames = Array.from(this.files).map(file => file.name).join(', ');
-        fileInputName.textContent = fileNames || 'No archivo adjunto';
+        const fileName = this.files[0]?.name || 'No archivo adjunto';
+        fileInputName.textContent = fileName;
     });
 
-    function setupOtherOption(name) {
-        const radioButtons = document.querySelectorAll(`input[name="${name}"]`);
-        const otherInput = document.getElementById(`${name}-otro-input`);
-        const otherTextInput = document.getElementById(`${name}-otro`);
-        const otherRadio = document.querySelector(`input[name="${name}"][value="otro"]`);
-
-        radioButtons.forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this === otherRadio) {
-                    otherInput.style.display = 'block';
-                    otherTextInput.disabled = false;
-                } else {
-                    otherInput.style.display = 'none';
-                    otherTextInput.disabled = true;
-                    otherTextInput.value = ''; 
-                }
-            });
-        });
-    }
-    
-    // Configurar el comportamiento para "tipo-carta"
-    setupOtherOption('tipo-carta');
-    
-    // Manejar envío del formulario
-    form.addEventListener('submit', function(event) {
-        event.preventDefault();
-        
-        if (validateForm()) {
-            // Aquí puedes agregar el código para enviar el formulario
-            console.log('Formulario enviado');
-            // Puedes usar fetch() o XMLHttpRequest para enviar los datos al servidor
-        }
-    });
-
-    function validateForm() {
-        let isValid = true;
-        
-        // Validar campos requeridos
-        const requiredFields = form.querySelectorAll('[required]');
-        requiredFields.forEach(field => {
-            if (!field.value.trim()) {
-                isValid = false;
-                field.classList.add('error');
+    // Configurar el comportamiento para "otro" en opciones
+    const tipoCartaRadios = document.querySelectorAll('input[name="tipo-carta"]');
+    tipoCartaRadios.forEach(radio => {
+        radio.addEventListener('change', function () {
+            const otherInput = document.getElementById('tipo-carta-otro-input');
+            if (this.value === 'otro') {
+                otherInput.style.display = 'block';
             } else {
-                field.classList.remove('error');
+                otherInput.style.display = 'none';
             }
         });
+    });
 
-        // Validar que se haya seleccionado un tipo de carta
-        const tipoCarta = form.querySelector('input[name="tipo-carta"]:checked');
+    // Validación del formulario y creación de FormData
+    form.addEventListener('submit', function (event) {
+        event.preventDefault();
+
+        const correo = document.getElementById('correo').value;
+        const detalle = document.getElementById('detalle').value;
+        const tipoCarta = document.querySelector('input[name="tipo-carta"]:checked'); // Buscar el radio seleccionado
+
         if (!tipoCarta) {
-            isValid = false;
-            // Mostrar mensaje de error para tipo de carta
+            console.error('Debe seleccionar un tipo de carta');
+            return;
         }
 
-        // Validar formato de correo electrónico
-        const correo = document.getElementById('correo');
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (correo.value && !emailRegex.test(correo.value)) {
-            isValid = false;
-            correo.classList.add('error');
-        } else {
-            correo.classList.remove('error');
-        }
+        const tipoCartaId = tipoCarta.dataset.id; // Obtener el data-id del radio seleccionado
+        let cartaExtraordinaria;
+        const archivo = fileInput.files[0];
 
-        return isValid;
-    }
+        // Crear FormData
+        const formData = new FormData();
+        formData.append('tipo_carta', tipoCartaId); // Correo del usuario
+        formData.append('email_envio', correo);
+        formData.append('detalle_reporte', detalle);
+        if (tipoCarta.value === 'otro') {
+            cartaExtraordinaria = document.getElementById('tipo-carta-otro').value;
+            formData.append('ca_otro', cartaExtraordinaria);
+        }
+        formData.append('file', archivo);
+        formData.append('tipo_reporte', 5);
+        formData.append('tipo_documento', 3);
+        // Mostrar datos en consola para depuración
+        console.log('Datos a enviar (FormData):');
+        formData.forEach((value, key) => {
+            console.log(`${key}:`, value);
+        });
+
+        // Aquí podrías implementar un fetch o axios para hacer el POST:
+        fetch('/dhcoapp/bienestar-integral/guardar_reporte', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error
+            ('Error al enviar el formulario:', error));
+    });
 });

@@ -64,9 +64,9 @@ let sendSmtpEmail = new brevo.SendSmtpEmail();
 
 sendSmtpEmail.subject = "My {{params.subject}}";
 sendSmtpEmail.htmlContent = "<html><body><h1>Common: This is my first transactional email {{params.parameter}}</h1></body></html>";
-sendSmtpEmail.sender = { "name": "John", "email": "example@example.com" };
+sendSmtpEmail.sender = { "name": "John", "email": "alantiaribal2404@gmail.com" };
 sendSmtpEmail.to = [
-  { "email": "example@brevo.com", "name": "sample-name" }
+  { "email": "aless.arias04@gmail.com", "name": "Aless" },
 ];
 sendSmtpEmail.replyTo = { "email": "example@brevo.com", "name": "sample-name" };
 sendSmtpEmail.headers = { "Some-Custom-Name": "unique-id-1234" };

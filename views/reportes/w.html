@@ -5,173 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Filter Modal</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-        }
+        #tipo-carta-otro-input {
+        display: none;
+}
 
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.4);
-        }
-
-        .modal-content {
-            background-color: #fefefe;
-            margin: 15% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 500px;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        input[type="text"],
-        input[type="number"],
-        input[type="date"],
-        select {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        input[type="checkbox"] {
-            margin-right: 5px;
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
     </style>
 </head>
 <body>
-    <button id="openModalBtn">Open Filters</button>
+    <form id="incidentForm">
+        <fieldset>
+            <legend>Seleccione el tipo de carta:</legend>
+            <label>
+                <input type="radio" name="tipo-carta" value="certificado-laboral" required>
+                Certificado Laboral
+            </label>
+            <label>
+                <input type="radio" name="tipo-carta" value="recomendacion">
+                Carta de Recomendación
+            </label>
+            <label>
+                <input type="radio" name="tipo-carta" value="otro">
+                Otro
+            </label>
+            <div id="tipo-carta-otro-input" style="display: none;">
+                <label for="tipo-carta-otro">Especifique:</label>
+                <input type="text" id="tipo-carta-otro" name="tipo-carta-otro" disabled>
+            </div>
+        </fieldset>
+        <button type="submit">Enviar</button>
+    </form>    
 
-    <div id="filterModal" class="modal">
-        <div class="modal-content">
-            <h2>Filter Options</h2>
-            <form id="filterForm">
-                <div class="form-group">
-                    <label for="searchTerm">Search:</label>
-                    <input type="text" id="searchTerm" name="searchTerm">
-                </div>
-                <div class="form-group">
-                    <label for="category">Category:</label>
-                    <select id="category" name="category">
-                        <option value="">Select a category</option>
-                        <option value="electronics">Electronics</option>
-                        <option value="clothing">Clothing</option>
-                        <option value="books">Books</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="minPrice">Min Price:</label>
-                    <input type="number" id="minPrice" name="minPrice" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="maxPrice">Max Price:</label>
-                    <input type="number" id="maxPrice" name="maxPrice" min="0">
-                </div>
-                <div class="form-group">
-                    <label for="inStock">In Stock:</label>
-                    <input type="checkbox" id="inStock" name="inStock">
-                </div>
-                <div class="form-group">
-                    <label for="startDate">Start Date:</label>
-                    <input type="date" id="startDate" name="startDate">
-                </div>
-                <div class="form-group">
-                    <label for="endDate">End Date:</label>
-                    <input type="date" id="endDate" name="endDate">
-                </div>
-                <button type="submit">Apply Filters</button>
-            </form>
-            <span class="close">&times;</span>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const modal = document.getElementById('filterModal');
-            const openModalBtn = document.getElementById('openModalBtn');
-            const closeBtn = document.getElementsByClassName('close')[0];
-            const filterForm = document.getElementById('filterForm');
-
-            openModalBtn.onclick = function() {
-                modal.style.display = 'block';
-            }
-
-            closeBtn.onclick = function() {
-                modal.style.display = 'none';
-            }
-
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = 'none';
-                }
-            }
-
-            filterForm.onsubmit = function(e) {
-                e.preventDefault();
-                const formData = new FormData(filterForm);
-                const filters = Object.fromEntries(formData.entries());
-                
-                // Convert checkbox value to boolean
-                filters.inStock = filters.inStock === 'on';
-                
-                // Convert price values to numbers
-                filters.minPrice = filters.minPrice ? Number(filters.minPrice) : 0;
-                filters.maxPrice = filters.maxPrice ? Number(filters.maxPrice) : Infinity;
-
-                console.log('Applying filters:', filters);
-                // Here you would typically make your API call with the filters
-                // For example: fetch('/api/products', { method: 'POST', body: JSON.stringify(filters) })
-
-                modal.style.display = 'none';
-            }
-        });
-    </script>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const tipoCartaRadios = document.querySelectorAll('input[name="tipo-carta"]');
+        const otroInputContainer = document.getElementById('tipo-carta-otro-input');
+        const otroInputField = document.getElementById('tipo-carta-otro');
+    
+        tipoCartaRadios.forEach(radio => {
+            radio.addEventListener('change', function () {
+                if (this.value === 'otro') {
+                    otroInputContainer.style.display = 'block';
+                    otroInputField.disabled = false;
+                } else {
+                    otroInputContainer.style.display = 'none';
+                    otroInputField.disabled = true;
+                    otroInputField.value = ''; // Limpiar el input si no es "otro"
+                }
+            });
+        });
+    });
+    
+        </script>
 </html>
 

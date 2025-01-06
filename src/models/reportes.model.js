@@ -14,28 +14,28 @@
                         R.rep_id AS id,
                         R.rep_col_id_subordinado AS col_id_solicita,
                         R.rep_col_jefe_inmediato AS col_jefe_inmediato,
-                        R.rep_tipo_reporte AS tipo_reporte,
+                        R.rep_tipo_reporte_id AS tipo_reporte,
                         R.rep_detalle_reporte AS detalle_reporte,
-                        R.rep_tipo_salida AS tipo_salida,
-                        R.rep_motivo_salida AS motivo_salida,
-                        R.rep_tipo_novedad AS tipo_novedad,
-                        R.rep_tipo_carta AS tipo_carta,
+                        R.rep_sp_tipo_salida AS tipo_salida,
+                        R.rep_sp_motivo_salida AS motivo_salida,
+                        R.rep_il_tipo_novedad AS tipo_novedad,
+                        R.rep_ca_tipo_carta AS tipo_carta,
                         R.rep_pais_solicita AS pais_solicita,
                         R.rep_fec_inicio AS fecha_inicio,
                         R.rep_fec_fin AS fecha_fin,
-                        R.rep_area_actual AS area_actual,
-                        R.rep_area_traslado AS area_traslado,
+                        R.rep_tp_depto_actual AS area_actual,
+                        R.rep_tp_depto_traslado AS area_traslado,
                         R.rep_fec_envio_doc AS fecha_envio_doc,
-                        R.rep_otro AS otro,
-                        R.rep_email_envio AS email_envio,
+                        R.rep_ca_otro AS otro,
+                        R.rep_ca_email_envio AS email_envio,
                         R.rep_estado AS estado,
                         R.rep_fecha_transaccion AS fecha_transaccion
                     FROM reporte R
                     WHERE 1=1
                 `;
-    
+        
                 const request = connection.request();
-    
+        
                 // Validación de filtros y parametrización segura
                 if (filters.id) {
                     query += ` AND R.rep_id = @id`;
@@ -46,91 +46,92 @@
                     query += ` AND R.rep_col_id_subordinado = @col_id_solicita`;
                     request.input('col_id_solicita', sql.UniqueIdentifier, filters.col_id_solicita);
                 }
-
+        
                 if (filters.col_jefe_inmediato) {
                     query += ` AND R.rep_col_jefe_inmediato = @col_jefe_inmediato`;
                     request.input('col_jefe_inmediato', sql.UniqueIdentifier, filters.col_jefe_inmediato);
                 }
-
+        
                 if (filters.tipo_reporte) {
-                    query += ` AND R.rep_tipo_reporte = @tipo_reporte`;
+                    query += ` AND R.rep_tipo_reporte_id = @tipo_reporte`;
                     request.input('tipo_reporte', sql.Int, filters.tipo_reporte);
                 }
-
+        
                 if (filters.tipo_salida) {
-                    query += ` AND R.rep_tipo_salida = @tipo_salida`;
+                    query += ` AND R.rep_sp_tipo_salida = @tipo_salida`;
                     request.input('tipo_salida', sql.Int, filters.tipo_salida);
                 }
-
+        
                 if (filters.motivo_salida) {
-                    query += ` AND R.rep_motivo_salida = @motivo_salida`;
+                    query += ` AND R.rep_sp_motivo_salida = @motivo_salida`;
                     request.input('motivo_salida', sql.Int, filters.motivo_salida);
                 }
-
+        
                 if (filters.tipo_novedad) {
-                    query += ` AND R.rep_tipo_novedad = @tipo_novedad`;
+                    query += ` AND R.rep_il_tipo_novedad = @tipo_novedad`;
                     request.input('tipo_novedad', sql.Int, filters.tipo_novedad);
                 }
-
+        
                 if (filters.tipo_carta) {
-                    query += ` AND R.rep_tipo_carta = @tipo_carta`;
+                    query += ` AND R.rep_ca_tipo_carta = @tipo_carta`;
                     request.input('tipo_carta', sql.Int, filters.tipo_carta);
                 }
-
+        
                 if (filters.pais_solicita) {
                     query += ` AND R.rep_pais_solicita = @pais_solicita`;
                     request.input('pais_solicita', sql.Int, filters.pais_solicita);
                 }
-
+        
                 if (filters.fecha_inicio) {
                     query += ` AND R.rep_fec_inicio = @fecha_inicio`;
-                    request.input('fecha_inicio', sql.DateTime, filters.fecha_inicio);
+                    request.input('fecha_inicio', sql.Date, filters.fecha_inicio);
                 }                
-
+        
                 if (filters.fecha_fin) {
                     query += ` AND R.rep_fec_fin = @fecha_fin`;
-                    request.input('fecha_fin', sql.DateTime, filters.fecha_fin);
+                    request.input('fecha_fin', sql.Date, filters.fecha_fin);
                 }
-
+        
                 if (filters.area_actual) {
-                    query += ` AND R.rep_area_actual = @area_actual`;
+                    query += ` AND R.rep_tp_depto_actual = @area_actual`;
                     request.input('area_actual', sql.Int, filters.area_actual);
                 }   
-
+        
                 if (filters.area_traslado) {
-                    query += ` AND R.rep_area_traslado = @area_traslado`;
+                    query += ` AND R.rep_tp_depto_traslado = @area_traslado`;
                     request.input('area_traslado', sql.Int, filters.area_traslado);
                 }
-
+        
                 if (filters.fecha_envio_doc) {
                     query += ` AND R.rep_fec_envio_doc = @fecha_envio_doc`;
-                    request.input('fecha_envio_doc', sql.DateTime, filters.fecha_envio_doc);
+                    request.input('fecha_envio_doc', sql.Date, filters.fecha_envio_doc);
                 }                
-
+        
                 if (filters.otro) {
-                    query += ` AND R.rep_otro = @otro`;
+                    query += ` AND R.rep_ca_otro = @otro`;
                     request.input('otro', sql.NVarChar, filters.otro);
                 }
-
+        
                 if (filters.email_envio) {
-                    query += ` AND R.rep_email_envio = @email_envio`;
-                    request.input('email_envio', sql.NVarChar, filters.email_envio);
+                    query += ` AND R.rep_ca_email_envio = @email_envio`;
+                    request.input('email_envio', sql.VarChar, filters.email_envio);
                 }
                 
                 if (filters.estado) {
-                    query += `AND R.rep_estado = @estado`;
-                    request.input('estado', sql.NVarChar, filters.estado);
+                    query += ` AND R.rep_estado = @estado`;
+                    request.input('estado', sql.Char, filters.estado);
                 }
                 
                 console.log(query);
                 const result = await request.query(query);
-
+        
                 return result.recordset;
             } catch (error) {
                 console.error('Error obteniendo todos los reportes:', error.message);
                 return { success: false, error: 'Error obteniendo todos los reportes' };
             }
         }
+        
 
         static async getAllTipoReporte (filters={}) {
             try {
@@ -499,7 +500,7 @@
 
         static async saveReports({ reportData, fileData }) {
             try {
-                console.log('Entrando a saveReport');
+                console.log('Entrando a saveReports model');
                 console.log('Datos del reporte:', reportData);
                 console.log('Datos del archivo:', fileData);
                 console.log(reportData.fecha_envio_doc);
@@ -527,25 +528,9 @@
                     index++;
                 }
         
-                if (reportData.tipo_reporte) {
-                    console.log('tipo_reporte', reportData.tipo_reporte);
-                    fields.push('rep_tipo_reporte');
-                    values.push(`@param${index}`);
-                    parameters[`param${index}`] = reportData.tipo_reporte;
-                    index++;
-                }
-                
-                if (reportData.detalle_reporte) {
-                    console.log('detalle_reporte', reportData.detalle_reporte);
-                    fields.push('rep_detalle_reporte');
-                    values.push(`@param${index}`);
-                    parameters[`param${index}`] = reportData.detalle_reporte;
-                    index++;
-                }
-
                 if (reportData.tipo_salida) {
                     console.log('tipo_salida', reportData.tipo_salida);
-                    fields.push('rep_tipo_salida');
+                    fields.push('rep_sp_tipo_salida');
                     values.push(`@param${index}`);
                     parameters[`param${index}`] = reportData.tipo_salida;
                     index++;
@@ -553,29 +538,69 @@
 
                 if (reportData.motivo_salida) {
                     console.log('motivo_salida', reportData.motivo_salida);
-                    fields.push('rep_motivo_salida');
+                    fields.push('rep_sp_motivo_salida');
                     values.push(`@param${index}`);
                     parameters[`param${index}`] = reportData.motivo_salida;
                     index++;
                 }
 
+                if (reportData.saldo_vacaciones) {
+                    console.log('saldo_vacaciones', reportData.saldo_vacaciones);
+                    fields.push('rep_sp_saldo_vacaciones');
+                    values.push(`@param${index}`);
+                    parameters[`param${index}`] = reportData.saldo_vacaciones;
+                    index++;
+                }
+
+                if (reportData.motivo_traslado) {
+                    console.log('motivo_traslado', reportData.motivo_traslado);
+                    fields.push('rep_tp_motivo_traslado');
+                    values.push(`@param${index}`);
+                    parameters[`param${index}`] = reportData.motivo_traslado;
+                    index++;
+                }
+
+                if (reportData.tipo_reporte) {
+                    console.log('tipo_reporte', reportData.tipo_reporte);
+                    fields.push('rep_tipo_reporte_id');
+                    values.push(`@param${index}`);
+                    parameters[`param${index}`] = reportData.tipo_reporte;
+                    index++;
+                }
+        
+                if (reportData.detalle_reporte) {
+                    console.log('detalle_reporte', reportData.detalle_reporte);
+                    fields.push('rep_detalle_reporte');
+                    values.push(`@param${index}`);
+                    parameters[`param${index}`] = reportData.detalle_reporte;
+                    index++;
+                }
+        
+                if (reportData.observaciones) {
+                    console.log('observaciones', reportData.observaciones);
+                    fields.push('rep_detalle_reporte');
+                    values.push(`@param${index}`);
+                    parameters[`param${index}`] = reportData.observaciones;
+                    index++;
+                }
+        
+        
                 if (reportData.tipo_novedad) {
                     console.log('tipo_novedad', reportData.tipo_novedad);
-                    fields.push('rep_tipo_novedad');
+                    fields.push('rep_il_tipo_novedad');
                     values.push(`@param${index}`);
                     parameters[`param${index}`] = reportData.tipo_novedad;
                     index++;
                 }
-
+        
                 if (reportData.tipo_carta) {
                     console.log('tipo_carta', reportData.tipo_carta);
-                    fields.push('rep_tipo_carta');
+                    fields.push('rep_ca_tipo_carta');
                     values.push(`@param${index}`);
                     parameters[`param${index}`] = reportData.tipo_carta;
                     index++;
                 }
-
-
+        
                 if (reportData.pais_solicita) {
                     console.log('pais_solicita', reportData.pais_solicita);
                     fields.push('rep_pais_solicita');
@@ -583,7 +608,7 @@
                     parameters[`param${index}`] = reportData.pais_solicita;
                     index++;
                 }
-
+        
                 if (reportData.fecha_inicio) {
                     console.log('fecha_inicio', reportData.fecha_inicio);
                     fields.push('rep_fec_inicio');
@@ -599,18 +624,18 @@
                     parameters[`param${index}`] = reportData.fecha_fin;
                     index++;
                 }
-
+        
                 if (reportData.area_actual) {
                     console.log('area_actual', reportData.area_actual);
-                    fields.push('rep_area_actual');
+                    fields.push('rep_tp_depto_actual');
                     values.push(`@param${index}`);
                     parameters[`param${index}`] = reportData.area_actual;
                     index++;
                 }
-
+        
                 if (reportData.area_traslado) {
                     console.log('area_traslado', reportData.area_traslado);
-                    fields.push('rep_area_traslado');
+                    fields.push('rep_tp_depto_traslado');
                     values.push(`@param${index}`);
                     parameters[`param${index}`] = reportData.area_traslado;
                     index++;
@@ -626,20 +651,20 @@
         
                 if (reportData.otro) {
                     console.log('otro', reportData.otro);
-                    fields.push('rep_otro');
+                    fields.push('rep_ca_otro');
                     values.push(`@param${index}`);
                     parameters[`param${index}`] = reportData.otro;
                     index++;
                 }
-
+        
                 if (reportData.email_envio) {
                     console.log('email_envio', reportData.email_envio);
-                    fields.push('rep_email_envio');
+                    fields.push('rep_ca_email_envio');
                     values.push(`@param${index}`);
                     parameters[`param${index}`] = reportData.email_envio;
                     index++;
                 }
-                
+        
                 if (reportData.estado) {
                     console.log('estado', reportData.estado);
                     fields.push('rep_estado');
@@ -647,10 +672,10 @@
                     parameters[`param${index}`] = reportData.estado;
                     index++;
                 }
-
+        
                 fields.push('rep_fecha_transaccion');
-                values.push(`GETDATE()`);                
-                
+                values.push(`GETDATE()`);
+        
                 if (fields.length === 0) {
                     throw new Error('No hay datos válidos para guardar el reporte');
                 }
@@ -664,7 +689,7 @@
                 console.log('Query:', query);
         
                 const result = await connection.request();
-                
+        
                 // Asignar los parámetros de forma dinámica
                 Object.keys(parameters).forEach((paramKey) => {
                     result.input(paramKey, parameters[paramKey]);
@@ -673,8 +698,8 @@
         
                 const insertResult = await result.query(query);
                 const newReportId = insertResult.recordset[0].newReportId;
-                
-                console.log( 'insertResult', insertResult);
+        
+                console.log('insertResult', insertResult);
                 console.log('ID del nuevo reporte guardado:', newReportId);
         
                 // Insertar el documento si existe
@@ -694,14 +719,13 @@
                         .query(documentQuery);
                 }
                 
-                //return { success: true, message: 'Reporte guardado exitosamente', reportId: newReportId };
-                return { success: true, message: 'Reporte guardado exitosamente'};
+                return { success: true, message: 'Reporte guardado exitosamente' };
             } catch (err) {
                 console.error('Error al guardar el reporte:', err.message);
                 throw new Error('Error al guardar el reporte');
             }
-        }        
-
+        }
+        
         static async updateVacationStatus({ id, estado }) {
             try {
                 const query = `
@@ -712,7 +736,7 @@
         
                 const request = connection.request();
                 request.input('id', sql.Int, id);
-                request.input('estado', sql.VarChar(1), estado); // 'S', 'P', 'A', 'D'
+                request.input('estado', sql.Char(1), estado); // 'S', 'P', 'A', 'D'
         
                 const result = await request.query(query);
         
@@ -723,19 +747,19 @@
                 console.error('Error al actualizar el estado del pendiente:', err.message);
                 throw new Error('Error al actualizar el estado del pendiente');
             }
-        }       
+        }
         
         static async getHistoricoVacaciones() {
             try {
                 const query = `
                 SELECT 
-                    C.col_identificacion as identificacion,
-                    CONCAT(C.col_nombre, ' ', C.col_segundo_nombre,' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS solicitante,
-                    CONCAT(C2.col_nombre, ' ', C2.col_segundo_nombre,' ', C2.col_primer_apellido, ' ', C2.col_segundo_apellido) AS jefe,
-                    CONVERT (varchar(10), R.rep_fec_inicio, 103) AS fecha_inicio,
-                    CONVERT (varchar(10), R.rep_fec_fin, 103) AS fecha_fin,
-                    R.rep_detalle_reporte as detalle_reporte,
-                    CONVERT (varchar(10), R.rep_fec_envio_doc, 103) AS fecha_envio_doc,
+                    C.col_identificacion AS identificacion,
+                    CONCAT(C.col_nombre, ' ', C.col_segundo_nombre, ' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS solicitante,
+                    CONCAT(C2.col_nombre, ' ', C2.col_segundo_nombre, ' ', C2.col_primer_apellido, ' ', C2.col_segundo_apellido) AS jefe,
+                    CONVERT(VARCHAR(10), R.rep_fec_inicio, 103) AS fecha_inicio,
+                    CONVERT(VARCHAR(10), R.rep_fec_fin, 103) AS fecha_fin,
+                    R.rep_detalle_reporte AS detalle_reporte,
+                    CONVERT(VARCHAR(10), R.rep_fec_envio_doc, 103) AS fecha_envio_doc,
                     CASE    
                         WHEN R.rep_estado = 'S' THEN 'Solicitado'
                         WHEN R.rep_estado = 'A' THEN 'Aprobado'
@@ -743,8 +767,8 @@
                         WHEN R.rep_estado = 'P' THEN 'Pendiente'
                         ELSE 'Otro Estado'
                     END AS estado,
-                    RD.rd_id as documento_id,
-                    RD.rd_nombre_documento as nombre_documento1
+                    RD.rd_id AS documento_id,
+                    RD.rd_nombre_documento AS nombre_documento
                 FROM reporte_documento RD
                 RIGHT JOIN reporte R ON RD.rd_id_reporte = R.rep_id
                 INNER JOIN colaborador C ON R.rep_col_id_subordinado = C.col_id
@@ -752,13 +776,14 @@
                 `;
                 const request = connection.request();
                 const result = await request.query(query);
-
+        
                 return result.recordset;
             } catch (err) {
-                console.error('Error al obtener el historico de las vacaciones:', err.message);
-                throw new Error('Error al obtener el historico de las vacaciones');
+                console.error('Error al obtener el histórico de las vacaciones:', err.message);
+                throw new Error('Error al obtener el histórico de las vacaciones');
             }
         }
+        
 
         static async getVacacionesReports(filters={}) {
             try {
@@ -773,7 +798,7 @@
                     FROM reporte R
                     INNER JOIN colaborador C ON R.rep_col_id_subordinado = C.col_id
                     INNER JOIN colaborador C2 ON R.rep_col_jefe_inmediato = C2.col_id
-                    WHERE R.rep_tipo_reporte = 2
+                    WHERE R.rep_tipo_reporte_id = 2
                     `;
                     
                 const request = connection.request();

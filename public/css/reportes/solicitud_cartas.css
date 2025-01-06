@@ -191,10 +191,6 @@ textarea:focus {
     margin-right: 8px;
 }
 
-.other-input {
-    display: none;
-    margin-top: 10px;
-}
 
 button[type="submit"] {
     background-color: #8b5cf6;

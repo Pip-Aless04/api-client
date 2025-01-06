@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../../css/reportes/solicitud_cartas.css">
-    <title>Solicitud de cartas</title>
+    <title>Solicitud de Cartas</title>
 </head>
 <body>
     <header>
@@ -16,6 +16,7 @@
             </div>
             <div class="settings-menu">
                 <div class="settings-icon" id="settingsIcon">
+                    <!-- Icono de Configuración -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="3"></circle>
                         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
@@ -33,10 +34,10 @@
     <main>
         <div class="form-container">
             <div class="form-header">
-                <h1>Reporte de solicitud de cartas</h1>
+                <h1>Reporte de Solicitud de Cartas</h1>
                 <p>Por favor, complete el formulario para reportar una solicitud de cartas.</p>
             </div>
-            <form class="form-content" id="incidentForm">
+            <form class="form-content" id="cartaForm">
                 <div class="form-row">
                     <div class="form-group">
                         <label for="name">Nombre</label>
@@ -44,13 +45,13 @@
                     </div>
                     <div class="form-group">
                         <label for="ident">Identificación</label>
-                        <input type="text" id="ident" name="ident" placeholder="<%= user.identificacion %>" value="<%= user.identificacion %>" disabled>
+                        <input type="text" id="ident" name="ident" placeholder="<%= user.identificacion %>" disabled>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="area">Departamento / Heladería</label>
-                        <input type="text" id="area" name="area" placeholder="<%= user.departamento %>">             
+                        <input type="text" id="area" name="area" placeholder="<%= user.departamento %>" disabled>             
                     </div>
                     <div class="form-group">
                         <label class="radio-label">Tipo de carta</label>
@@ -61,31 +62,32 @@
                                         type="radio" 
                                         id="carta-<%= carta.id %>" 
                                         name="tipo-carta" 
-                                        value="<%= carta.id %>"
+                                        value="<%= carta.nombre.toLowerCase() %>"
+                                        data-id="<%= carta.id %>"
                                     >
                                     <label for="carta-<%= carta.id %>"><%= carta.nombre %></label>
                                 </div>
                             <% }); %>
                         </div>
                         <div class="other-input" id="tipo-carta-otro-input" style="display: none;">
-                            <input type="text" id="tipo-carta-otro" name="tipo-carta-otro" placeholder="Especifique otro tipo de salida" disabled>
+                            <input type="text" id="tipo-carta-otro" name="tipo-carta-otro" placeholder="Especifique otro tipo de carta" >
                         </div>                        
                     </div>
                     
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="pais">Detalle de la solicitud</label>
+                        <label for="detalle">Detalle de la solicitud</label>
                         <textarea id="detalle" name="detalle" placeholder="Detalle de la solicitud"></textarea>
                     </div>
                     <div class="form-group">
                         <label for="correo">Correo</label>
-                        <input type="email" id="correo" name="correo" placeholder="<%= user.email %>" value="<%= user.email %>" disabled>
+                        <input type="email" id="correo" name="correo" placeholder="<%= user.email %>" value="<%= user.email %>">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group" style="flex: 1 1 100%;">
-                        <label>Foto de la cédula</label>
+                        <label>Foto de la Cédula</label>
                         <div class="file-inputs-container">
                             <div class="file-input-wrapper">
                                 <input type="file" id="file-upload-1" name="file-upload-1">
@@ -106,6 +108,6 @@
         </div>
     </footer>
 
+    <script src="../../js/reportes/solicitud_cartas.js"></script>
 </body>
-<script src="../../js/reportes/solicitud_cartas.js"></script>
 </html>

@@ -69,11 +69,13 @@ export class ViewController {
                     estado : 'P'
                 });
             } else {
+                console.log('No es un jefe');
                 // Si el usuario es un subordinado, obtiene los reportes pendientes de los reportes que tiene asignado
                 pendientes = await this.reportesModel.getVacacionesReports({ 
                     col_jefe_inmediato: user.id,
                     estado : 'S'
                 });
+                console.log('Pendientes:', pendientes);
             }
     
             console.log('Pendientes:', pendientes);

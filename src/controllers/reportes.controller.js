@@ -33,7 +33,7 @@ export class ReportesController {
             
             console.log('Body:', req.body); // Depuración de datos del formulario
             console.log('File:', req.file); // Depuración del archivo cargado
-    
+            
             // Validación de los datos enviados
             const validate = await validatePartialReport(req.body);
             console.log('Validación:', validate);
