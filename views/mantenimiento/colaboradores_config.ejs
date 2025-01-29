@@ -1,0 +1,324 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" id="appIcon" type="image/x-icon" href="https://cms.blumewebsites.com/pops/website/favicon.png">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link rel="stylesheet" href="../../css/mantenimiento/colaboradores_config.css">
+        <title>Gestión de colaboradores</title>
+    </head>
+    <body>
+        <header>
+            <nav>
+                <div class="logo">
+                    <a href="/dhcoapp/inicio">
+                        <img src="../../img/logo_pops_2024.webp" alt="POPS Logo">
+                    </a>
+                </div>
+                <div class="settings-menu">
+                    <div class="settings-icon" id="settingsIcon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                        </svg>
+                    </div>
+                    <div class="dropdown" id="settingsDropdown">
+                        <a href="#">Perfil</a>
+                        <a href="#">Configuración</a>
+                        <a href="#">Cerrar sesión</a>
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <div class="container">
+                <h1>Gestión de Usuarios</h1>
+                <div id="filters" class="controls">
+                    <!-- Los filtros se generarán dinámicamente aquí -->
+                </div>
+                <div class="button-container">
+                    <button id="addUserBtn">Agregar Usuario</button>
+                    <button id="downloadExcelBtn">Descargar Excel</button>
+                </div>
+                <div class="table-container">
+                    <table id="userTable">
+                        <thead>
+                            <!-- Los encabezados de la tabla se generarán dinámicamente aquí -->
+                        </thead>
+                        <tbody>
+                            <!-- Los datos de los usuarios se insertarán aquí dinámicamente -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+        <div id="userModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Editar Usuario</h2>
+                    <button class="close-button" aria-label="Cerrar">&times;</button>
+                </div>
+                <form id="userForm" class="modal-body">
+                    <input type="hidden" id="userId" name="id">
+                    <div class="form-group">
+                        <label for="userIdentificacion">Identificación:</label>
+                        <input type="text" id="userIdentificacion" name="identificacion" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userNombre">Nombre:</label>
+                        <input type="text" id="userNombre" name="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userSegundoNombre">Segundo Nombre:</label>
+                        <input type="text" id="userSegundoNombre" name="segundo_nombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="userPrimerApellido">Primer Apellido:</label>
+                        <input type="text" id="userPrimerApellido" name="primer_apellido" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userSegundoApellido">Segundo Apellido:</label>
+                        <input type="text" id="userSegundoApellido" name="segundo_apellido" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userPuesto">Puesto:</label>
+                        <input type="text" id="userPuesto" name="puesto" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Email:</label>
+                        <input type="email" id="userEmail" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userEstado">Estado:</label>
+                        <input type="text" id="userEstado" name="estado" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userDepartamento">Departamento:</label>
+                        <input type="text" id="userDepartamento" name="departamento" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userDireccion">Dirección:</label>
+                        <input type="text" id="userDireccion" name="direccion" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userPais">País:</label>
+                        <input type="text" id="userPais" name="pais" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userACargo">A Cargo:</label>
+                        <input type="text" id="userACargo" name="a_cargo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userNombreJefe">Nombre del Jefe:</label>
+                        <input type="text" id="userNombreJefe" name="nombre_jefe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userFechaIngreso">Fecha de Ingreso:</label>
+                        <input type="date" id="userFechaIngreso" name="fecha_ingreso" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" id="cancelBtn">Cancelar</button>
+                        <button type="submit" class="btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <footer>
+            <div class="footer-content">
+                <img src="../../img/footer.webp" alt="Decorative footer with waves">
+            </div>
+        </footer>
+    </body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const settingsIcon = document.getElementById('settingsIcon');
+            const dropdown = document.getElementById('settingsDropdown');
+
+            settingsIcon.addEventListener('click', function (event) {
+                event.stopPropagation();
+                dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+            });
+
+            document.addEventListener('click', function (event) {
+                if (!settingsIcon.contains(event.target) && !dropdown.contains(event.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+            
+            // Datos de ejemplo (puedes reemplazar esto con tu propio array)
+            let users = <%- JSON.stringify(reportData.colaboradores.cols_info) %>
+            console.log(users)
+            
+            /*
+            let users = [
+                { id: 1, nombre: 'Juan Pérez', email: 'juan@example.com', rol: 'Admin', edad: 30 },
+                { id: 2, nombre: 'María García', email: 'maria@example.com', rol: 'Usuario', edad: 25 },
+                { id: 3, nombre: 'Carlos López', email: 'carlos@example.com', rol: 'Editor', edad: 35 }
+            ];
+            */
+
+            const userTable = document.getElementById('userTable');
+            const addUserBtn = document.getElementById('addUserBtn');
+            const downloadExcelBtn = document.getElementById('downloadExcelBtn');
+            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+            const userModal = document.getElementById('userModal');
+            const userForm = document.getElementById('userForm');
+            const modalTitle = document.getElementById('modalTitle');
+            const closeBtn = userModal.querySelector('.close-button');
+            const cancelBtn = document.getElementById('cancelBtn');
+
+            // Obtener las claves del objeto (excluyendo 'id')
+            const keys = Object.keys(users[0]).filter(key => key !== 'id');
+
+            // Función para generar los encabezados de la tabla y los filtros
+            function generateTableHeadersAndFilters() {
+                const thead = userTable.querySelector('thead');
+                let headerRow = '<tr>';
+                let filterRow = '<tr>';
+                
+                keys.forEach(key => {
+                    const displayKey = key.replace(/_/g, ' ');
+                    headerRow += `<th>${displayKey.charAt(0).toUpperCase() + displayKey.slice(1)}</th>`;
+                    filterRow += `
+                        <th>
+                            <input type="text" class="filter-input" data-key="${key}" placeholder="Filtrar ${displayKey}">
+                        </th>
+                    `;
+                });
+                
+                headerRow += '<th>Acciones</th></tr>';
+                filterRow += '<th></th></tr>';
+                
+                thead.innerHTML = headerRow + filterRow;
+
+                // Agregar event listeners a los inputs de filtro
+                thead.querySelectorAll('.filter-input').forEach(input => {
+                    input.addEventListener('input', filterTable);
+                });
+            }
+
+            // Función para renderizar la tabla
+            function renderTable(data) {
+                const tbody = userTable.querySelector('tbody');
+                tbody.innerHTML = '';
+                data.forEach(user => {
+                    let row = '<tr>';
+                    keys.forEach(key => {
+                        row += `<td>${user[key]}</td>`;
+                    });
+                    row += `
+                        <td class="action-buttons">
+                            <button class="edit-button" onclick="editUser('${user.id}')">Editar</button>
+                        </td>
+                    </tr>`;
+                    tbody.innerHTML += row;
+                });
+            }
+
+            // Función para filtrar la tabla
+            function filterTable() {
+                const filterInputs = document.querySelectorAll('.filter-input');
+                const filteredUsers = users.filter(user => {
+                    return Array.from(filterInputs).every(input => {
+                        const key = input.dataset.key;
+                        const filterValue = input.value.toLowerCase();
+                        return user[key].toString().toLowerCase().includes(filterValue);
+                    });
+                });
+                renderTable(filteredUsers);
+            }
+
+            // Función para limpiar todos los filtros
+            function clearFilters() {
+                document.querySelectorAll('.filter-input').forEach(input => {
+                    input.value = '';
+                });
+                renderTable(users);
+            }
+
+            // Inicializar la tabla y los filtros
+            generateTableHeadersAndFilters();
+            renderTable(users);
+
+            // Función para abrir el modal
+            function openModal() {
+                userModal.style.display = 'block';
+            }
+
+            // Función para cerrar el modal
+            function closeModal() {
+                userModal.style.display = 'none';
+                userForm.reset();
+            }
+
+            // Abrir modal para agregar usuario
+            addUserBtn.onclick = function() {
+                modalTitle.textContent = 'Agregar Usuario';
+                openModal();
+            }
+
+            // Cerrar modal
+            closeBtn.onclick = closeModal;
+            cancelBtn.onclick = closeModal;
+
+            // Cerrar modal al hacer clic fuera de él
+            window.onclick = function(event) {
+                if (event.target == userModal) {
+                    closeModal();
+                }
+            }
+
+            // Manejar envío del formulario
+            userForm.onsubmit = function(e) {
+                e.preventDefault();
+                const formData = new FormData(userForm);
+                const updatedUser = Object.fromEntries(formData.entries());
+
+                if (modalTitle.textContent === 'Editar Usuario') {
+                    const index = users.findIndex(u => u.id === updatedUser.id);
+                    if (index !== -1) {
+                        users[index] = { ...users[index], ...updatedUser };
+                    }
+                } else {
+                    updatedUser.id = crypto.randomUUID();
+                    users.push(updatedUser);
+                }
+
+                renderTable(users);
+                closeModal();
+            }
+
+            // Función para editar usuario
+            function editUser(id) {
+                const user = users.find(u => u.id === id);
+                if (user) {
+                    modalTitle.textContent = 'Editar Usuario';
+                    Object.keys(user).forEach(key => {
+                        const input = document.getElementById(`user${key.charAt(0).toUpperCase() + key.slice(1)}`);
+                        if (input) {
+                            input.value = user[key];
+                        }
+                    });
+                    openModal();
+                }
+            }
+
+            // Función para descargar Excel
+            function downloadExcel() {
+                const worksheet = XLSX.utils.json_to_sheet(users);
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, "Usuarios");
+                XLSX.writeFile(workbook, "usuarios.xlsx");
+            }
+
+            // Evento para descargar Excel
+            downloadExcelBtn.addEventListener('click', downloadExcel);
+
+            // Evento para limpiar filtros
+            clearFiltersBtn.addEventListener('click', clearFilters);
+        })
+
+        </script>
+    </html>

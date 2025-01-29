@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const fileInput = document.getElementById('file-upload-1');
     const fileInputName = document.getElementById('file-input-name-1');
     const form = document.getElementById('cartaForm');
+    const notification = document.getElementById('notification');
 
     if (!form) {
         console.error('Formulario no encontrado');
@@ -41,6 +42,68 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    let alertTimeout;
+    function showAlert(type, info) {
+        const alert = document.getElementById('alert');
+        const alertMessage = document.getElementById('alertMessage');
+        const alertIcon = document.getElementById('alertIcon');
+        // Clear any existing timeout
+        clearTimeout(alertTimeout);
+        // Set the alert message, type, and icon
+        alert.className = `alert ${type} show`;
+        // Set the appropriate icon
+        switch(type) {
+            case 'success':
+                alertMessage.textContent = `La solicitud se ha enviado correctamente`;
+                alertIcon.className = 'alert-icon fas fa-check-circle';
+                break;
+            case 'warning':
+                alertIcon.className = 'alert-icon fas fa-exclamation-triangle';
+                break;
+            case 'error':
+                alertMessage.textContent = `Error al enviar el reporte: ${info}`;
+                alertIcon.className = 'alert-icon fas fa-times-circle';
+                break;
+            case 'info':
+                alertIcon.className = 'alert-icon fas fa-info-circle';
+                break;
+        }
+        
+        // Automatically hide the alert after 5 seconds
+        alertTimeout = setTimeout(() => {
+            closeAlert();
+        }, 5000);
+    }
+    
+    function closeAlert() {
+        const alert = document.getElementById('alert');
+        alert.classList.remove('show');
+    }   
+
+    function setDefaultValue() {
+
+        const tipoCarta = document.querySelectorAll('input[name="tipo-carta"]');
+        tipoCarta.forEach(carta => {
+            carta.checked = false;
+        });
+
+        const otherInput = document.getElementById('tipo-carta-otro');
+        otherInput.value = '';
+        otherInput.style.display = 'none';
+
+        const detalle = document.getElementById('detalle');
+        detalle.value = '';
+
+        const correo = document.getElementById('correo');
+        correo.value = '';
+
+        const fileInput = document.getElementById('file-upload-1');
+        const fileText = document.getElementById('file-input-name-1');
+        fileInput.value = '';
+        fileText.textContent = 'Seleccione un archivo';
+
+    }   
+
     // Validación del formulario y creación de FormData
     form.addEventListener('submit', function (event) {
         event.preventDefault();
@@ -50,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const tipoCarta = document.querySelector('input[name="tipo-carta"]:checked'); // Buscar el radio seleccionado
 
         if (!tipoCarta) {
-            console.error('Debe seleccionar un tipo de carta');
+            alert('Debe seleccionar un tipo de carta');
             return;
         }
 
@@ -65,25 +128,25 @@ document.addEventListener('DOMContentLoaded', function () {
         formData.append('detalle_reporte', detalle);
         if (tipoCarta.value === 'otro') {
             cartaExtraordinaria = document.getElementById('tipo-carta-otro').value;
-            formData.append('ca_otro', cartaExtraordinaria);
+            formData.append('otro', cartaExtraordinaria);
         }
         formData.append('file', archivo);
         formData.append('tipo_reporte', 5);
         formData.append('tipo_documento', 3);
-        // Mostrar datos en consola para depuración
-        console.log('Datos a enviar (FormData):');
-        formData.forEach((value, key) => {
-            console.log(`${key}:`, value);
-        });
-
+        
         // Aquí podrías implementar un fetch o axios para hacer el POST:
         fetch('/dhcoapp/bienestar-integral/guardar_reporte', {
             method: 'POST',
             body: formData,
         })
         .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.error
-            ('Error al enviar el formulario:', error));
+        .then(data => {
+            showAlert('success', 'La solicitud se ha enviado correctamente');
+            setDefaultValue();
+        })
+        .catch(error => {
+            showAlert('error', 'Ocurrió un error al conectar con el servidor.', error.message);
+            console.error('Error al enviar la solicitud:', error);
+        }); 
     });
 });

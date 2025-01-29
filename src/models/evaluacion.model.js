@@ -1,7 +1,6 @@
 import sql from 'mssql';
 import { connection } from "../db/db_connection.js";
-import bcrypt from 'bcrypt';
-import { bcryptPlugin } from '../plugins/encrypt.plugin.js';
+
 
 export class EvaluacionModel{
     

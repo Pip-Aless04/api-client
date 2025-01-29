@@ -4,11 +4,46 @@ document.addEventListener('DOMContentLoaded', function () {
     const fileInput = document.getElementById('file-upload');
     const fileInputName = document.getElementById('file-input-name');
     const fileInputButton = document.querySelector('.file-input-button');
-    const vacationForm = document.getElementById('vacationForm');
-    const vacationFormSubmitButton = document.getElementById('vacationFormSubmitButton');
 
-    const fechaInicio = document.getElementById('fecha_inicio');
-    const fechaFin = document.getElementById('fecha_fin');
+    let alertTimeout;
+    function showAlert(type, info) {
+        const alert = document.getElementById('alert');
+        const alertMessage = document.getElementById('alertMessage');
+        const alertIcon = document.getElementById('alertIcon');
+        // Clear any existing timeout
+        clearTimeout(alertTimeout);
+        // Set the alert message, type, and icon
+        alert.className = `alert ${type} show`;
+        // Set the appropriate icon
+        switch(type) {
+            case 'success':
+                alertMessage.textContent = `La solicitud se ha enviado correctamente`;
+                alertIcon.className = 'alert-icon fas fa-check-circle';
+                break;
+            case 'warning':
+                alertIcon.className = 'alert-icon fas fa-exclamation-triangle';
+                break;
+            case 'error':
+                alertMessage.textContent = `Error al enviar el reporte: ${info}`;
+                alertIcon.className = 'alert-icon fas fa-times-circle';
+                break;
+            case 'info':
+                alertIcon.className = 'alert-icon fas fa-info-circle';
+                break;
+        }
+        
+        // Automatically hide the alert after 5 seconds
+        alertTimeout = setTimeout(() => {
+            closeAlert();
+        }, 5000);
+    }
+    
+    function closeAlert() {
+        const alert = document.getElementById('alert');
+        alert.classList.remove('show');
+    }
+
+
 
     // Mostrar/ocultar dropdown
     settingsIcon.addEventListener('click', function (event) {
@@ -22,11 +57,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Restringir fechas a mañana en adelante
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(today.getDate() + 1);
-
     // Formatear fecha como yyyy-mm-dd
     const formatDate = (date) => {
         const year = date.getFullYear();
@@ -34,19 +64,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const day = String(date.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
-
-    const minDate = formatDate(tomorrow);
-    fechaInicio.setAttribute('min', minDate);
-    fechaFin.setAttribute('min', minDate);
-
-    // Actualizar la fecha final mínima cuando se selecciona una fecha de inicio
-    fechaInicio.addEventListener('change', function () {
-        const startDateValue = fechaInicio.value;
-        fechaFin.setAttribute('min', startDateValue);
-        if (fechaFin.value && fechaFin.value < startDateValue) {
-            fechaFin.value = ''; // Limpiar fecha final si es menor que la de inicio
-        }
-    });
 
     // Simular clic en el input file al hacer clic en el botón
     fileInputButton.addEventListener('click', function () {
@@ -60,6 +77,24 @@ document.addEventListener('DOMContentLoaded', function () {
             : 'No archivo adjunto';
     });
 
+    function setDefaultValue() {
+        const fechaInicio = document.getElementById('fecha_inicio');
+        fechaInicio.value = '';
+
+        const fechaFin = document.getElementById('fecha_fin');
+        fechaFin.value = '';
+        
+        const observaciones = document.getElementById('observaciones');
+        observaciones.value = '';
+
+        const fileInput = document.getElementById('file-upload');
+        const fileText = document.getElementById('file-input-name');
+        fileInput.value = '';
+        fileText.textContent = 'Seleccione un archivo';
+
+        const fechaEnvioDoc = document.getElementById('fecha_documento');
+        fechaEnvioDoc.value = null;
+    }
 
     // Manejo del formulario
     document.getElementById('vacationForm').addEventListener('submit', function (e) {
@@ -92,29 +127,24 @@ document.addEventListener('DOMContentLoaded', function () {
         formData.append('tipo_documento', 5);
         formData.append('tipo_reporte', 2);
 
-        console.log('Datos que se enviarán:');
-        for (let [key, value] of formData.entries()) {
-            console.log(`${key}:`, value);
-        }
-
-        
-        fetch('http://localhost:3000/dhcoapp/bienestar-integral/guardar_reporte', {
+        fetch('/dhcoapp/bienestar-integral/guardar_reporte', {
             method: 'POST',
             body: formData
         })
-        .then(response => {
+        .then(async response => {
             if (!response.ok) {
-                throw new Error(`Error en el servidor: ${response.status}`);
+                showAlert('error', await response.text());
+                throw new Error(`Error en el servidor: ${errorText}`);
             }
             return response.json(); // Cambia a response.text() si el servidor no devuelve JSON.
         })
         .then(result => {
-            console.log(result);
-            alert('Formulario enviado exitosamente.');
+            showAlert('success');
+            setDefaultValue();
         })
         .catch(error => {
-            console.error('Error al enviar la solicitud:', error);
-            alert('Ocurrió un error al conectar con el servidor.');
+            showAlert('error', error.message);
+            console.error('Error al enviar la solicitud:', error.message);
         });
         
     });

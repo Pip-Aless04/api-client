@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { EvaluacionController } from "../controllers/evaluacion.controller.js";
 import { authUserJWT } from "../middlewares/validateUserJwt.middleware.js";
-import { saveUserInfo } from "../middlewares/saveUserInfo.middlaware.js";
+//import { saveUserInfo } from "../middlewares/saveUserInfo.middleware.js";
 
 export const createEvaluacionRoutes = ({EvaluacionModel}) => {
     const evaluacionRouter = Router();

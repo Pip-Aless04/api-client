@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoevaluación de Talentos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    :root {
+  --primary-color: #30b4b5;
+  --background-start: #e8f5f5;
+  --background-end: #ffffff;
+  --card-background: #ffffff;
+  --text-color: #333333;
+  --border-color: #e0e0e0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: "Arial", sans-serif;
+    line-height: 1.6;
+    color: var(--color-text);
+    background: linear-gradient(to bottom right, #e6f2ff, #ffffff, #fff0f5);
+    min-height: 100vh;
+  }
+
+header {
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+  }
+  nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+  }
+  .logo img {
+      height: 50px;
+      width: auto;
+  }
+  .settings-menu {
+      position: relative;
+  }
+  .settings-icon {
+      width: 40px;
+      height: 40px;
+      background-color: #f0f2f5;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  }
+  .settings-icon:hover {
+      background-color: #e4e6e9;
+  }
+  .dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background-color: #fff;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 0.5rem 0;
+      min-width: 150px;
+  }
+  .dropdown a {
+      display: block;
+      padding: 0.5rem 1rem;
+      color: #333;
+      text-decoration: none;
+  }
+  .dropdown a:hover {
+      background-color: #f0f2f5;
+  }
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 2%;
+}
+
+.image-container {
+  background-color: var(--card-background);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.main-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.title {
+  text-align: center;
+  color: var(--primary-color);
+  margin-bottom: 30px;
+}
+
+.progress-section {
+  margin-bottom: 30px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.progress-bar {
+  height: 8px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--primary-color);
+  width: 0;
+  transition: width 0.3s ease;
+}
+
+.card {
+  background-color: var(--card-background);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.evaluation-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.aspect-info {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.aspect-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.aspect-description {
+  font-size: 0.9em;
+  color: #666;
+}
+
+select {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
+textarea {
+  width: 95%;
+  min-height: 100px;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  resize: vertical;
+}
+
+button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+  margin-top: 30px;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+
+  /*centrar el boton*/
+  button{
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 5%;
+  }
+
+  .evaluation-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  select {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  textarea{
+    width: 90%;
+  }
+
+}
+
+footer {
+      padding: 0;
+      margin-top: auto;
+  }
+  .footer-content {
+      max-width: 100%;
+      margin: 0;
+      display: block;
+  }
+  .footer-content img {
+      display: block;
+      max-width: 100%;
+      width: 100%;
+      height: auto;
+  }
+
+</style>
+<body>
+  <header>
+    <nav>
+        <div class="logo">
+            <a href="/dhcoapp/inicio">
+                <img src="../../public/img/logo_pops_2024.webp" alt="POPS Logo">
+            </a>
+        </div>  
+        <div class="settings-menu">
+            <div class="settings-icon" id="settingsIcon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </div>
+            <div class="dropdown" id="settingsDropdown">
+                <a href="#">Perfil</a>
+                <a href="#">Configuración</a>
+                <a href="#">Cerrar sesión</a>
+            </div>
+        </div>
+    </nav>
+</header>
+    <div class="container">
+        <main>
+            <div class="image-container">
+                <img src="../../public/img/talentos/pasion-invitado-consumidor.webp" alt="Pasión por el invitado y el consumidor" class="main-image">
+            </div>
+            <h1 class="title">Autoevaluación de Talentos</h1>
+
+            <div class="progress-section">
+                <div class="progress-header">
+                    <h2>Tu progreso</h2>
+                    <span id="progress-percentage">0% completado</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+            </div>
+
+            <div class="evaluations" id="evaluations">
+                <!-- Evaluation items will be inserted here by JavaScript -->
+            </div>
+
+            <div class="card feedback-section">
+                <h3>Comentarios adicionales</h3>
+                <textarea id="feedback" placeholder="Comparte tus reflexiones sobre tu desempeño..."></textarea>
+                <button id="save-button" disabled>Completa todos los campos</button>
+            </div>
+        </main>
+    </div>
+    <footer>
+      <div class="footer-content">
+          <img src="../../public/img/footer.webp" alt="Decorative footer with waves">
+      </div>
+    </footer>
+    <script>
+        const evaluations = [
+  {
+    id: 1,
+    aspect: "Atención al Cliente",
+    description: "Reconozco y escucho activamente a los invitados, brindando una experiencia excepcional",
+    value: "",
+  },
+  {
+    id: 2,
+    aspect: "Empatía y Conexión",
+    description: "Construyo relaciones positivas mostrando comprensión y respeto",
+    value: "",
+  },
+  {
+    id: 3,
+    aspect: "Resolución de Problemas",
+    description: "Identifico y resuelvo situaciones de manera efectiva y proactiva",
+    value: "",
+  },
+  {
+    id: 4,
+    aspect: "Excelencia Operativa",
+    description: "Mantengo altos estándares de calidad en todas mis actividades",
+    value: "",
+  },
+  {
+    id: 5,
+    aspect: "Desarrollo Personal",
+    description: "Busco constantemente oportunidades de mejora y crecimiento",
+    value: "",
+  },
+]
+
+const evaluationOptions = [
+  { value: "supera", label: "Supera las expectativas", color: "green" },
+  { value: "cumple", label: "Cumple las expectativas", color: "blue" },
+  { value: "parcial", label: "Cumple parcialmente", color: "orange" },
+  { value: "desarrollo", label: "En desarrollo", color: "red" },
+]
+
+function createEvaluationItems() {
+  const container = document.getElementById("evaluations")
+  evaluations.forEach((item) => {
+    const card = document.createElement("div")
+    card.className = "card evaluation-item"
+    card.innerHTML = `
+            <div class="aspect-info">
+                <div class="aspect-title">${item.aspect}</div>
+                <div class="aspect-description">${item.description}</div>
+            </div>
+            <select id="select-${item.id}" onchange="handleValueChange(${item.id}, this.value)">
+                <option value="">Selecciona tu nivel</option>
+                ${evaluationOptions
+                  .map(
+                    (option) =>
+                      `<option value="${option.value}" style="color: ${option.color}">${option.label}</option>`,
+                  )
+                  .join("")}
+            </select>
+        `
+    container.appendChild(card)
+  })
+}
+
+function handleValueChange(id, value) {
+  const evaluation = evaluations.find((e) => e.id === id)
+  if (evaluation) {
+    evaluation.value = value
+    updateProgress()
+  }
+}
+
+function updateProgress() {
+  const completedCount = evaluations.filter((e) => e.value).length
+  const progress = (completedCount / evaluations.length) * 100
+  document.getElementById("progress-fill").style.width = `${progress}%`
+  document.getElementById("progress-percentage").textContent = `${Math.round(progress)}% completado`
+
+  const saveButton = document.getElementById("save-button")
+  if (progress === 100) {
+    saveButton.disabled = false
+    saveButton.textContent = "Guardar Evaluación"
+  } else {
+    saveButton.disabled = true
+    saveButton.textContent = "Completa todos los campos"
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  createEvaluationItems()
+  updateProgress()
+})
+
+document.getElementById("save-button").addEventListener("click", () => {
+  const feedback = document.getElementById("feedback").value
+  console.log("Evaluaciones:", evaluations)
+  console.log("Comentarios:", feedback)
+  alert("Evaluación guardada con éxito!")
+})
+
+
+    </script>
+</body>
+</html>
+

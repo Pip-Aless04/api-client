@@ -344,6 +344,7 @@ BEGIN
 END;
 GO
 
+
 /*
 -- Inserting values into the jerarquia table
 INSERT INTO jerarquia(jer_col_a_cargo_id, jer_col_subordinado_id)

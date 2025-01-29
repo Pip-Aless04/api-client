@@ -9,7 +9,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     button.disabled = true;
 
     // Hacer la solicitud POST
-    fetch('http://localhost:3000/dhcoapp/auth/login', {
+    fetch('/dhcoapp/auth/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -25,7 +25,8 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
             window.location.href = '/dhcoapp/inicio'; // Cambia '/dashboard' por la página a la que deseas redirigir
         } else {
             // Si la respuesta es un error
-            alert('Login failed. Please check your credentials.');
+            console.log(response)
+            alert(`Inicio de sesion fallido ${response}`);
             button.textContent = originalText;
             button.disabled = false;
         }

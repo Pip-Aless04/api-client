@@ -4,16 +4,23 @@ import { authUserJWT } from "../middlewares/validateUserJwt.middleware.js";
 import { validateUserAccesPermission } from "../middlewares/validateUserAccesPermission.middleware.js";
 //import { saveUserInfo } from "../middlewares/saveUserInfo.middlaware.js";
 
-export const createViewsRoutes = ({ReportesModel, EvaluacionModel}) => {
+export const createViewsRoutes = ({ReportesModel, EvaluacionModel, AuthModel}) => {
     const viewsRouter = Router();
-    const viewController = new ViewController({ReportesModel, EvaluacionModel});
+    const viewController = new ViewController({ReportesModel, EvaluacionModel, AuthModel});
 
+    // Inicio y Auth
     viewsRouter.get("/", viewController.login); 
     viewsRouter.get("/requestChangePassword", viewController.requestChangePassword);
     viewsRouter.get("/resetPassword", viewController.resetPassword);
     viewsRouter.get("/inicio", authUserJWT, viewController.inicio);
-    viewsRouter.get("/bienestar-integral/:solicitud", authUserJWT, validateUserAccesPermission, viewController.solicitud);
+
+    // Bienestar Integral
+    viewsRouter.get("/bienestar-integral/:solicitud", authUserJWT, validateUserAccesPermission, viewController.solicitudRports);
+    viewsRouter.get("/mantenimiento/:solicitud", authUserJWT, viewController.solicitudMantenimiento);
     viewsRouter.get("/pruebaHistorico", authUserJWT, viewController.pruebaHistorico);
+
+    // Evaluacion
+    viewsRouter.get("/evaluacion/inicio", authUserJWT, viewController.evaluacion);
 
     return viewsRouter;
 };

@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" id="appIcon" type="image/x-icon" href="https://cms.blumewebsites.com/pops/website/favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Reporte de Incapacidades</title>
+</head>
+<style>
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --background-color: #f0f2f5;
+    --text-color: #333;
+    --border-color: #e0e0e0;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+    body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-image: url('./public/img/background.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+.logo img {
+    height: 50px;
+    width: auto;
+}
+.settings-menu {
+    position: relative;
+}
+.settings-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #f0f2f5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.settings-icon:hover {
+    background-color: #e4e6e9;
+}
+.dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 0.5rem 0;
+    min-width: 150px;
+}
+.dropdown a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #333;
+    text-decoration: none;
+}
+.dropdown a:hover {
+    background-color: #f0f2f5;
+}
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+
+.container {
+            max-width: 1200px;
+            margin: auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            flex-grow: 1;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            min-width: 600px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        tr {
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px var(--shadow-color);
+            transition: all 0.3s ease;
+        }
+
+        tr:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px var(--shadow-color);
+        }
+
+        .action-buttons {
+            white-space: nowrap;
+        }
+
+        .action-buttons button {
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+
+        .edit-button {
+            background-color: var(--secondary-color);
+        }
+
+        .edit-button:hover {
+            background-color: #27ae60;
+        }
+
+        /* Estilos para el modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            margin: 5% auto;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: modalFadeIn 0.3s;
+            overflow: hidden;
+        }
+
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(-50px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close-button {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-button:hover {
+            color: #f0f0f0;
+        }
+
+        .modal-body {
+            padding: 30px 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .form-actions button {
+            flex: 1;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: #e0e0e0;
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #d0d0d0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            .controls {
+                flex-direction: column;
+            }
+            .filter-input, button {
+                width: 100%;
+            }
+            th, td {
+                padding: 10px;
+            }
+            .action-buttons button {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+            .modal-content {
+                width: 95%;
+                max-width: none;
+                margin: 5% auto;
+            }
+            .modal-body {
+                padding: 20px;
+            }
+            .form-actions {
+                flex-direction: column;
+            }
+            .form-actions button {
+                width: 100%;
+            }
+            .button-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+footer {
+    padding: 0;
+    margin-top: auto;
+}
+.footer-content {
+    max-width: 100%;
+    margin: 0;
+    display: block;
+}
+.footer-content img {
+    display: block;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+}
+
+</style>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="/dhcoapp/inicio">
+                    <img src="./public/img/logo_pops_2024.webp" alt="POPS Logo">
+                </a>
+            </div>
+            <div class="settings-menu">
+                <div class="settings-icon" id="settingsIcon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </div>
+                <div class="dropdown" id="settingsDropdown">
+                    <a href="#">Perfil</a>
+                    <a href="#">Configuración</a>
+                    <a href="#">Cerrar sesión</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1>Gestión de Usuarios</h1>
+            <div id="filters" class="controls">
+                <!-- Los filtros se generarán dinámicamente aquí -->
+            </div>
+            <div class="button-container">
+                <button id="addUserBtn">Agregar Usuario</button>
+                <button id="downloadExcelBtn">Descargar Excel</button>
+            </div>
+            <div class="table-container">
+                <table id="userTable">
+                    <thead>
+                        <!-- Los encabezados de la tabla se generarán dinámicamente aquí -->
+                    </thead>
+                    <tbody>
+                        <!-- Los datos de los usuarios se insertarán aquí dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Editar Usuario</h2>
+                <button class="close-button" aria-label="Cerrar">&times;</button>
+            </div>
+            <form id="userForm" class="modal-body">
+                <div class="form-group">
+                    <label for="userNombre">Nombre:</label>
+                    <input type="text" id="userNombre" name="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">Email:</label>
+                    <input type="email" id="userEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="userRol">Rol:</label>
+                    <select id="userRol" name="rol" required>
+                        <option value="Admin">Admin</option>
+                        <option value="Usuario">Usuario</option>
+                        <option value="Editor">Editor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="userEdad">Edad:</label>
+                    <input type="number" id="userEdad" name="edad" min="18" max="100" required>
+                </div>
+                <div class="form-group">
+                    <label for="userFechaIngreso">Fecha de Ingreso:</label>
+                    <input type="date" id="userFechaIngreso" name="fechaIngreso" required>
+                </div>
+                <div class="form-group">
+                    <label for="userDepartamento">Departamento:</label>
+                    <select id="userDepartamento" name="departamento" required>
+                        <option value="IT">IT</option>
+                        <option value="Ventas">Ventas</option>
+                        <option value="Marketing">Marketing</option>
+                        <option value="RRHH">RRHH</option>
+                    </select>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelBtn">Cancelar</button>
+                    <button type="submit" class="btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-content">
+            <img src="./public/img/footer.webp" alt="Decorative footer with waves">
+        </div>
+    </footer>
+</body>
+<script>
+    // Datos de ejemplo (puedes reemplazar esto con tu propio array)
+    let users = [
+        { id: 1, nombre: 'Juan Pérez', email: 'juan@example.com', rol: 'Admin', edad: 30, fechaIngreso: '2023-01-15', departamento: 'IT' },
+        { id: 2, nombre: 'María García', email: 'maria@example.com', rol: 'Usuario', edad: 25, fechaIngreso: '2023-02-20', departamento: 'Ventas' },
+        { id: 3, nombre: 'Carlos López', email: 'carlos@example.com', rol: 'Editor', edad: 35, fechaIngreso: '2023-03-10', departamento: 'Marketing' }
+    ];
+
+    const userTable = document.getElementById('userTable');
+    const filtersContainer = document.getElementById('filters');
+    const addUserBtn = document.getElementById('addUserBtn');
+    const downloadExcelBtn = document.getElementById('downloadExcelBtn');
+    const userModal = document.getElementById('userModal');
+    const userForm = document.getElementById('userForm');
+    const modalTitle = document.getElementById('modalTitle');
+    const closeBtn = userModal.querySelector('.close-button');
+    const cancelBtn = document.getElementById('cancelBtn');
+
+    // Obtener las claves del objeto (excluyendo 'id')
+    const keys = Object.keys(users[0]).filter(key => key !== 'id');
+
+    // Función para generar los filtros
+    function generateFilters() {
+        filtersContainer.innerHTML = ''; // Limpiar filtros existentes
+        keys.forEach(key => {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.placeholder = `Filtrar por ${key}`;
+            input.className = 'filter-input';
+            input.addEventListener('input', filterTable);
+            filtersContainer.appendChild(input);
+        });
+    }
+
+    // Función para generar los encabezados de la tabla
+    function generateTableHeaders() {
+        const thead = userTable.querySelector('thead');
+        let headerRow = '<tr>';
+        keys.forEach(key => {
+            headerRow += `<th>${key.charAt(0).toUpperCase() + key.slice(1)}</th>`;
+        });
+        headerRow += '<th>Acciones</th></tr>';
+        thead.innerHTML = headerRow;
+    }
+
+    // Función para renderizar la tabla
+    function renderTable(data) {
+        const tbody = userTable.querySelector('tbody');
+        tbody.innerHTML = '';
+        data.forEach(user => {
+            let row = '<tr>';
+            keys.forEach(key => {
+                row += `<td>${user[key]}</td>`;
+            });
+            row += `
+                <td class="action-buttons">
+                    <button class="edit-button" onclick="editUser(${user.id})">Editar</button>
+                </td>
+            </tr>`;
+            tbody.innerHTML += row;
+        });
+    }
+
+    // Función para filtrar la tabla
+    function filterTable() {
+        const filterInputs = document.querySelectorAll('.filter-input');
+        const filteredUsers = users.filter(user => {
+            return Array.from(filterInputs).every(input => {
+                const key = input.placeholder.split(' ')[2];
+                const filterValue = input.value.toLowerCase();
+                return user[key].toString().toLowerCase().includes(filterValue);
+            });
+        });
+        renderTable(filteredUsers);
+    }
+
+    // Inicializar la tabla y los filtros
+    generateFilters();
+    generateTableHeaders();
+    renderTable(users);
+
+    // Función para abrir el modal
+    function openModal(userId = null) {
+        if (userId) {
+            const user = users.find(u => u.id === userId);
+            if (user) {
+                modalTitle.textContent = 'Editar Usuario';
+                keys.forEach(key => {
+                    document.getElementById(`user${key.charAt(0).toUpperCase() + key.slice(1)}`).value = user[key];
+                });
+            }
+        } else {
+            modalTitle.textContent = 'Agregar Usuario';
+            userForm.reset();
+        }
+        userModal.style.display = 'block';
+    }
+
+    // Función para cerrar el modal
+    function closeModal() {
+        userModal.style.display = 'none';
+    }
+
+    // Abrir modal para agregar usuario
+    addUserBtn.onclick = function() {
+        openModal();
+    }
+
+    // Cerrar modal
+    closeBtn.onclick = closeModal;
+    cancelBtn.onclick = closeModal;
+
+    // Cerrar modal al hacer clic fuera de él
+    window.onclick = function(event) {
+        if (event.target == userModal) {
+            closeModal();
+        }
+    }
+
+    // Manejar envío del formulario
+    userForm.onsubmit = function(e) {
+        e.preventDefault();
+        const newUser = {};
+        keys.forEach(key => {
+            newUser[key] = document.getElementById(`user${key.charAt(0).toUpperCase() + key.slice(1)}`).value;
+        });
+
+        if (modalTitle.textContent === 'Editar Usuario') {
+            // Editar usuario existente
+            const userId = users.find(u => u.nombre === newUser.nombre).id;
+            const index = users.findIndex(u => u.id === userId);
+            users[index] = { ...users[index], ...newUser };
+        } else {
+            // Agregar nuevo usuario
+            const newId = users.length > 0 ? Math.max(...users.map(u => u.id)) + 1 : 1;
+            users.push({ id: newId, ...newUser });
+        }
+
+        renderTable(users);
+        closeModal();
+    }
+
+    // Función para editar usuario
+    function editUser(id) {
+        openModal(id);
+    }
+
+    // Función para descargar Excel
+    function downloadExcel() {
+        const worksheet = XLSX.utils.json_to_sheet(users);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Usuarios");
+        XLSX.writeFile(workbook, "usuarios.xlsx");
+    }
+
+    // Evento para descargar Excel
+    downloadExcelBtn.addEventListener('click', downloadExcel);
+</script>
+</html>

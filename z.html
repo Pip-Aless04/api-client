@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Table Estética y Responsive de Usuarios</title>
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: #f0f2f5;
+            --text-color: #333;
+            --border-color: #e0e0e0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px var(--shadow-color);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        button {
+            padding: 10px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-weight: 500;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            min-width: 600px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        tr {
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px var(--shadow-color);
+            transition: all 0.3s ease;
+        }
+
+        tr:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px var(--shadow-color);
+        }
+
+        .action-buttons {
+            white-space: nowrap;
+        }
+
+        .action-buttons button {
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+
+        .edit-button {
+            background-color: var(--secondary-color);
+        }
+
+        .edit-button:hover {
+            background-color: #27ae60;
+        }
+
+        /* Estilos para el modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            margin: 5% auto;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: modalFadeIn 0.3s;
+            overflow: hidden;
+        }
+
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(-50px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close-button {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-button:hover {
+            color: #f0f0f0;
+        }
+
+        .modal-body {
+            padding: 30px 40px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .form-actions button {
+            flex: 1;
+        }
+
+        .btn-primary,
+        .btn-secondary {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: #e0e0e0;
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #d0d0d0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos responsivos */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            .controls {
+                flex-direction: column;
+            }
+            .filter-input, button {
+                width: 100%;
+            }
+            th, td {
+                padding: 10px;
+            }
+            .action-buttons button {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+            .modal-content {
+                width: 95%;
+                max-width: none;
+                margin: 5% auto;
+            }
+            .modal-body {
+                padding: 20px;
+            }
+            .form-actions {
+                flex-direction: column;
+            }
+            .form-actions button {
+                width: 100%;
+            }
+            .button-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Gestión de Usuarios</h1>
+        <div class="button-container">
+            <button id="addUserBtn">Agregar Usuario</button>
+            <button id="downloadExcelBtn">Descargar Excel</button>
+            <button id="clearFiltersBtn">Limpiar Filtros</button>
+        </div>
+        <div class="table-container">
+            <table id="userTable">
+                <thead>
+                    <!-- Los encabezados de la tabla se generarán dinámicamente aquí -->
+                </thead>
+                <tbody>
+                    <!-- Los datos de los usuarios se insertarán aquí dinámicamente -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="userModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Editar Usuario</h2>
+                <button class="close-button" aria-label="Cerrar">&times;</button>
+            </div>
+            <form id="userForm" class="modal-body">
+                <input type="hidden" id="userId" name="id">
+                <div class="form-group">
+                    <label for="userIdentificacion">Identificación:</label>
+                    <input type="text" id="userIdentificacion" name="identificacion" required>
+                </div>
+                <div class="form-group">
+                    <label for="userNombre">Nombre:</label>
+                    <input type="text" id="userNombre" name="nombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="userSegundoNombre">Segundo Nombre:</label>
+                    <input type="text" id="userSegundoNombre" name="segundo_nombre">
+                </div>
+                <div class="form-group">
+                    <label for="userPrimerApellido">Primer Apellido:</label>
+                    <input type="text" id="userPrimerApellido" name="primer_apellido" required>
+                </div>
+                <div class="form-group">
+                    <label for="userSegundoApellido">Segundo Apellido:</label>
+                    <input type="text" id="userSegundoApellido" name="segundo_apellido" required>
+                </div>
+                <div class="form-group">
+                    <label for="userPuesto">Puesto:</label>
+                    <input type="text" id="userPuesto" name="puesto" required>
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">Email:</label>
+                    <input type="email" id="userEmail" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="userEstado">Estado:</label>
+                    <input type="text" id="userEstado" name="estado" required>
+                </div>
+                <div class="form-group">
+                    <label for="userDepartamento">Departamento:</label>
+                    <input type="text" id="userDepartamento" name="departamento" required>
+                </div>
+                <div class="form-group">
+                    <label for="userDireccion">Dirección:</label>
+                    <input type="text" id="userDireccion" name="direccion" required>
+                </div>
+                <div class="form-group">
+                    <label for="userPais">País:</label>
+                    <input type="text" id="userPais" name="pais" required>
+                </div>
+                <div class="form-group">
+                    <label for="userACargo">A Cargo:</label>
+                    <input type="text" id="userACargo" name="a_cargo" required>
+                </div>
+                <div class="form-group">
+                    <label for="userNombreJefe">Nombre del Jefe:</label>
+                    <input type="text" id="userNombreJefe" name="nombre_jefe" required>
+                </div>
+                <div class="form-group">
+                    <label for="userFechaIngreso">Fecha de Ingreso:</label>
+                    <input type="date" id="userFechaIngreso" name="fecha_ingreso" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Guardar</button>
+                    <button type="button" class="btn-secondary" id="cancelBtn">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo (puedes reemplazar esto con tu propio array)
+        let users = [
+    {
+        "id": "874DD57A-4DB8-48E2-BD1E-121A94C50F8C",
+        "identificacion": "205980803",
+        "nombre": "Jose",
+        "segundo_nombre": "Luis",
+        "primer_apellido": "Barrantes",
+        "segundo_apellido": "Murillo",
+        "puesto": "JEFE DE SALUD OCUPACIONAL Y SERV GENERALES",
+        "email": "jlbarrantes@pops.co.cr",
+        "estado": "A",
+        "departamento": "DHCO",
+        "direccion": "DHCO",
+        "pais": "CRC",
+        "a_cargo": "S",
+        "nombre_jefe": "Maribel Quesada Araya",
+        "fecha_ingreso": "21-09-2023"
+    },
+    {
+        "id": "810C01A2-9931-4489-8810-3745D4ACE109",
+        "identificacion": "114810455",
+        "nombre": "Silvia",
+        "segundo_nombre": "Maria",
+        "primer_apellido": "Elizondo",
+        "segundo_apellido": "Portuguez",
+        "puesto": "ANALISTA DE SERVICIOS GENERALES",
+        "email": "smelizondo@pops.co.cr",
+        "estado": "A",
+        "departamento": "DHCO",
+        "direccion": "DHCO",
+        "pais": "CRC",
+        "a_cargo": "S",
+        "nombre_jefe": "Jose Barrantes Murillo",
+        "fecha_ingreso": "05-04-2018"
+    },
+    {
+        "id": "6FB0F5C6-0930-47E4-9650-3D9CE431A50D",
+        "identificacion": "402410268",
+        "nombre": "Victor",
+        "segundo_nombre": "Manuel",
+        "primer_apellido": "Vargas",
+        "segundo_apellido": "Aguero",
+        "puesto": "AUXILIAR DE SERVICIOS GENERALES",
+        "email": "vmvargas@pops.co.cr",
+        "estado": "A",
+        "departamento": "DHCO",
+        "direccion": "DHCO",
+        "pais": "CRC",
+        "a_cargo": "N",
+        "nombre_jefe": "Silvia Elizondo Portuguez",
+        "fecha_ingreso": "07-02-2019"
+    },
+    {
+        "id": "7E47F1ED-A18E-4397-8259-3FB66A9B47A4",
+        "identificacion": "114680388",
+        "nombre": "Katherine",
+        "segundo_nombre": "Anneth",
+        "primer_apellido": "Sandoval",
+        "segundo_apellido": "Quesada",
+        "puesto": "COORDINADOR DE BIENESTAR INTEGRAL",
+        "email": "ksandoval@pops.co.cr",
+        "estado": "A",
+        "departamento": "DHCO",
+        "direccion": "DHCO",
+        "pais": "CRC",
+        "a_cargo": "S",
+        "nombre_jefe": "Maribel Quesada Araya",
+        "fecha_ingreso": "21-05-2014"
+    },
+    {
+        "id": "2F9B1306-45FE-4065-B7D9-41D3EABA3CE8",
+        "identificacion": "701950759",
+        "nombre": "Daniel",
+        "segundo_nombre": "Jesus",
+        "primer_apellido": "Duran",
+        "segundo_apellido": "Sanchez",
+        "puesto": "COORDINADOR DE TRANSFORMACION DIGITAL",
+        "email": "dduran@pops.co.cr",
+        "estado": "A",
+        "departamento": "FINANCIERA",
+        "direccion": "FINANCIERA",
+        "pais": "CRC",
+        "a_cargo": "S",
+        "nombre_jefe": "Silvia Arguello Solano",
+        "fecha_ingreso": "08-10-2018"
+    },
+    {
+        "id": "0CB5B993-EBBE-468D-8C4E-431ABFA51792",
+        "identificacion": "304240976",
+        "nombre": "Daniel",
+        "segundo_nombre": "",
+        "primer_apellido": "Quesada",
+        "segundo_apellido": "Lobo",
+        "puesto": "ANALISTA DE FORMACION Y DESARROLLO",
+        "email": "dquesada@pops.co.cr",
+        "estado": "A",
+        "departamento": "DHCO",
+        "direccion": "DHCO",
+        "pais": "CRC",
+        "a_cargo": "N",
+        "nombre_jefe": "Tiffany Leiton Chinchilla",
+        "fecha_ingreso": "07-10-2024"
+    },
+    {
+        "id": "CA426E67-D3F4-415A-A545-50C8DBC609E0",
+        "identificacion": "116130367",
+        "nombre": "Tiffany",
+        "segundo_nombre": "",
+        "primer_apellido": "Leiton",
+        "segundo_apellido": "Chinchilla",
+        "puesto": "COORDINADORA DE FORMACION Y DESARROLLO",
+        "email": "tleiton@pops.co.cr",
+        "estado": "A",
+        "departamento": "DHCO",
+        "direccion": "DHCO",
+        "pais": "CRC",
+        "a_cargo": "N",
+        "nombre_jefe": "Melissa Villegas Gomez",
+        "fecha_ingreso": "03-04-2023"
+    },
+    {
+        "id": "FA51EC46-08E9-4E18-9069-53672309FC00",
+        "identificacion": "304390650",
+        "nombre": "Susana",
+        "segundo_nombre": "",
+        "primer_apellido": "Portilla",
+        "segundo_apellido": "Martinez",
+        "puesto": "ANALISTA DE COSTOS",
+        "email": "sportilla@pops.co.cr",
+        "estado": "A",
+        "departamento": "FINANCIERA",
+        "direccion": "FINANCIERA",
+        "pais": "CRC",
+        "a_cargo": "N",
+        "nombre_jefe": "Silvia Arguello Solano",
+        "fecha_ingreso": "07-08-2023"
+    },
+    {
+        "id": "0614C7BC-0217-485C-B2A8-6BA303ED4952",
+        "identificacion": "402150989",
+        "nombre": "Melissa",
+        "segundo_nombre": "Eugenia",
+        "primer_apellido": "Villegas",
+        "segundo_apellido": "Gomez",
+        "puesto": "JEFE DE PLANEACION Y DESARROLLO DE TALENTO",
+        "email": "mevillegas@pops.co.cr",
+        "estado": "A",
+        "departamento": "DHCO",
+        "direccion": "DHCO",
+        "pais": "CRC",
+        "a_cargo": "S",
+        "nombre_jefe": "Maribel Quesada Araya",
+        "fecha_ingreso": "20-02-2023"
+    },
+    {
+        "id": "0740B3D1-F02D-4DC9-9C6F-6EDE961CC8CA",
+        "identificacion": "112910473",
+        "nombre": "Maribel",
+        "segundo_nombre": "Regina",
+        "primer_apellido": "Quesada",
+        "segundo_apellido": "Araya",
+        "puesto": "DIRECTOR DE DESARROLLO HUMANO Y CUL ORG",
+        "email": "mquesada@pops.co.cr",
+        "estado": "A",
+        "departamento": "DHCO",
+        "direccion": "DHCO",
+        "pais": "CRC",
+        "a_cargo": "S",
+        "nombre_jefe": "Luis Rojas Panche",
+        "fecha_ingreso": "06-02-2014"
+    },
+    {
+        "id": "35AF704C-BFBF-4E11-B86F-788DCAD96F84",
+        "identificacion": "114280733",
+        "nombre": "Daniela",
+        "segundo_nombre": "",
+        "primer_apellido": "Jimenez",
+        "segundo_apellido": "Calvo",
+        "puesto": "ANALISTA DE BIENESTAR INTEGRAL",
+        "email": "djimenez@pops.co.cr",
+        "estado": "A",
+        "departamento": "DHCO",
+        "direccion": "DHCO",
+        "pais": "CRC",
+        "a_cargo": "N",
+        "nombre_jefe": "Katherine Sandoval Quesada",
+        "fecha_ingreso": "10-10-2012"
+    },
+    {
+        "id": "291D4284-7E66-4EFD-B819-798E7BE2C98E",
+        "identificacion": "800580037",
+        "nombre": "Winder",
+        "segundo_nombre": "Alfredo",
+        "primer_apellido": "Castellon",
+        "segundo_apellido": "Morales",
+        "puesto": "DIRECTOR FINANCIERO",
+        "email": "wacastellon@pops.co.cr",
+        "estado": "A",
+        "departamento": "FINANCIERA",
+        "direccion": "FINANCIERA",
+        "pais": "CRC",
+        "a_cargo": "S",
+        "nombre_jefe": "Katherine Sandoval Quesada",
+        "fecha_ingreso": "10-10-2012"
+    },
+    {
+        "id": "DEB22C5E-D5A1-496D-8DA9-81A27C3BEF8A",
+        "identificacion": "604120258",
+        "nombre": "Ruth",
+        "segundo_nombre": "Maria",
+        "primer_apellido": "Zamora",
+        "segundo_apellido": "Bermudez",
+        "puesto": "AUXILIAR DE BIENESTAR INTEGRAL",
+        "email": "recepcionpops@pops.co.cr",
+        "estado": "A",
+        "departamento": "DHCO",
+        "direccion": "DHCO",
+        "pais": "CRC",
+        "a_cargo": "N",
+        "nombre_jefe": "Katherine Sandoval Quesada",
+        "fecha_ingreso": "15-03-2018"
+    },
+    {
+        "id": "6A25A7C4-B245-47C6-A176-96272C187BD7",
+        "identificacion": "206600878",
+        "nombre": "Masley",
+        "segundo_nombre": "Sofia",
+        "primer_apellido": "Villalobos",
+        "segundo_apellido": "Cordero",
+        "puesto": "ANALISTA DE ATRACCIÓN Y FIDELIZACION",
+        "email": "svillalobos@pops.co.cr",
+        "estado": "A",
+        "departamento": "DHCO",
+        "direccion": "DHCO",
+        "pais": "CRC",
+        "a_cargo": "N",
+        "nombre_jefe": "Melissa Villegas Gomez",
+        "fecha_ingreso": "06-03-2023"
+    },
+    {
+        "id": "A8FA817B-3D91-4F18-8817-9EF3A7F0D132",
+        "identificacion": "112810930",
+        "nombre": "Rebeca",
+        "segundo_nombre": "",
+        "primer_apellido": "Gonzalez",
+        "segundo_apellido": "Padilla",
+        "puesto": "GESTOR DE CULTURA Y BIENESTAR",
+        "email": "rgonzalez@pops.co.cr",
+        "estado": "A",
+        "departamento": "DHCO",
+        "direccion": "DHCO",
+        "pais": "CRC",
+        "a_cargo": "N",
+        "nombre_jefe": "Grettel Ovares Hernández",
+        "fecha_ingreso": "12-06-2023"
+    },
+    {
+        "id": "B5B4F8A6-27A9-4804-ADF2-A75450807244",
+        "identificacion": "119160949",
+        "nombre": "Alessandro",
+        "segundo_nombre": "Gustavo",
+        "primer_apellido": "Arias",
+        "segundo_apellido": "Baldi",
+        "puesto": "ANALISTA DE TRANSFORMACION DIGITAL",
+        "email": "agarias@pops.co.cr",
+        "estado": "A",
+        "departamento": "FINANCIERA",
+        "direccion": "FINANCIERA",
+        "pais": "CRC",
+        "a_cargo": "N",
+        "nombre_jefe": "Daniel Duran Sanchez",
+        "fecha_ingreso": "04-12-2023"
+    },
+    {
+        "id": "163A6746-E58E-4B71-8C88-B69746F3A597",
+        "identificacion": "401990228",
+        "nombre": "Ana",
+        "segundo_nombre": "Lorena",
+        "primer_apellido": "Cortes",
+        "segundo_apellido": "Rojas",
+        "puesto": "ANALISTA DE ATRACCIÓN Y FIDELIZACION",
+        "email": "alcortes@pops.co.cr",
+        "estado": "A",
+        "departamento": "DHCO",
+        "direccion": "DHCO",
+        "pais": "CRC",
+        "a_cargo": "N",
+        "nombre_jefe": "Melissa Villegas Gomez",
+        "fecha_ingreso": "02-05-2022"
+    },
+    {
+        "id": "3BC8F35B-6CAA-4A96-8721-C8F06D19DDB4",
+        "identificacion": "112650757",
+        "nombre": "Erica",
+        "segundo_nombre": "Paola",
+        "primer_apellido": "Aguilar",
+        "segundo_apellido": "Chaves",
+        "puesto": "ANALISTA DE ATRACCIÓN Y FIDELIZACION",
+        "email": "eaguilar@pops.co.cr",
+        "estado": "A",
+        "departamento": "DHCO",
+        "direccion": "DHCO",
+        "pais": "CRC",
+        "a_cargo": "N",
+        "nombre_jefe": "Jose Barrantes Murillo",
+        "fecha_ingreso": "19-06-2023"
+    },
+    {
+        "id": "690F5ABF-E6B7-4CA4-AA74-DD3A602E2B8A",
+        "identificacion": "206470792",
+        "nombre": "Nehemias",
+        "segundo_nombre": "",
+        "primer_apellido": "Quiros",
+        "segundo_apellido": "Cespedes",
+        "puesto": "ANALISTA DE TRANSFORMACION DIGITAL",
+        "email": "nquiros@pops.co.cr",
+        "estado": "A",
+        "departamento": "FINANCIERA",
+        "direccion": "FINANCIERA",
+        "pais": "CRC",
+        "a_cargo": "N",
+        "nombre_jefe": "Daniel Duran Sanchez",
+        "fecha_ingreso": "21-08-2023"
+    },
+    {
+        "id": "0E4D6C6E-0E6C-42E3-8EC8-DDA47EE58D7A",
+        "identificacion": "205670538",
+        "nombre": "Leonardo",
+        "segundo_nombre": "",
+        "primer_apellido": "Gonzalez",
+        "segundo_apellido": "Rojas",
+        "puesto": "GESTOR DE CULTURA Y BIENESTAR",
+        "email": "lgonzales@pops.co.cr",
+        "estado": "A",
+        "departamento": "DHCO",
+        "direccion": "DHCO",
+        "pais": "CRC",
+        "a_cargo": "N",
+        "nombre_jefe": "Jose Barrantes Murillo",
+        "fecha_ingreso": "15-01-2024"
+    },
+    {
+        "id": "9B45F485-F643-4753-8AE2-E0C902BEA67C",
+        "identificacion": "106560422",
+        "nombre": "Grettel",
+        "segundo_nombre": "",
+        "primer_apellido": "Ovares",
+        "segundo_apellido": "Hernández",
+        "puesto": "JEFE DE BIENESTAR INTEGRAL",
+        "email": "govares@pops.co.cr",
+        "estado": "A",
+        "departamento": "DHCO",
+        "direccion": "DHCO",
+        "pais": "CRC",
+        "a_cargo": "S",
+        "nombre_jefe": "Maribel Quesada Araya",
+        "fecha_ingreso": "03-04-1980"
+    },
+    {
+        "id": "A840DAB6-3EC1-41C3-A651-E77C85769ED2",
+        "identificacion": "AX259379",
+        "nombre": "Luis",
+        "segundo_nombre": "Alejandro",
+        "primer_apellido": "Rojas",
+        "segundo_apellido": "Panche",
+        "puesto": "GERENTE GENERAL",
+        "email": "larojas@pops.co.cr",
+        "estado": "A",
+        "departamento": "GERENCIA GENERAL",
+        "direccion": "GERENCIA GENERAL",
+        "pais": "CRC",
+        "a_cargo": "S",
+        "nombre_jefe": "Luis Rojas Panche",
+        "fecha_ingreso": "01-08-24",
+    },
+    {
+        "id": "0BD4D807-CFED-438C-864A-FB264AC8C64C",
+        "identificacion": "111860631",
+        "nombre": "Silvia",
+        "segundo_nombre": "",
+        "primer_apellido": "Arguello",
+        "segundo_apellido": "Solano",
+        "puesto": "JEFE DE COSTOS Y TRANSFORMACION DIGITAL",
+        "email": "sarguello@pops.co.cr",
+        "estado": "A",
+        "departamento": "FINANCIERA",
+        "direccion": "FINANCIERA",
+        "pais": "CRC",
+        "a_cargo": "S",
+        "nombre_jefe": "Winder Castellon Morales",
+        "fecha_ingreso": "29-11-2006"
+    },
+    {
+        "id": "9E09C18A-60AA-429C-BF0D-FEEAAA529FAD",
+        "identificacion": "111230685",
+        "nombre": "Karen",
+        "segundo_nombre": "Vanessa",
+        "primer_apellido": "Salas",
+        "segundo_apellido": "Chacon",
+        "puesto": "ANALISTA DE ATRACCIÓN Y FIDELIZACION",
+        "email": "ksalas@pops.co.cr",
+        "estado": "A",
+        "departamento": "DHCO",
+        "direccion": "DHCO",
+        "pais": "CRC",
+        "a_cargo": "N",
+        "nombre_jefe": "Melissa Villegas Gomez",
+        "fecha_ingreso": "06-03-2023"
+    }
+]
+
+        const userTable = document.getElementById('userTable');
+        const addUserBtn = document.getElementById('addUserBtn');
+        const downloadExcelBtn = document.getElementById('downloadExcelBtn');
+        const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+        const userModal = document.getElementById('userModal');
+        const userForm = document.getElementById('userForm');
+        const modalTitle = document.getElementById('modalTitle');
+        const closeBtn = userModal.querySelector('.close-button');
+        const cancelBtn = document.getElementById('cancelBtn');
+
+        // Obtener las claves del objeto (excluyendo 'id')
+        const keys = Object.keys(users[0]).filter(key => key !== 'id');
+
+        // Función para generar los encabezados de la tabla y los filtros
+        function generateTableHeadersAndFilters() {
+            const thead = userTable.querySelector('thead');
+            let headerRow = '<tr>';
+            let filterRow = '<tr>';
+            
+            keys.forEach(key => {
+                const displayKey = key.replace(/_/g, ' ');
+                headerRow += `<th>${displayKey.charAt(0).toUpperCase() + displayKey.slice(1)}</th>`;
+                filterRow += `
+                    <th>
+                        <input type="text" class="filter-input" data-key="${key}" placeholder="Filtrar ${displayKey}">
+                    </th>
+                `;
+            });
+            
+            headerRow += '<th>Acciones</th></tr>';
+            filterRow += '<th></th></tr>';
+            
+            thead.innerHTML = headerRow + filterRow;
+
+            // Agregar event listeners a los inputs de filtro
+            thead.querySelectorAll('.filter-input').forEach(input => {
+                input.addEventListener('input', filterTable);
+            });
+        }
+
+        // Función para renderizar la tabla
+        function renderTable(data) {
+            const tbody = userTable.querySelector('tbody');
+            tbody.innerHTML = '';
+            data.forEach(user => {
+                let row = '<tr>';
+                keys.forEach(key => {
+                    row += `<td>${user[key]}</td>`;
+                });
+                row += `
+                    <td class="action-buttons">
+                        <button class="edit-button" onclick="editUser('${user.id}')">Editar</button>
+                    </td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // Función para filtrar la tabla
+        function filterTable() {
+            const filterInputs = document.querySelectorAll('.filter-input');
+            const filteredUsers = users.filter(user => {
+                return Array.from(filterInputs).every(input => {
+                    const key = input.dataset.key;
+                    const filterValue = input.value.toLowerCase();
+                    return user[key].toString().toLowerCase().includes(filterValue);
+                });
+            });
+            renderTable(filteredUsers);
+        }
+
+        // Función para limpiar todos los filtros
+        function clearFilters() {
+            document.querySelectorAll('.filter-input').forEach(input => {
+                input.value = '';
+            });
+            renderTable(users);
+        }
+
+        // Inicializar la tabla y los filtros
+        generateTableHeadersAndFilters();
+        renderTable(users);
+
+        // Función para abrir el modal
+        function openModal() {
+            userModal.style.display = 'block';
+        }
+
+        // Función para cerrar el modal
+        function closeModal() {
+            userModal.style.display = 'none';
+            userForm.reset();
+        }
+
+        // Abrir modal para agregar usuario
+        addUserBtn.onclick = function() {
+            modalTitle.textContent = 'Agregar Usuario';
+            openModal();
+        }
+
+        // Cerrar modal
+        closeBtn.onclick = closeModal;
+        cancelBtn.onclick = closeModal;
+
+        // Cerrar modal al hacer clic fuera de él
+        window.onclick = function(event) {
+            if (event.target == userModal) {
+                closeModal();
+            }
+        }
+
+        // Manejar envío del formulario
+        userForm.onsubmit = function(e) {
+            e.preventDefault();
+            const formData = new FormData(userForm);
+            const updatedUser = Object.fromEntries(formData.entries());
+
+            if (modalTitle.textContent === 'Editar Usuario') {
+                const index = users.findIndex(u => u.id === updatedUser.id);
+                if (index !== -1) {
+                    users[index] = { ...users[index], ...updatedUser };
+                }
+            } else {
+                updatedUser.id = crypto.randomUUID();
+                users.push(updatedUser);
+            }
+
+            renderTable(users);
+            closeModal();
+        }
+
+        // Función para editar usuario
+        function editUser(id) {
+            const user = users.find(u => u.id === id);
+            if (user) {
+                modalTitle.textContent = 'Editar Usuario';
+                Object.keys(user).forEach(key => {
+                    const input = document.getElementById(`user${key.charAt(0).toUpperCase() + key.slice(1)}`);
+                    if (input) {
+                        input.value = user[key];
+                    }
+                });
+                openModal();
+            }
+        }
+
+        // Función para descargar Excel
+        function downloadExcel() {
+            const worksheet = XLSX.utils.json_to_sheet(users);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Usuarios");
+            XLSX.writeFile(workbook, "usuarios.xlsx");
+        }
+
+        // Evento para descargar Excel
+        downloadExcelBtn.addEventListener('click', downloadExcel);
+
+        // Evento para limpiar filtros
+        clearFiltersBtn.addEventListener('click', clearFilters);
+    </script>
+</body>
+</html>
+

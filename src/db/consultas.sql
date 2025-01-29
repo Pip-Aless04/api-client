@@ -34,6 +34,11 @@ WHERE col_jefe_id = 'D594E981-410A-4085-90F5-EFE2A3BAE951'
 
 
 SELECT * FROM descripcion_talento
+SELECT * FROM colaborador WHERE col_id = '2F9B1306-45FE-4065-B7D9-41D3EABA3CE8'
+SELECT * FROM permiso
+SELECT * FROM reporte
+SELECT * FROM tipo_reporte
+
 
 SELECT 
                             T.tal_id AS id,
@@ -427,3 +432,391 @@ SELECT
 FROM reporte R
 INNER JOIN colaborador C ON R.rep_col_id_solicita = C.col_id
 INNER JOIN colaborador C2 ON R.rep_col_jefe_inmediato = C2.col_id
+
+
+cedula | nombre | correo | pais | depto | jefe | puesto | fecha salida | tipo salida | motivo salida | docs 
+
+
+SELECT
+    C.col_identificacion,
+    CONCAT(C.col_nombre, ' ', C.col_segundo_nombre,' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS solicitante,
+    C.col_email,
+    C.col_pais_id,
+    D.depto_nombre,
+    CONCAT(C2.col_nombre, ' ', C2.col_segundo_nombre,' ', C2.col_primer_apellido, ' ', C2.col_segundo_apellido) AS jefe,
+    P.pue_nombre,
+    R.rep_fec_fin,
+    TS.ts_nombre,
+    MS.ms_nombre,
+    RD.rd_id AS documento_id,
+    RD.rd_nombre_documento AS nombre_documento
+FROM reporte_documento RD
+RIGHT JOIN reporte R ON RD.rd_id_reporte = R.rep_id
+INNER JOIN colaborador C ON R.rep_col_id_aplica = C.col_id
+INNER JOIN colaborador C2 ON R.rep_col_id_solicita = C2.col_id
+INNER JOIN departamento D ON R.rep_tp_depto_traslado = D.depto_id
+INNER JOIN puesto P ON C.col_puesto_id = P.pue_id
+INNER JOIN tipo_salida TS ON R.rep_sp_tipo_salida = TS.ts_id
+INNER JOIN motivo_salida MS ON R.rep_sp_motivo_salida = MS.ms_id
+WHERE R.rep_tipo_reporte_id = 1
+
+
+SELECT 
+    C.col_identificacion,
+    CONCAT(C.col_nombre, ' ', C.col_segundo_nombre,' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS nombre_colaborador_aplica,
+    C.col_email,
+    PA.pais_acronimo,
+    D.depto_nombre,
+    CONCAT(C2.col_nombre, ' ', C2.col_segundo_nombre,' ', C2.col_primer_apellido, ' ', C2.col_segundo_apellido) AS jefe,
+    PU.pue_nombre,
+    R.rep_fec_fin,
+    TS.ts_nombre,
+    CASE 
+        WHEN MS.ms_id = 14 THEN R.rep_otro
+        ELSE MS.ms_nombre
+    END AS motivo_salida,
+    RD.rd_id AS documento_id,
+    RD.rd_nombre_documento AS nombre_documento
+FROM reporte_documento RD
+INNER JOIN reporte R ON RD.rd_id_reporte = R.rep_id
+INNER JOIN colaborador C ON R.rep_col_id_aplica = C.col_id
+INNER JOIN colaborador C2 ON R.rep_col_id_solicita = C2.col_id
+INNER JOIN pais PA ON R.rep_pais_solicita = PA.pais_id
+INNER JOIN departamento D ON C.col_depto_id = D.depto_id
+INNER JOIN puesto PU ON C.col_puesto_id = Pu.pue_id
+INNER JOIN tipo_salida TS ON R.rep_sp_tipo_salida = TS.ts_id
+INNER JOIN motivo_salida MS ON R.rep_sp_motivo_salida = MS.ms_id
+WHERE R.rep_tipo_reporte_id = 1
+
+SELECT * FROM historico_salida_colaborador
+
+
+SELECT 
+    C.col_identificacion,
+    CONCAT(C.col_nombre, ' ', C.col_segundo_nombre, ' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS nombre_colaborador_aplica,
+    C.col_email,
+    PA.pais_acronimo,
+    D.depto_nombre,
+    CONCAT(C2.col_nombre, ' ', C2.col_segundo_nombre, ' ', C2.col_primer_apellido, ' ', C2.col_segundo_apellido) AS jefe,
+    PU.pue_nombre,
+    R.rep_fec_fin,
+    TS.ts_nombre,
+    CASE 
+        WHEN MS.ms_id = 14 THEN R.rep_otro
+        ELSE MS.ms_nombre
+    END AS motivo_salida,
+    STRING_AGG(RD.rd_nombre_documento, ', ') AS documentos
+FROM reporte_documento RD
+INNER JOIN reporte R ON RD.rd_id_reporte = R.rep_id
+INNER JOIN colaborador C ON R.rep_col_id_aplica = C.col_id
+INNER JOIN colaborador C2 ON R.rep_col_id_solicita = C2.col_id
+INNER JOIN pais PA ON R.rep_pais_solicita = PA.pais_id
+INNER JOIN departamento D ON C.col_depto_id = D.depto_id
+INNER JOIN puesto PU ON C.col_puesto_id = PU.pue_id
+INNER JOIN tipo_salida TS ON R.rep_sp_tipo_salida = TS.ts_id
+INNER JOIN motivo_salida MS ON R.rep_sp_motivo_salida = MS.ms_id
+WHERE R.rep_tipo_reporte_id = 1
+GROUP BY 
+    R.rep_id,
+    C.col_identificacion,
+    C.col_nombre, C.col_segundo_nombre, C.col_primer_apellido, C.col_segundo_apellido,
+    C.col_email,
+    PA.pais_acronimo,
+    D.depto_nombre,
+    C2.col_nombre, C2.col_segundo_nombre, C2.col_primer_apellido, C2.col_segundo_apellido,
+    PU.pue_nombre,
+    R.rep_fec_fin,
+    TS.ts_nombre,   
+    MS.ms_id, R.rep_otro, MS.ms_nombre;
+
+--############SALIDAS################
+SELECT 
+    R.rep_id AS id_reporte,
+    C.col_identificacion,
+    CONCAT(C.col_nombre,' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS nombre_colaborador_aplica,
+    C.col_email,
+    PA.pais_acronimo,
+    D.depto_nombre,
+    CONCAT(C2.col_nombre,' ', C2.col_primer_apellido, ' ', C2.col_segundo_apellido) AS jefe,
+    PU.pue_nombre,
+    R.rep_fec_fin,
+    TS.ts_nombre,
+    CASE 
+        WHEN MS.ms_id = 14 THEN R.rep_otro
+        ELSE MS.ms_nombre
+    END AS motivo_salida,
+    (
+        SELECT 
+            RD.rd_id AS documento_id,
+            RD.rd_nombre_documento AS nombre_documento
+        FROM reporte_documento RD
+        WHERE RD.rd_id_reporte = R.rep_id
+        FOR JSON PATH
+    ) AS documentos
+FROM reporte R
+INNER JOIN colaborador C ON R.rep_col_id_aplica = C.col_id
+INNER JOIN colaborador C2 ON R.rep_col_id_solicita = C2.col_id
+INNER JOIN pais PA ON R.rep_pais_solicita = PA.pais_id
+INNER JOIN departamento D ON C.col_depto_id = D.depto_id
+INNER JOIN puesto PU ON C.col_puesto_id = PU.pue_id
+INNER JOIN tipo_salida TS ON R.rep_sp_tipo_salida = TS.ts_id
+INNER JOIN motivo_salida MS ON R.rep_sp_motivo_salida = MS.ms_id
+WHERE R.rep_tipo_reporte_id = 1
+GROUP BY 
+    R.rep_id,
+    C.col_identificacion,
+    C.col_nombre, C.col_segundo_nombre, C.col_primer_apellido, C.col_segundo_apellido,
+    C.col_email,
+    PA.pais_acronimo,
+    D.depto_nombre,
+    C2.col_nombre, C2.col_segundo_nombre, C2.col_primer_apellido, C2.col_segundo_apellido,
+    PU.pue_nombre,
+    R.rep_fec_fin,
+    TS.ts_nombre,
+    MS.ms_id, R.rep_otro, MS.ms_nombre;
+
+--###########VACACIONES################
+
+SELECT 
+    R.rep_id AS id_reporte,
+    C.col_identificacion,
+    CONCAT(C.col_nombre, ' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS nombre_colaborador_aplica,
+    C.col_email,
+    D.depto_nombre,
+    CONCAT(C2.col_nombre, ' ', C2.col_segundo_nombre, ' ', C2.col_primer_apellido, ' ', C2.col_segundo_apellido) AS jefe,
+    R.rep_fec_inicio,
+    R.rep_fec_fin,
+    R.rep_detalle_reporte,
+    CASE 
+        WHEN R.rep_estado = 'S' THEN 'Solicitado'
+        WHEN R.rep_estado = 'P' THEN 'Pendiente'
+        WHEN R.rep_estado = 'A' THEN 'Aceptado'
+        WHEN R.rep_estado = 'D' THEN 'Rechazado'
+    END AS estado,
+    CASE
+        WHEN R.rep_fec_envio_doc IS NULL THEN '-'
+        ELSE FORMAT(R.rep_fec_envio_doc, 'yyyy-MM-dd') -- Formateo opcional, depende de tu necesidad
+    END AS fec_envio_doc,
+    RD.rd_id AS documento_id,
+    RD.rd_nombre_documento AS nombre_documento
+FROM reporte_documento RD 
+INNER JOIN reporte R ON RD.rd_id_reporte = R.rep_id
+INNER JOIN colaborador C ON R.rep_col_id_aplica = C.col_id
+INNER JOIN colaborador C2 ON C.col_jefatura_id = C2.col_id 
+INNER JOIN departamento D ON C.col_depto_id = D.depto_id
+WHERE R.rep_tipo_reporte_id = 2
+
+--###########TRASLADOS################
+
+SELECT 
+    R.rep_id AS id_reporte,
+    C.col_identificacion,
+    CONCAT(C.col_nombre,' ',C.col_primer_apellido,' ', C.col_segundo_apellido) AS nombre_colaborador_aplica,
+    C.col_email,
+    CONCAT(C2.col_nombre,' ',C2.col_primer_apellido,' ', C2.col_segundo_apellido) AS jefe,
+    R.rep_fec_inicio as fecha_traslado,
+    R.rep_tp_motivo_traslado,
+    D.depto_nombre,
+    D2.depto_nombre,
+    R.rep_fec_envio_doc,
+    RD.rd_id AS documento_id,
+    RD.rd_nombre_documento AS nombre_documento
+FROM reporte_documento RD 
+INNER JOIN reporte R ON RD.rd_id_reporte = R.rep_id
+INNER JOIN colaborador C ON R.rep_col_id_aplica = C.col_id
+INNER JOIN colaborador C2 ON C.col_jefatura_id = C2.col_id 
+INNER JOIN departamento D ON R.rep_tp_depto_actual = D.depto_id
+INNER JOIN departamento D2 ON R.rep_tp_depto_traslado = D2.depto_id
+WHERE R.rep_tipo_reporte_id = 3
+
+--###########INCAPCIONES################
+SELECT 
+    R.rep_id AS id_reporte,
+    C.col_identificacion,
+    CONCAT(C.col_nombre,' ',C.col_primer_apellido,' ', C.col_segundo_apellido) AS nombre_colaborador_aplica,
+    C.col_email,
+    D.depto_nombre,
+    TN.tn_nombre,
+    RD.rd_id AS documento_id,
+    R.rep_fec_inicio,
+    R.rep_fec_fin,
+    RD.rd_nombre_documento AS nombre_documento
+FROM reporte_documento RD 
+INNER JOIN reporte R ON RD.rd_id_reporte = R.rep_id
+INNER JOIN colaborador C ON R.rep_col_id_aplica = C.col_id
+INNER JOIN departamento D ON C.col_depto_id = D.depto_id
+INNER JOIN tipo_novedad TN ON R.rep_il_tipo_novedad = TN.tn_id
+WHERE R.rep_tipo_reporte_id = 4
+
+--###########CARTAS################
+
+SELECT 
+    R.rep_id AS id_reporte,
+    C.col_identificacion,
+    CONCAT(C.col_nombre,' ',C.col_primer_apellido,' ', C.col_segundo_apellido) AS nombre_colaborador_aplica,
+    C.col_email,
+    D.depto_nombre,
+    TC.tc_nombre,
+    CASE
+        WHEN R.rep_detalle_reporte IS NOT NULL THEN R.rep_detalle_reporte
+        ELSE '-'
+    END AS detalle_reporte,
+    R.rep_ca_email_envio,
+    RD.rd_id AS documento_id,
+    RD.rd_nombre_documento AS nombre_documento
+FROM reporte_documento RD 
+INNER JOIN reporte R ON RD.rd_id_reporte = R.rep_id
+INNER JOIN colaborador C ON R.rep_col_id_aplica = C.col_id
+INNER JOIN departamento D ON C.col_depto_id = D.depto_id
+INNER JOIN tipo_carta TC ON R.rep_ca_tipo_carta = TC.tc_id
+WHERE R.rep_tipo_reporte_id = 5
+
+declare @sql nvarchar(max);
+
+
+
+SELECT * FROM reporte
+SELECT * FROM reporte_documento
+
+
+SELECT 
+    R.rep_id AS id,
+    C.col_identificacion AS identificacion,
+    CONCAT(C.col_nombre,' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS subordinado,
+    C.col_email AS email,
+    PA.pais_acronimo AS pais,
+    D.depto_nombre AS departamento,
+    CONCAT(C2.col_nombre,' ', C2.col_primer_apellido, ' ', C2.col_segundo_apellido) AS jefe,
+    PU.pue_nombre AS puesto,
+    R.rep_fec_fin AS fecha_fin,
+    TS.ts_nombre AS tipo_salida,
+    CASE 
+        WHEN MS.ms_id = 14 THEN R.rep_otro
+        ELSE MS.ms_nombre
+    END AS motivo_salida,
+    (
+        SELECT 
+            RD.rd_id AS documento_id,
+            RD.rd_nombre_documento AS nombre_documento
+        FROM reporte_documento RD
+        WHERE RD.rd_id_reporte = R.rep_id
+        FOR JSON PATH
+    ) AS documento
+FROM reporte R
+INNER JOIN colaborador C ON R.rep_col_id_aplica = C.col_id
+INNER JOIN colaborador C2 ON R.rep_col_id_solicita = C2.col_id
+INNER JOIN pais PA ON R.rep_pais_solicita = PA.pais_id
+INNER JOIN departamento D ON C.col_depto_id = D.depto_id
+INNER JOIN puesto PU ON C.col_puesto_id = PU.pue_id
+INNER JOIN tipo_salida TS ON R.rep_sp_tipo_salida = TS.ts_id
+INNER JOIN motivo_salida MS ON R.rep_sp_motivo_salida = MS.ms_id
+WHERE R.rep_tipo_reporte_id = 1
+GROUP BY 
+    R.rep_id,
+    C.col_identificacion,
+    C.col_nombre, C.col_primer_apellido, C.col_segundo_apellido,
+    C.col_email,
+    PA.pais_acronimo,
+    D.depto_nombre,
+    C2.col_nombre, C2.col_primer_apellido, C2.col_segundo_apellido,
+    PU.pue_nombre,
+    R.rep_fec_fin,
+    TS.ts_nombre,
+    MS.ms_id, R.rep_otro, MS.ms_nombre;
+
+
+SELECT * FROM colaborador
+
+
+
+SELECT 
+    R.rep_id as id,
+    CONCAT(C.col_nombre, ' ', C.col_segundo_nombre,' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS nombreSolicitante,
+    TR.tr_nombre as tipo_reporte,
+    R.rep_fec_inicio as fecha_inicio,
+    R.rep_fec_fin as fecha_fin,
+    R.rep_detalle_reporte as detalle_reporte,
+    R.rep_estado as estado
+FROM reporte R
+INNER JOIN colaborador C ON R.rep_col_id_aplica = C.col_id
+INNER JOIN tipo_reporte TR ON R.rep_tipo_reporte_id = TR.tr_id
+INNER JOIN 
+
+
+SELECT 
+    R.rep_id AS id,
+    CONCAT(C.col_nombre, ' ', C.col_segundo_nombre,' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS nombreSolicitante,
+    TR.tr_nombre AS tipo_reporte,
+    R.rep_fec_inicio AS fecha_inicio,
+    R.rep_fec_fin AS fecha_fin,
+    R.rep_detalle_reporte AS detalle_reporte,
+    R.rep_estado AS estado,
+    RD.rd_documento AS documento,
+    RD.rd_nombre_documento AS nombre_documento
+    FROM reporte_documento RD
+LEFT JOIN reporte R ON R.rep_id = RD.rd_id_reporte
+INNER JOIN colaborador C ON R.rep_col_id_aplica = C.col_id
+INNER JOIN tipo_reporte TR ON R.rep_tipo_reporte_id = TR.tr_id
+
+
+SELECT * FROM reporte_documento RD
+LEFT JOIN reporte ON R.rep_id = RD.rep_id
+
+SELECT * FROM reporte_documento
+
+SELECT * FROM colaborador
+SELECT * FROM permiso
+
+
+
+                    SELECT 
+                        R.rep_id AS id,
+                        CONCAT(C.col_nombre, ' ', C.col_segundo_nombre,' ', C.col_primer_apellido, ' ', C.col_segundo_apellido) AS nombreSolicitante,
+                        TR.tr_nombre AS tipo_reporte,
+                        R.rep_fec_inicio AS fecha_inicio,
+                        R.rep_fec_fin AS fecha_fin,
+                        R.rep_detalle_reporte AS detalle_reporte,
+                        R.rep_estado AS estado,
+                        (
+                            SELECT 
+                                RD.rd_id AS documento_id,
+                                RD.rd_nombre_documento AS nombre_documento
+                            FROM reporte_documento RD
+                            WHERE RD.rd_id_reporte = R.rep_id
+                            FOR JSON PATH
+                        ) AS documentos
+                        FROM reporte_documento RD
+                    LEFT JOIN reporte R ON R.rep_id = RD.rd_id_reporte
+                    INNER JOIN colaborador C ON R.rep_col_id_aplica = C.col_id
+                    INNER JOIN tipo_reporte TR ON R.rep_tipo_reporte_id = TR.tr_id
+                    WHERE 1 = 1
+
+                                                (
+                                SELECT 
+                                    RD.rd_id AS documento_id,
+                                    RD.rd_nombre_documento AS nombre_documento
+                                FROM reporte_documento RD
+                                WHERE RD.rd_id_reporte = R.rep_id
+                                FOR JSON PATH
+                            ) AS documentos
+
+
+                            SELECT * FROM tipo_reporte 
+
+
+                    SELECT 
+                        C.col_identificacion AS identificacion,
+                        CONCAT(C.col_nombre,' ',C.col_primer_apellido,' ', C.col_segundo_apellido) AS colaborador,
+                        C.col_email AS email,
+                        D.depto_nombre AS departamento,
+                        TN.tn_nombre AS tipo_novedad,
+                        FORMAT(R.rep_fec_inicio, 'dd/MM/yyyy') AS fecha_inicio,
+                        FORMAT(R.rep_fec_fin, 'dd/MM/yyyy') AS fecha_fin,
+                        RD.rd_id AS documento_id,
+                        RD.rd_nombre_documento AS nombre_documento
+                    FROM reporte_documento RD 
+                    INNER JOIN reporte R ON RD.rd_id_reporte = R.rep_id
+                    INNER JOIN colaborador C ON R.rep_col_id_aplica = C.col_id
+                    INNER JOIN departamento D ON C.col_depto_id = D.depto_id
+                    INNER JOIN tipo_novedad TN ON R.rep_il_tipo_novedad = TN.tn_id
+                    WHERE R.rep_tipo_reporte_id = 4

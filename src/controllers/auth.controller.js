@@ -1,6 +1,6 @@
 import { validateAuth, validatePartialAuth } from "../schemas/auth.schema.js";
 import { createToken } from "../plugins/createJwt.plugin.js";
-//import { EmailPlugin } from "../plugins/sendEmail.plugin.js";
+import { EmailPlugin } from "../plugins/sendEmail.plugin.js";
 import { generateCode } from "../plugins/generateCode.plugin.js";
 
 export class AuthController {
@@ -38,6 +38,8 @@ export class AuthController {
             }
             
             console.log(result);
+
+            
 
             // Autenticar usuario
             const authUser = await this.authModel.login(ident, password);
@@ -141,7 +143,7 @@ export class AuthController {
     requestPasswordReset = async (req, res) => {
         const { ident } = req.body;
         try {
-            console.log("entro al controller");
+            console.log("entro al controller requestPasswordReset");
             console.log(ident);
     
             const validate = await validatePartialAuth({ ident });
@@ -171,17 +173,17 @@ export class AuthController {
     
             if (!col_info.success) return res.status(400).json({ error: col_info.error });
             
-            /*
+            
             const emailMessage = new EmailPlugin();
             await emailMessage.sendEmailChangePasswordCode({
                 to: email,
                 subject: 'Código de seguridad',
-                html: `<p>Su código de seguridad es: ${code}</p>
+                html: `<p>Su código de seguridad es: ${code}, expira en ${expires.toLocaleDateString('es-ES')} </p>
                         <br/><p><strong>No lo comparta con nadie</strong></p>
                         <br/>
                         <p>Si no ha solicitado cambio de clave, comuníquese con el departamento de transformación digital.</p>`,
             });
-            */
+            
             const token = await createToken(
                 {
                     id,
@@ -220,8 +222,11 @@ export class AuthController {
 
     setNewPassword = async (req, res) => {
         try {
+            console.log("entro al controller setNewPassword");
+
             const { code, password } = req.body;
             const { id } = req.user.info;
+            
             console.log({ id, code, password });
 
             // Validar el código
@@ -244,7 +249,6 @@ export class AuthController {
     };
     
 
-
     logout = async (req, res) => {
         try {
             res.clearCookie('acces_token');
@@ -254,4 +258,14 @@ export class AuthController {
             return res.status(500).json({ error: 'Error al cerrar sesión' });
         }
     };
+
+    pruebaCorreo = async (req, res) => {
+        const email = new EmailPlugin();
+
+        await email.sendEmailTest({
+            to: 'alantiaribal2404@gmail.com',
+            subject: 'Prueba de correo',
+            html: 'Prueba de correo'
+        })
+    }
 }

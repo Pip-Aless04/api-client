@@ -9,7 +9,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     button.disabled = true;
 
     // Hacer la solicitud POST con la identificación
-    fetch('http://localhost:3000/dhcoapp/auth/requestPasswordReset', {
+    fetch('/dhcoapp/auth/requestPasswordReset', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

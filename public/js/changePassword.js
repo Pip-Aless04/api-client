@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function () {
         resetButton.disabled = true;
         resetButton.textContent = 'Procesando...';
 
-        fetch('http://localhost:3000/dhcoapp/auth/setNewPassword', {
+        fetch('/dhcoapp/auth/setNewPassword', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ code, password }),
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => {
                 if (response.ok) {
                     showCustomAlert('¡Contraseña cambiada exitosamente!', 'success');
-                    window.location.href = '/';
+                    window.location.href = '/dhcoapp';
                 } else {
                     throw new Error('Error en el servidor');
                 }

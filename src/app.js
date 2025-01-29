@@ -92,6 +92,7 @@ export const createApp = ({AuthModel, ReportesModel, EvaluacionModel}) => {
         });
         */
 
+        
         app.use((req, res, next) => {
             res.status(404);
             next(new Error('Página no encontrada'));
@@ -99,7 +100,8 @@ export const createApp = ({AuthModel, ReportesModel, EvaluacionModel}) => {
 
         app.use(handlePageErrors);
         
-        app.listen(3000, () => {
+
+        app.listen(process.env.PORT || 3000, () => {
             console.log("Server started on port 3000");
         });
         

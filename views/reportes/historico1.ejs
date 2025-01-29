@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historicos</title>
+    <link rel="stylesheet" href="../../css/reportes/historico.css">
+</head>
+<body>
+    <h1>POPS Data Table</h1>
+    <div class="table-switcher">
+        <!-- Botones para cambiar de tabla -->
+    </div>
+    <h2 class="table-title">Current Table: <span id="currentTable"></span></h2>
+    <div class="filters">
+        <!-- Los filtros se generan dinámicamente aquí -->
+    </div>
+    <div class="table-container">
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <!-- Los headers de la tabla se generan dinámicamente aquí -->
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Los datos de la tabla se generan dinámicamente aquí -->
+            </tbody>
+        </table>
+    </div>
+    <div class="actions">
+        <button id="downloadCsvBtn" class="btn">CSV</button>
+        <button id="downloadExcelBtn" class="btn">Excel</button>
+    </div>
+
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
+    <script type="module">
+        import { init } from '../../js/reportes/historico.js';
+        const tables = { 
+            historico_vacaciones: <%- JSON.stringify(reportData.historicoVacaciones )%>
+        };
+        console.log(tables);
+        init(tables);
+    </script>
+</body>
+</html>

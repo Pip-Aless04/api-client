@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" id="appIcon" type="image/x-icon" href="https://cms.blumewebsites.com/pops/website/favicon.png">
     <link rel="stylesheet" href="../../css/reportes/salida_personal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Salida de personal</title>
 </head>
 <body>
@@ -37,93 +38,75 @@
                 <h1>Reporte salida de personal regional</h1>
                 <p>Por favor, complete el formulario para reportar una salida de personal.</p>
             </div>
-            <form class="form-content" id="incidentForm">
-                <div class="search-container">
-                    <input list="search-options" class="search-bar" id="searchBar" placeholder="Buscar colaborador...">
-                    <datalist id="search-options">
-                        <% if (Array.isArray(userSubordinados.info)) { %>
-                            <% userSubordinados.info.forEach(subordinado => { %>
-                                <option value="<%= subordinado.nombre %> <%= subordinado.segundo_nombre %> <%= subordinado.primer_apellido %> <%= subordinado.segundo_apellido %>"></option>
-                            <% }); %>
-                        <% } else { %>
-                            <option value="No se encontraron colaboradores"></option>
-                        <% } %>
-                    </datalist>
-                </div>              
+            <form class="form-content" id="salidaForm">              
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="correo">Correo</label>
-                        <input type="email" id="correo" name="correo" placeholder=" " disabled>
+                        <label for="colaborador">Seleccione el colaborador</label>
+                        <input list="colaboradoresList" id="colaborador" name="incident-type" placeholder="Seleccionar colaborador" required>
+                        <datalist id="colaboradoresList">
+                                <% reportData.subordinados.forEach(sub => { %>
+                                    <option data-id="<%= sub.id %>"> <%= sub.nombre %> <%= sub.segundo_nombre %> <%= sub.primer_apellido %> <%= sub.segundo_apellido %> </option>
+                                <% }) %>
+                        </datalist>
                     </div>
                     <div class="form-group">
                         <label for="pais">País</label>
-                        <input type="text" id="pais" name="pais" placeholder=" " disabled>
-                    </div>
-                </div>
+                        <select id="pais" name="incident-type" required>
+                            <option value="">Seleccionar</option>
+                            <% if (reportData && reportData.paises) { %>
+                                <% reportData.paises.forEach(pais => { %>
+                                    <option value="<%= pais.id %>"><%= pais.nombre %></option>
+                                <% }) %>
+                            <% } else { %>
+                                <option value="no-data">No hay datos disponibles</option>
+                            <% } %>
+                        </select>
+                    </div> 
+                </div>  
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="ident">Identificación</label>
-                        <input type="text" id="ident" name="ident" placeholder="" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label for="name">Nombre</label>
-                        <input type="text" id="name" name="name" placeholder="" disabled>
+                        <label for="fecha_salida">Fecha de salida</label>
+                        <input type="date" id="fecha_salida" name="fecha_salida" required>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="name">Departamento / Heladería</label>
-                        <input type="text" id="area" name="area" placeholder="" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label for="jefe">Jefe inmediato</label>
-                        <input type="text" id="jefe" name="jefe" placeholder="" disabled>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="puesto">Puesto</label>
-                        <input type="text" id="puesto" name="puesto" placeholder="" disabled>
-                    </div>
-                    <div class="form-group">
-                        <label for="date">Fecha de salida</label>
-                        <input type="date" id="date" name="date" required>
-                    </div>
-                </div>
+
                 <div class="form-row">
                     <div class="form-group">
                         <label class="radio-label">Tipo de salida</label>
                         <div class="radio-group">
-                            <div class="radio-option">
-                                <input type="radio" id="tipo-renuncia" name="tipo-salida" value="renuncia">
-                                <label for="tipo-renuncia">Renuncia</label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" id="tipo-abandono" name="tipo-salida" value="abandono" checked>
-                                <label for="tipo-abandono">Abandono de trabajo</label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" id="tipo-fallecimiento" name="tipo-salida" value="fallecimiento">
-                                <label for="tipo-fallecimiento">Fallecimiento</label>
-                            </div>
+                            <% reportData.tipoSalida.forEach(salida => { %>
+                                <div class="radio-option">
+                                    <input 
+                                        type="radio" 
+                                        id="salida-<%= salida.id %>" 
+                                        name="tipo-salida" 
+                                        value="<%= salida.nombre.toLowerCase() %>"
+                                        data-id="<%= salida.id %>"
+                                    >
+                                    <label for="salida-<%= salida.id %>"><%= salida.nombre %></label>
+                                </div>
+                            <% }); %>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="radio-label">Motivo de salida</label>
                         <div class="radio-group">
-                            <div class="radio-option">
-                                <input type="radio" id="motivo-renuncia" name="motivo-salida" value="renuncia">
-                                <label for="motivo-renuncia">Renuncia</label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" id="motivo-abandono" name="motivo-salida" value="abandono" checked>
-                                <label for="motivo-abandono">Abandono de trabajo</label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" id="motivo-fallecimiento" name="motivo-salida" value="fallecimiento">
-                                <label for="motivo-fallecimiento">Fallecimiento</label>
-                            </div>
+                            <% reportData.motivoSalida.forEach(motivo => { %>
+                                <div class="radio-option">
+                                    <input 
+                                        type="radio" 
+                                        id="motivo-<%= motivo.id %>" 
+                                        name="tipo-motivo" 
+                                        value="<%= motivo.nombre.toLowerCase() %>"
+                                        data-id="<%= motivo.id %>"
+                                    >
+                                    <label for="motivo-<%= motivo.id %>"><%= motivo.nombre %></label>
+                                </div>
+                            <% }); %>
                         </div>
+                        <div class="other-input" id="tipo-motivo-otro-input" style="display: none;">
+                            <input type="text" id="tipo-motivo-otro" name="tipo-motivo-otro" placeholder="Especifique otro motivo de salida">
+                        </div>                        
                     </div>
                 </div>
                 <div class="form-row">
@@ -131,23 +114,23 @@
                         <label>Adjuntar archivos (Un archivo por entrada)</label>
                         <div class="file-inputs-container">
                             <div class="file-input-wrapper">
-                                <input type="file" id="file-upload-1" name="file-upload-1">
-                                <label for="file-upload-1" class="file-input-button">Carta autorización de pago</label>
+                                <input type="file" id="archivo1" name="file">
+                                <label for="archivo1" class="file-input-button">Carta autorización de pago</label>
                                 <div class="file-input-name" id="file-input-name-1">Seleccione un archivo</div>
                             </div>
                             <div class="file-input-wrapper">
-                                <input type="file" id="file-upload-2" name="file-upload-2">
-                                <label for="file-upload-2" class="file-input-button">Comprobante de entrega de uniformes</label>
+                                <input type="file" id="archivo2" name="file">
+                                <label for="archivo2" class="file-input-button">Comprobante de entrega de uniformes</label>
                                 <div class="file-input-name" id="file-input-name-2">Seleccione un archivo</div>
                             </div>
                             <div class="file-input-wrapper">
-                                <input type="file" id="file-upload-3" name="file-upload-3">
-                                <label for="file-upload-3" class="file-input-button">Fotografía de la identificación</label>
+                                <input type="file" id="archivo3" name="file">
+                                <label for="archivo3" class="file-input-button">Fotografía de la identificación</label>
                                 <div class="file-input-name" id="file-input-name-3">Seleccione un archivo</div>
                             </div>
                             <div class="file-input-wrapper">
-                                <input type="file" id="file-upload-4" name="file-upload-4">
-                                <label for="file-upload-4" class="file-input-button">Carta de despido o renuncia</label>
+                                <input type="file" id="archivo4" name="file">
+                                <label for="archivo4" class="file-input-button">Carta de despido o renuncia</label>
                                 <div class="file-input-name" id="file-input-name-4">Seleccione un archivo</div>
                             </div>
                         </div>
@@ -165,56 +148,20 @@
             </form>
         </div>
     </main>
-
+    <div id="alert" class="alert">
+        <div class="alert-content">
+            <i id="alertIcon" class="alert-icon"></i>
+            <p id="alertMessage"></p>
+        </div>
+        <button class="close-btn" onclick="closeAlert()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
     <footer>
         <div class="footer-content">
             <img src="../../img/footer.webp" alt="Decorative footer with waves">
         </div>
     </footer>
-
 </body>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const searchBar = document.getElementById('searchBar');
-        const emailField = document.getElementById('correo');
-        const paisField = document.getElementById('pais');
-        const identField = document.getElementById('ident');
-        const nameField = document.getElementById('name');
-        const areaField = document.getElementById('area');
-        const jefeField = document.getElementById('jefe');
-        const puestoField = document.getElementById('puesto');
-  
-        // Asegúrate de que `userSubordinados` sea definido
-        const subordinados = '<%= JSON.stringify(userSubordinados.info || []) %>';
-  
-        searchBar.addEventListener('change', function () {
-            const selectedName = searchBar.value.trim().toLowerCase();
-  
-            const matchedSubordinado = subordinados.find(sub => {
-                const fullName = `${sub.nombre} ${sub.segundo_nombre || ''} ${sub.primer_apellido} ${sub.segundo_apellido || ''}`.trim().toLowerCase();
-                return fullName === selectedName;
-            });
-  
-            if (matchedSubordinado) {
-                // Completar campos
-                emailField.value = matchedSubordinado.email || '';
-                paisField.value = matchedSubordinado.pais || '';
-                identField.value = matchedSubordinado.identificacion || '';
-                nameField.value = `${matchedSubordinado.nombre} ${matchedSubordinado.segundo_nombre || ''} ${matchedSubordinado.primer_apellido} ${matchedSubordinado.segundo_apellido || ''}`.trim();
-                areaField.value = matchedSubordinado.departamento || '';
-                jefeField.value = matchedSubordinado.nombre_jefe || '';
-                puestoField.value = matchedSubordinado.puesto || '';
-            } else {
-                // Limpiar campos si no hay coincidencia
-                emailField.value = '';
-                paisField.value = '';
-                identField.value = '';
-                nameField.value = '';
-                areaField.value = '';
-                jefeField.value = '';
-                puestoField.value = '';
-            }
-        });
-    });
-  </script>  
+<script src="../../js/reportes/salida_personal.js"></script>
 </html>

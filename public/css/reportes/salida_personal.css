@@ -85,6 +85,87 @@ main {
     padding: 2rem;
 }
 
+.alert {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 400px;
+    max-width: 80%;
+    transition: top 0.5s ease-in-out;
+    z-index: 1000;
+}
+
+.alert.show {
+    top: 30px;
+    animation: pulse 2s infinite;
+}
+
+.alert-content {
+    display: flex;
+    align-items: center;
+}
+
+.alert-icon {
+    font-size: 24px;
+    margin-right: 15px;
+}
+
+.alert p {
+    margin: 0;
+    font-size: 18px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0;
+    color: #333;
+}
+
+.success { 
+    border-left: 6px solid #4caf50; 
+}
+.success .alert-icon { 
+    color: #4caf50; 
+}
+
+.warning { 
+    border-left: 6px solid #ff9800; 
+}
+.warning .alert-icon { 
+    color: #ff9800; 
+}
+
+.error { 
+    border-left: 6px solid #f44336; 
+}
+.error .alert-icon { 
+    color: #f44336; 
+}
+
+.info { 
+    border-left: 6px solid #2196f3; 
+}
+.info .alert-icon { 
+    color: #2196f3; 
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2); }
+    70% { box-shadow: 0 0 0 15px rgba(0, 0, 0, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
+}
+
 .form-container {
     background-color: white;
     border-radius: 8px;
@@ -95,7 +176,7 @@ main {
 }
 
 .form-header {
-    background-color: #00abab;
+    background-color: #8b5cf6;
     color: white;
     padding: 24px;
 }
@@ -141,6 +222,7 @@ label {
 input[type="text"],
 input[type="date"],
 input[type="email"],
+input[list],
 select,
 textarea {
     width: 100%;
@@ -154,6 +236,7 @@ textarea {
 input[type="text"]:focus,
 input[type="date"]:focus,
 input[type="email"]:focus,
+input[list]:focus,
 select:focus,
 textarea:focus {
     outline: none;
@@ -192,7 +275,7 @@ textarea:focus {
 }
 
 button[type="submit"] {
-    background-color: #ee7103;
+    background-color: #8b5cf6;
     color: white;
     border: none;
     padding: 12px 24px;
@@ -204,7 +287,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: #ee7103;
+    background-color: #7c3aed;
 }
 
 .file-inputs-container {
@@ -223,7 +306,7 @@ button[type="submit"]:hover {
 }
 
 .file-input-button {
-    background-color: #0086c6;
+    background-color: #8b5cf6;
     color: #fff;
     padding: 10px;
     border-radius: 6px;
@@ -234,7 +317,7 @@ button[type="submit"]:hover {
 }
 
 .file-input-button:hover {
-    background-color: #006593;
+    background-color: #7c3aed;
 }
 
 .file-input-name {

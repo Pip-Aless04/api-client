@@ -10,8 +10,8 @@ export const createReportsRoutes = ({ReportesModel}) => {
     const reportController = new ReportesController({ReportesModel});
 
     //reportRouter.get("/tipo_reportes", authUserJWT, reportController.getAllReports); 
-    reportRouter.post("/guardar_reporte", authUserJWT, upload.single('file'), reportController.saveReport);
     reportRouter.post("/aceptar_rechazar_vacaciones", authUserJWT, reportController.updateVacationStatus);
+    reportRouter.post("/guardar_reporte", authUserJWT, upload.array('file'), reportController.saveReport);
     reportRouter.get("/ver-archivo/:id", authUserJWT, reportController.getFileReportById);
 
     return reportRouter;

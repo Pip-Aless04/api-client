@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vista del Jefe - Evaluaciones de Empleados</title>
+    
+</head>
+<body>
+  <style>
+    :root {
+  --primary-color: #30b4b5;
+  --background-start: #e8f5f5;
+  --background-end: #ffffff;
+  --card-background: #ffffff;
+  --text-color: #333333;
+  --border-color: #e0e0e0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom, var(--background-start), var(--background-end));
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.image-container {
+  background-color: var(--card-background);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.main-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.title {
+  text-align: center;
+  color: var(--primary-color);
+  margin-bottom: 30px;
+}
+
+.progress-section {
+  margin-bottom: 30px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.progress-bar {
+  height: 8px;
+  background-color: #e0e0e0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--primary-color);
+  width: 0;
+  transition: width 0.3s ease;
+}
+
+.card {
+  background-color: var(--card-background);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.evaluation-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.aspect-info {
+  flex: 1;
+}
+
+.aspect-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.aspect-description {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.nota{
+  background-color: var(--primary-color);
+  color: white;
+  padding: 5px;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+select {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
+textarea {
+  width: 100%;
+  min-height: 100px;
+  margin-bottom: 15px;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  resize: vertical;
+}
+
+button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  float: right;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.employee-evaluation {
+  border: 1px solid var(--border-color);
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+.employee-name {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 600px) {
+  .evaluation-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  select {
+    width: 100%;
+    margin-top: 10px;
+  }
+}
+  </style>
+    <div class="container">
+        <main>
+            <div class="image-container">
+                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pasion-invitado-consumidor-nOkTak30ruovyMoYoh3TT8XnqQrm2x.png" alt="Pasión por el invitado y el consumidor" class="main-image">
+            </div>
+            <!-- <h1 class="title">Evaluaciones de Empleados</h1> -->
+            <h2 class="title">Alessandro Arias Baldi</h2>
+
+            <div id="employee-evaluations">
+                <!-- Employee evaluations will be inserted here by JavaScript -->
+            </div>
+        </main>
+    </div>
+    <script>
+      localStorage.setItem(
+  "employeeEvaluation",
+  JSON.stringify({
+    evaluations: [
+      {
+        id: 1,
+        aspect: "Trabajo en equipo",
+        description: "Colabora de manera efectiva con el equipo.",
+        value: "cumple",
+      },
+      {
+        id: 2,
+        aspect: "Comunicación",
+        description: "Se comunica de manera clara y efectiva.",
+        value: "supera",
+      },
+    ],
+    feedback: "El empleado demuestra un buen desempeño general.",
+  })
+);
+
+      const evaluationOptions = [
+  { value: "supera", label: "Supera las expectativas", color: "green" },
+  { value: "cumple", label: "Cumple las expectativas", color: "blue" },
+  { value: "parcial", label: "Cumple parcialmente", color: "orange" },
+  { value: "desarrollo", label: "En desarrollo", color: "red" },
+]
+
+function loadEmployeeEvaluations() {
+  const employeeEvaluation = JSON.parse(localStorage.getItem("employeeEvaluation"))
+  console.log("Loaded employee evaluation:", employeeEvaluation) // Debugging line
+
+  if (
+    employeeEvaluation &&
+    Array.isArray(employeeEvaluation.evaluations) &&
+    employeeEvaluation.evaluations.length > 0
+  ) {
+    displayEmployeeEvaluation(employeeEvaluation)
+  } else {
+    document.getElementById("employee-evaluations").innerHTML = "<p>No hay evaluaciones disponibles.</p>"
+  }
+}
+
+function displayEmployeeEvaluation(data) {
+  console.log("Displaying evaluation data:", data) // Debugging line
+  const container = document.getElementById("employee-evaluations")
+  const evaluationHtml = `
+            <h2 class="employee-name">Evaluación del Empleado</h2>
+            ${data.evaluations
+              .map(
+                (item) => `
+                <div class="card evaluation-item">
+                    <div class="aspect-info">
+                        <div class="aspect-title">${item.aspect}</div>
+                        <div class="aspect-description">${item.description}</div>
+                        ${evaluationOptions
+                          .map(
+                            (option) => 
+                            (option.value === item.value)) =>
+                              `<p class="nota">${getOptionLabel(item.value)}</p>`
+                        
+                        <p class ="nota">${getOptionLabel(item.value)}</p>
+                    </div>
+                    <div>
+                        <select onchange="updateManagerEvaluation(${item.id}, this.value)">
+                            <option value="">Selecciona tu evaluación</option>
+                            ${evaluationOptions
+                              .map(
+                                (option) =>
+                                  `<option value="${option.value}" style="color: ${option.color}">${option.label}</option>`,
+                              )
+                              .join("")}
+                        </select>
+                    </div>
+                </div>
+            `,
+              )
+              .join("")}
+            <div class="card feedback-section">
+                <h3>Comentarios del empleado</h3>
+                <p>${data.feedback || "No hay comentarios."}</p>
+            </div>
+            <div class="card feedback-section">
+                <h3>Comentarios del jefe</h3>
+                <textarea id="manager-feedback" placeholder="Añade tus comentarios aquí..."></textarea>
+                <button onclick="saveManagerEvaluation()">Guardar Evaluación del Jefe</button>
+            </div>
+    `
+  container.innerHTML = evaluationHtml
+}
+
+function getOptionLabel(value) {
+  const option = evaluationOptions.find((opt) => opt.value === value)
+  return option ? option.label : "No evaluado"
+}
+
+function updateManagerEvaluation(id, value) {
+  console.log(`Manager evaluated aspect ${id} as ${value}`)
+  // Aquí puedes implementar la lógica para guardar la evaluación del manager
+}
+
+function saveManagerEvaluation() {
+  const managerFeedback = document.getElementById("manager-feedback").value
+  console.log("Manager feedback:", managerFeedback)
+  alert("Evaluación del jefe guardada con éxito!")
+  // Aquí puedes implementar la lógica para guardar la evaluación completa del manager
+}
+
+document.addEventListener("DOMContentLoaded", loadEmployeeEvaluations)
+
+// Debugging function to check localStorage
+function checkLocalStorage() {
+  console.log("Employee Evaluation in localStorage:", localStorage.getItem("employeeEvaluation"))
+}
+
+// Call this function when the page loads
+document.addEventListener("DOMContentLoaded", checkLocalStorage)
+
+
+    </script>
+</body>
+</html>

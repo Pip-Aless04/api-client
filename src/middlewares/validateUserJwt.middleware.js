@@ -5,12 +5,15 @@ export const authUserJWT = (req, res, next) => {
     const subordinadosToken = req.cookies.subordinados_token;
 
     if (!token) {
+        //return res.status(401).send('No token encontrado');
+        
         return res.status(401).render('errorPage',
             {title:'401 - Usuario no autenticado',
             message:'Usuario no autenticado',
             errorCode: '401',
             backButtonText: 'Inicie sesión para autenticarse',
             backButtonHref: '/dhcoapp'});
+        
     }
 
     // Verificar token principal
@@ -30,6 +33,7 @@ export const authUserJWT = (req, res, next) => {
                 if (err) {
                     console.warn('Token de subordinados no válido:', err.message);
                 } else {
+                    console.log('Token de subordinados válido:', subordinados);
                     req.user.subordinados = subordinados; // Asignar subordinados al usuario
                 }
             });

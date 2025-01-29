@@ -2,7 +2,8 @@ import { infoReportView } from "../plugins/infoReportView.js";
 import { getFilterInfo } from "../plugins/filterInfo.plugin.js";
 export class ViewController {
     
-    constructor({ ReportesModel, EvaluacionModel }) {
+    constructor({ AuthModel, ReportesModel, EvaluacionModel }) {
+        this.authModel = AuthModel;
         this.reportesModel = ReportesModel;
         this.evaluacionModel = EvaluacionModel;
     }
@@ -46,10 +47,10 @@ export class ViewController {
                 return res.status(400).json({ error: 'Información del usuario no encontrada' });
             }
     
-            console.log('Usuario:', user.id);
+            console.log('Usuario:', user);
     
             // Si el usuario no tiene subordinados a cargo, renderiza directamente
-            if (user.a_cargo !== 'S') {
+            if (user.permiso == 1) {
                 return res.render('inicio', { user, pendientes: [] });
             }
     
@@ -63,17 +64,19 @@ export class ViewController {
             // Obtiene los reportes pendientes
             let pendientes;
 
-            if (user.permiso === 2) {
+            if (user.permiso === 3) {
+                console.log('permiso 3');
                 // Si el usuario es un jefe, obtiene los reportes pendientes de todos los reportes
-                pendientes = await this.reportesModel.getVacacionesReports({ 
-                    estado : 'P'
+                pendientes = await this.reportesModel.getPendingReports({ 
+                    
                 });
-            } else {
-                console.log('No es un jefe');
+            } else if (user.permiso == 4) {
+                console.log('permiso 4');
                 // Si el usuario es un subordinado, obtiene los reportes pendientes de los reportes que tiene asignado
-                pendientes = await this.reportesModel.getVacacionesReports({ 
-                    col_jefe_inmediato: user.id,
-                    estado : 'S'
+                pendientes = await this.reportesModel.getPendingReports({ 
+                    jefe_id: user.id,
+                    estado : 'S',
+                    reporte: 2
                 });
                 console.log('Pendientes:', pendientes);
             }
@@ -81,7 +84,8 @@ export class ViewController {
             console.log('Pendientes:', pendientes);
             
             const filterInputsInfo = await getFilterInfo({model: this.reportesModel});
-    
+            console.log({filterInputsInfo});
+
             // Renderiza la vista con los datos preparados
             res.render('inicio', { 
                 user, 
@@ -95,27 +99,51 @@ export class ViewController {
         }
     };    
     
-    solicitud = async (req, res) =>{
+    solicitudRports = async (req, res) =>{
         try {
+            const { tipo_reporte } = req.query;
             const { solicitud } = req.params;
             const user = req.user.info;
-            const userSubordinados = req?.user?.subordinados;
-            //console.log(user)
-            //console.log(solicitud)
-            //console.log(userSubordinados)
-            const reportData = await infoReportView({view: solicitud, model: this.reportesModel});
-            
+            const userSubordinados = req?.user?.subordinados?.info;
+            console.log(user)
+            console.log(solicitud)
+            //console.log(req)
+            console.log({userSubordinados})
+            const reportData = await infoReportView({user:user, view: solicitud, model: this.reportesModel, tipo_reporte});
+            console.log(reportData)
+
             if (!reportData.needInfo) {
                 return res.render(`reportes/${solicitud}`, {user});
             }
+
+            if (solicitud === 'traslado_personal') {
+                return res.render(`reportes/${solicitud}`, {user, reportData, userSubordinados})
+            }
+            
             res.render(`reportes/${solicitud}`, {user, 
-                                                userSubordinados,
                                                 reportData
                                                 });
         } catch (error) {
             console.log(error)
         }
     }
+
+    solicitudMantenimiento = async (req, res) =>{
+        try {
+            const { solicitud } = req.params;
+            const user = req.user.info;
+            console.log(user)
+            console.log(solicitud)
+            
+            const reportData = await infoReportView({view: solicitud, model: this.authModel});
+            
+            res.render(`mantenimiento/${solicitud}`, {user,
+                                                    reportData
+                                                });
+        } catch (error) {
+            console.log(error)
+        }
+    };
 
     pruebaHistorico = async (req, res) => {
         try {
@@ -134,5 +162,18 @@ export class ViewController {
         }
     };
     
+    evaluacion = async (req, res) => {
+        try {
+            const user = req.user.info;
+            const subordinados = req.user.subordinados ||[];
+            //const respuestas = ...jalar respuestas
+
+            res.render('evaluacion/inicio', { user, subordinados });
+
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('Error interno del servidor');
+        }
+    }
     
 }

@@ -3,43 +3,204 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Historicos</title>
-    <link rel="stylesheet" href="../../css/reportes/historico.css">
+    <title>Incident Report Form</title>
+    <link rel="stylesheet" href="../../css/reportes/historicoPrueba.css">
 </head>
 <body>
-    <h1>POPS Data Table</h1>
-    <div class="table-switcher">
-        <!-- Botones para cambiar de tabla -->
-    </div>
-    <h2 class="table-title">Current Table: <span id="currentTable"></span></h2>
-    <div class="filters">
-        <!-- Los filtros se generan dinámicamente aquí -->
-    </div>
-    <div class="table-container">
-        <table id="dataTable">
-            <thead>
-                <tr>
-                    <!-- Los headers de la tabla se generan dinámicamente aquí -->
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Los datos de la tabla se generan dinámicamente aquí -->
-            </tbody>
-        </table>
-    </div>
-    <div class="actions">
-        <button id="downloadCsvBtn" class="btn">CSV</button>
-        <button id="downloadExcelBtn" class="btn">Excel</button>
-    </div>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="/dhcoapp/inicio">
+                    <img src="../../img/logo_pops_2024.webp" alt="POPS Logo">
+                </a>
+            </div>
+            <div class="settings-menu">
+                <div class="settings-icon" id="settingsIcon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </div>
+                <div class="dropdown" id="settingsDropdown">
+                    <a href="#">Perfil</a>
+                    <a href="#">Configuración</a>
+                    <a href="#">Cerrar sesión</a>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
-    <script type="module">
-        import { init } from '../../js/reportes/historico.js';
-        const tables = { 
-            historico_vacaciones: <%- JSON.stringify(reportData.historicoVacaciones )%>
-        };
-        console.log(tables);
-        init(tables);
-    </script>
+    <main>
+        <div class="container">
+            <h1><%= reportData.nombre_reporte %></h1>
+            <div id="table-container">
+                <table id="data-table">
+                    <thead>
+                        <tr id="header-row"></tr>
+                        <tr id="filter-row" class="filter-row"></tr>
+                    </thead>
+                    <tbody id="table-body"></tbody>
+                </table>
+            </div>
+            <div class="controls">
+
+                <button id="download-excel">Descargar Excel</button>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <img src="../../img/footer.webp" alt="Decorative footer with waves">
+        </div>
+    </footer>
 </body>
+<!-- <script src="../../js/reportes/incapacidades_y_licencias.js"></script> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+<script>
+    const data = <%- JSON.stringify(reportData.dataHistorico) %>;
+    console.log(data);
+
+    let currentPage = 1;
+    const rowsPerPage = 10;
+    let sortColumn = '';
+    let sortDirection = 'asc';
+    let filters = {};
+
+    function initTable() {
+        const headerRow = document.getElementById('header-row');
+        const filterRow = document.getElementById('filter-row');
+        const columns = Object.keys(data[0]);
+
+        columns.forEach(column => {
+            // Ignoramos "documento_id" tanto en el encabezado como en el filtro
+            if (column === 'documento_id') return;
+
+            const th = document.createElement('th');
+            th.textContent = column.charAt(0).toUpperCase() + column.slice(1).replace(/_/g, ' ');
+            th.onclick = () => sortTable(column);
+            headerRow.appendChild(th);
+
+            const td = document.createElement('td');
+            const input = document.createElement('input');
+            input.placeholder = `Filter ${column}...`;
+            input.oninput = (e) => filterTable(column, e.target.value);
+            td.appendChild(input);
+            filterRow.appendChild(td);
+        });
+
+        renderTable();
+    }
+
+    function renderTable() {
+        const tableBody = document.getElementById('table-body');
+        tableBody.innerHTML = '';
+
+        let filteredData = filterData();
+        const sortedData = sortData(filteredData);
+        const paginatedData = paginateData(sortedData);
+
+        paginatedData.forEach(row => {
+            const tr = document.createElement('tr');
+
+            Object.entries(row).forEach(([key, value]) => {
+                const td = document.createElement('td');
+
+                // Si la clave es "documentos" (array de documentos), procesamos los enlaces
+                if (key === 'documentos') {
+                    if (Array.isArray(value)) {
+                        td.innerHTML = value.map(doc =>
+                            `<a href="/dhcoapp/bienestar-integral/ver-archivo/${doc.documento_id}" target="_blank">${doc.nombre_documento}</a>`
+                        ).join('<br>');
+                    } else {
+                        td.textContent = '-';
+                    }
+                } else if (key === 'documento_id') {
+                    // Ignoramos "documento_id", no lo mostramos ni en la tabla ni en los filtros
+                    return;
+                } else if (key === 'nombre_documento') {
+                    // Si la clave es "nombre_documento", mostramos el enlace
+                    if (row.documento_id) {
+                        td.innerHTML = `<a href="/dhcoapp/bienestar-integral/ver-archivo/${row.documento_id}" target="_blank">${value}</a>`;
+                    } else {
+                        td.textContent = value || '-';
+                    }
+                } else {
+                    td.textContent = value || '-';
+                }
+
+                tr.appendChild(td);
+            });
+
+            tableBody.appendChild(tr);
+        });
+
+        updatePagination();
+    }
+
+    function filterData() {
+        return data.filter(row => {
+            return Object.entries(filters).every(([column, filterValue]) => {
+                const cellValue = row[column];
+                if (cellValue == null) return false;
+                if (typeof cellValue === 'string') {
+                    return cellValue.toLowerCase().includes(filterValue.toLowerCase());
+                }
+                if (typeof cellValue === 'number') {
+                    return cellValue.toString().includes(filterValue);
+                }
+                if (cellValue instanceof Date) { 
+                    return cellValue.toLocaleDateString().includes(filterValue);
+                }
+                return String(cellValue).includes(filterValue);
+            });
+        });
+    }
+
+    function sortData(data) {
+        if (!sortColumn) return data;
+        return [...data].sort((a, b) => {
+            if (a[sortColumn] < b[sortColumn]) return sortDirection === 'asc' ? -1 : 1;
+            if (a[sortColumn] > b[sortColumn]) return sortDirection === 'asc' ? 1 : -1;
+            return 0;
+        });
+    }
+
+    function paginateData(data) {
+        const startIndex = (currentPage - 1) * rowsPerPage;
+        return data.slice(startIndex, startIndex + rowsPerPage);
+    }
+
+
+    function sortTable(column) {
+        if (sortColumn === column) {
+            sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            sortColumn = column;
+            sortDirection = 'asc';
+        }
+        renderTable();
+    }
+
+    function filterTable(column, value) {
+        if (value) {
+            filters[column] = value;
+        } else {
+            delete filters[column];
+        }
+        currentPage = 1;
+        renderTable();
+    }
+
+    document.getElementById('download-excel').onclick = () => {
+        const filteredData = filterData();
+        const worksheet = XLSX.utils.json_to_sheet(filteredData);
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+        XLSX.writeFile(workbook, "table_data.xlsx");
+    };
+
+    initTable();
+</script>
+
 </html>

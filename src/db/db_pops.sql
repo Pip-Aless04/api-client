@@ -12,8 +12,6 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         pais_estado CHAR(1) NOT NULL DEFAULT 'A'
     );
 
-    SELECT * FROM colaborador 
-
     INSERT INTO pais(pais_nombre, pais_acronimo) 
     VALUES
     ('Costa Rica', 'CRC'),
@@ -27,118 +25,119 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         pue_nombre NVARCHAR(50) NOT NULL,
         pue_estado CHAR(1) NOT NULL DEFAULT 'A'
     );
-
-    
-    INSERT INTO puesto(pue_nombre)
-    VALUES
-    (N'ANALISTA DE SALUD OCUPACIONAL'),
-    (N'JEFE DE SALUD OCUPACIONAL Y SERV GENERALES'),
-    (N'ANALISTA DE ATRACCIÓN Y FIDELIZACION'),
-    (N'ANALISTA DE SERVICIOS GENERALES'),
-    (N'GESTOR DE CULTURA Y BIENESTAR'),
-    (N'ANALISTA DE BIENESTAR INTEGRAL'),
-    (N'ANALISTA DE FORMACION Y DESARROLLO'),
-    (N'JEFE DE BIENESTAR INTEGRAL'),
-    (N'DIRECTOR DE DESARROLLO HUMANO Y CUL ORG'),
-    (N'COORDINADORA DE FORMACION Y DESARROLLO'),
-    (N'COORDINADOR DE BIENESTAR INTEGRAL'),
-    (N'AUXILIAR DE SERVICIOS GENERALES'),
-    (N'JEFE DE PLANEACION Y DESARROLLO DE TALENTO'),
-    (N'AUXILIAR DE BIENESTAR INTEGRAL'),
-    (N'ANALISTA DE CONTROL GESTIÓN'),
-    (N'JEFE DE COSTOS Y TRANSFORMACION DIGITAL'),
-    (N'ANALISTA DE TRANSFORMACION DIGITAL'),
-    (N'AUXILIAR DE SERVICIOS FINANCIEROS'),
-    (N'JEFE DE SERVICIOS FINANCIEROS'),
-    (N'DIRECTOR FINANCIERO'),
-    (N'ANALISTA DE INFORMACIÓN COMERCIAL-VENTAS'),
-    (N'COORDINADOR DE TRANSFORMACION DIGITAL'),
-    (N'ANALISTA DE COSTOS'),
-    (N'JEFE DE CONTROL GESTION'),
-    (N'SOPORTE ADMINISTRATIVO 1'),
-    (N'GERENTE GENERAL'),
-    (N'ADMINISTRADOR DE PROYECTOS'),
-    (N'JEFE DE LOGISTICA'),
-    (N'ENCARGADO DE PISO CEDI'),
-    (N'DIRECTOR DE CADENA DE ABASTECIMIENTO'),
-    (N'ANALISTA DE INVENTARIOS'),
-    (N'JEFE DE ABASTECIMIENTO'),
-    (N'COORDINADOR DE PLANEACIÓN DE LA DEMANDA'),
-    (N'ANALISTA DE DATOS MAESTROS'),
-    (N'ANALISTA DE ABASTECIMIENTO'),
-    (N'ANALISTA DE PLANEACIÓN DE LA DEMANDA'),
-    (N'FACTURADOR'),
-    (N'AUXILIAR DE LIQUIDACION Y CARTERA'),
-    (N'COORDINADOR DE DISTRIBUCIÓN'),
-    (N'AUXILIAR DE INFO. DISTRIBUCIÓN'),
-    (N'ANALISTA DE I&D'),
-    (N'ANALISTA DE INFORMACION DE SIG'),
-    (N'AUXILIAR DE GESTION AMBIENTAL'),
-    (N'ANALISTA DE SIG'),
-    (N'ANALISTA DE INNOVACION'),
-    (N'COORDINADOR I&D'),
-    (N'ANALISTA DE GESTION AMBIENTAL'),
-    (N'DIRECTOR DE INNOVA. Y SIST. INT. GESTION'),
-    (N'AUDITOR SIG'),
-    (N'COORDINADOR DE SIG'),
-    (N'AUXILIAR DE VENTAS DIGITALES'),
-    (N'ANALISTA DE TRADE MARKETING'),
-    (N'JEFE DE MERCADEO DE CONSUMO MASIVO'),
-    (N'DESARROLLADOR DE NUEVOS NEGOCIOS'),
-    (N'COORDINADOR DE COMUNICACIONES'),
-    (N'COORDINADOR DE TRADE DE MARKETING'),
-    (N'JEFE DE MERCADEO DE HELADERIAS'),
-    (N'AUXILIAR DE SERVICIO AL CLIENTE'),
-    (N'ESPECIALISTA EN MARKETING DIGITAL'),
-    (N'DIRECTOR DE MERCADEO'),
-    (N'VENDEDOR'),
-    (N'GENERADOR DE DEMANDA'),
-    (N'SUPERVISOR DE VENTAS'),
-    (N'COORDINADOR DE PROYECTOS'),
-    (N'DIRECTOR DE PROYECTOS E INFRAESTRUCTURA'),
-    (N'INGENIERA CIVIL'),
-    (N'AUXILIAR DE INFORMACION COMERCIAL'),
-    (N'JEFE DE SERVICIOS COMERCIALES Y FRANQUICIAS'),
-    (N'DIRECTOR COMERCIAL'),
-    (N'ANALISTA DE SERVICIOS COMERCIALES'),
-    (N'AUXILIAR DE INVENTARIOS'),
-    (N'COORDINADOR DE ZONA'),
-    (N'JEFE DE ZONA'),
-    (N'COORDINADOR DE MTTO PDV'),
-    (N'ANALISTA DE INFORMACIÓN DE PRODUCCIÓN'),
-    (N'JEFE DE PRODUCCION'),
-    (N'AUXILIAR DE INFO. DE PRODUCCIÓN'),
-    (N'COORDINADOR DE PRODUCCION'),
-    (N'ENCARGADO DE LABORATORIO'),
-    (N'ENCARGADO DE PISO ALMACEN'),
-    (N'ANALISTA DE MANTENIMIENTO PLANTA'),
-    (N'JEFE MANTENIMIENTO DE PLANTA'),
-    (N'AUXILIAR DE MANTENIMIENTO'),
-    (N'ENCARGADO DE PISO PRODUCCION'),
-    (N'AUXILIAR DE FORMACION Y DESARROLLO'),
-    (N'ANALISTA DE ATRACCIÓN'),
-    (N'JEFE DE DHCO'),
-    (N'ANALISTA DE TI'),
-    (N'COORDINADOR DE ALMACENES'),
-    (N'ANALISTA DE PLANEACION Y ABASTECIMIENTO'),
-    (N'ANALISTA DE CALIDAD DE PDV'),
-    (N'JEFE DE MERCADEO'),
-    (N'COORDINADOR DE MARCA'),
-    (N'JEFE DE VENTAS'),
-    (N'AUXILIAR DE VENTAS'),
-    (N'AUXILIAR DE INFO. DE PROYECTOS'),
-    (N'AUXILIAR DE CONTROL Y GESTION'),
-    (N'AUXILIAR DE SERVICIOS COMERCIALES'),
-    (N'GERENTE DE PAIS'),
-    (N'COORDINADOR DE SERVICIOS COMERCIALES'),
-    (N'JEFE DE OPERACIONES COMERCIALES'),
-    (N'COORDINADOR DE OPERACIONES'),
-    (N'COORDINADOR DE PRODUCCIÓN'),
-    (N'SUPERVISOR DE OPERACIONES'),
-    (N'COORDINADOR DE LOGISTICA'),
-    (N'ANALISTA DE SERVICIOS FINANCIEROS'),
-    (N'AUXILIAR LOGISTICO'),
-    (N'COORDINADOR DE MERCADEO Y VENTAS')
+    SELECT * FROM puesto;
+INSERT INTO puesto(pue_nombre)
+VALUES
+(N'ANALISTA DE SALUD OCUPACIONAL'),
+(N'JEFE DE SALUD OCUPACIONAL Y SERV GENERALES'),
+(N'ANALISTA DE ATRACCIÓN Y FIDELIZACION'),
+(N'ANALISTA DE SERVICIOS GENERALES'),
+(N'GESTOR DE CULTURA Y BIENESTAR'),
+(N'ANALISTA DE BIENESTAR INTEGRAL'),
+(N'ANALISTA DE FORMACION Y DESARROLLO'),
+(N'JEFE DE BIENESTAR INTEGRAL'),
+(N'DIRECTOR DE DESARROLLO HUMANO Y CUL ORG'),
+(N'COORDINADORA DE FORMACION Y DESARROLLO'),
+(N'COORDINADOR DE BIENESTAR INTEGRAL'),
+(N'AUXILIAR DE SERVICIOS GENERALES'),
+(N'JEFE DE PLANEACION Y DESARROLLO DE TALENTO'),
+(N'AUXILIAR DE BIENESTAR INTEGRAL'),
+(N'ANALISTA DE CONTROL GESTIÓN'),
+(N'JEFE DE COSTOS Y TRANSFORMACION DIGITAL'),
+(N'ANALISTA DE TRANSFORMACION DIGITAL'),
+(N'AUXILIAR DE SERVICIOS FINANCIEROS'),
+(N'JEFE DE SERVICIOS FINANCIEROS'),
+(N'DIRECTOR FINANCIERO'),
+(N'ANALISTA DE INFORMACIÓN COMERCIAL-VENTAS'),
+(N'COORDINADOR DE TRANSFORMACION DIGITAL'),
+(N'ANALISTA DE COSTOS'),
+(N'JEFE DE CONTROL GESTION'),
+(N'SOPORTE ADMINISTRATIVO 1'),
+(N'GERENTE GENERAL'),
+(N'ADMINISTRADOR DE PROYECTOS'),
+(N'JEFE DE LOGISTICA'),
+(N'ENCARGADO DE PISO CEDI'),
+(N'DIRECTOR DE CADENA DE ABASTECIMIENTO'),
+(N'ANALISTA DE INVENTARIOS'),
+(N'JEFE DE ABASTECIMIENTO'),
+(N'COORDINADOR DE PLANEACIÓN DE LA DEMANDA'),
+(N'ANALISTA DE DATOS MAESTROS'),
+(N'ANALISTA DE ABASTECIMIENTO'),
+(N'ANALISTA DE PLANEACIÓN DE LA DEMANDA'),
+(N'FACTURADOR'),
+(N'AUXILIAR DE LIQUIDACION Y CARTERA'),
+(N'COORDINADOR DE DISTRIBUCIÓN'),
+(N'AUXILIAR DE INFO. DISTRIBUCIÓN'),
+(N'ANALISTA DE I&D'),
+(N'ANALISTA DE INFORMACION DE SIG'),
+(N'AUXILIAR DE GESTION AMBIENTAL'),
+(N'ANALISTA DE SIG'),
+(N'ANALISTA DE INNOVACION'),
+(N'COORDINADOR I&D'),
+(N'ANALISTA DE GESTION AMBIENTAL'),
+(N'DIRECTOR DE INNOVA. Y SIST. INT. GESTION'),
+(N'AUDITOR SIG'),
+(N'COORDINADOR DE SIG'),
+(N'AUXILIAR DE VENTAS DIGITALES'),
+(N'ANALISTA DE TRADE MARKETING'),
+(N'JEFE DE MERCADEO DE CONSUMO MASIVO'),
+(N'DESARROLLADOR DE NUEVOS NEGOCIOS'),
+(N'COORDINADOR DE COMUNICACIONES'),
+(N'COORDINADOR DE TRADE DE MARKETING'),
+(N'JEFE DE MERCADEO DE HELADERIAS'),
+(N'AUXILIAR DE SERVICIO AL CLIENTE'),
+(N'ESPECIALISTA EN MARKETING DIGITAL'),
+(N'DIRECTOR DE MERCADEO'),
+(N'VENDEDOR'),
+(N'GENERADOR DE DEMANDA'),
+(N'SUPERVISOR DE VENTAS'),
+(N'COORDINADOR DE PROYECTOS'),
+(N'DIRECTOR DE PROYECTOS E INFRAESTRUCTURA'),
+(N'INGENIERA CIVIL'),
+(N'AUXILIAR DE INFORMACION COMERCIAL'),
+(N'JEFE DE SERVICIOS COMERCIALES Y FRANQUICIAS'),
+(N'DIRECTOR COMERCIAL'),
+(N'ANALISTA DE SERVICIOS COMERCIALES'),
+(N'AUXILIAR DE INVENTARIOS'),
+(N'COORDINADOR DE ZONA'),
+(N'JEFE DE ZONA'),
+(N'COORDINADOR DE MTTO PDV'),
+(N'ANALISTA DE INFORMACIÓN DE PRODUCCIÓN'),
+(N'JEFE DE PRODUCCION'),
+(N'AUXILIAR DE INFO. DE PRODUCCIÓN'),
+(N'COORDINADOR DE PRODUCCION'),
+(N'ENCARGADO DE LABORATORIO'),
+(N'ENCARGADO DE PISO ALMACEN'),
+(N'ANALISTA DE MANTENIMIENTO PLANTA'),
+(N'JEFE MANTENIMIENTO DE PLANTA'),
+(N'AUXILIAR DE MANTENIMIENTO'),
+(N'ENCARGADO DE PISO PRODUCCION'),
+(N'AUXILIAR DE FORMACION Y DESARROLLO'),
+(N'ANALISTA DE ATRACCIÓN'),
+(N'JEFE DE DHCO'),
+(N'ANALISTA DE TI'),
+(N'COORDINADOR DE ALMACENES'),
+(N'ANALISTA DE PLANEACION Y ABASTECIMIENTO'),
+(N'ANALISTA DE CALIDAD DE PDV'),
+(N'JEFE DE MERCADEO'),
+(N'COORDINADOR DE MARCA'),
+(N'JEFE DE VENTAS'),
+(N'AUXILIAR DE VENTAS'),
+(N'AUXILIAR DE INFO. DE PROYECTOS'),
+(N'AUXILIAR DE CONTROL Y GESTION'),
+(N'AUXILIAR DE SERVICIOS COMERCIALES'),
+(N'GERENTE DE PAIS'),
+(N'COORDINADOR DE SERVICIOS COMERCIALES'),
+(N'JEFE DE OPERACIONES COMERCIALES'),
+(N'COORDINADOR DE OPERACIONES'),
+(N'COORDINADOR DE PRODUCCIÓN'),
+(N'SUPERVISOR DE OPERACIONES'),
+(N'COORDINADOR DE LOGISTICA'),
+(N'ANALISTA DE SERVICIOS FINANCIEROS'),
+(N'AUXILIAR LOGISTICO'),
+(N'COORDINADOR DE MERCADEO Y VENTAS'),
+(N'AUXILIAR DE INFO LOGISTICA FACTURACION'),
+(N'AUXILIAR DE INFORMACION DE VENTAS');
     --*/
 
 /*##########################################################################*/
@@ -227,7 +226,11 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     INSERT INTO permiso(pr_nombre)
     VALUES
     ('colaborador'),
-    ('dhco')
+    ('dhco_admin'),
+    ('dhco_aprobador'),
+    ('jefe_colaborador')
+
+    SELECT * FROM permiso;
 
 /*##########################################################################*/
     CREATE TABLE colaborador(
@@ -247,7 +250,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         col_jefatura_id UNIQUEIDENTIFIER NOT NULL,
         col_a_cargo CHAR(1) NOT NULL,
         col_estado CHAR(1) NOT NULL DEFAULT 'A',
-        col_clave NVARCHAR(50) NOT NULL,
+        col_clave NVARCHAR(255) NOT NULL,
         col_permiso_id TINYINT NOT NULL,
         PRIMARY KEY(col_id), 
         FOREIGN KEY(col_pais_id) REFERENCES pais(pais_id),
@@ -255,12 +258,11 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY(col_depto_id) REFERENCES departamento(depto_id),
         FOREIGN KEY(col_direccion_id) REFERENCES direccion(dir_id),
         FOREIGN KEY(col_permiso_id) REFERENCES permiso(pr_id)
-    );
+    );  
 
-    ALTER TABLE colaborador ALTER COLUMN col_clave NVARCHAR(255);  
-
-    SELECT * FROM colaborador
     
+    SELECT * FROM colaborador 
+
 /*##########################################################################*/
     CREATE TABLE talento(
         tal_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -484,8 +486,6 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         nota_estado CHAR(1) NOT NULL DEFAULT 'A'
     );
 
-    SELECT * FROM nota
-
     --/*
     INSERT INTO nota(nota_nombre, nota_valor)
     VALUES
@@ -581,6 +581,54 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     (1,7,1),
     (1,7,2),
 */  
+
+/*##############################################################################*/
+    CREATE TABLE historico_salida_colaborador(
+        hac_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        hac_col_subordinado_id UNIQUEIDENTIFIER NOT NULL,
+        hac_col_responsable_id UNIQUEIDENTIFIER NOT NULL,
+        hac_fecha DATE NOT NULL,
+        FOREIGN KEY(hac_col_subordinado_id) REFERENCES colaborador(col_id),
+        FOREIGN KEY(hac_col_responsable_id) REFERENCES colaborador(col_id)
+    );
+
+    SELECT * FROM historico_salida_colaborador;
+
+    CREATE TRIGGER trg_update_colaborador_estado
+    ON reporte
+    AFTER INSERT
+    AS
+    BEGIN
+        SET NOCOUNT ON;
+
+        -- Verificar si el nuevo registro tiene rep_tipo_reporte_id igual a 1
+        IF EXISTS (
+            SELECT 1 
+            FROM inserted 
+            WHERE rep_tipo_reporte_id = 1
+        )
+        BEGIN
+            -- Actualizar col_estado a 'I' en la tabla colaborador
+            UPDATE colaborador
+            SET col_estado = 'I'
+            FROM colaborador
+            INNER JOIN inserted 
+                ON colaborador.col_id = inserted.rep_col_id_aplica;
+
+            -- Insertar un registro en la tabla historico_salida_colaborador
+            INSERT INTO historico_salida_colaborador (
+                hac_col_subordinado_id, 
+                hac_col_responsable_id, 
+                hac_fecha
+            )
+            SELECT 
+                rep_col_id_aplica, 
+                rep_col_id_solicita, 
+                GETDATE()
+            FROM inserted
+            WHERE rep_tipo_reporte_id = 1;
+        END
+    END;
 
 /*##############################################################################*/
 
@@ -693,6 +741,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY (hcc_col_id) REFERENCES colaborador(col_id)
     );
 
+    SELECT * FROM historico_cambio_clave
 
 /*##############################TABLAS REPORTES############################################*/
 
@@ -719,7 +768,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         ms_nombre NVARCHAR(100) NOT NULL,
         ms_estado CHAR(1) NOT NULL DEFAULT 'A'
     );
-
+    SELECT * FROM motivo_salida
     INSERT INTO motivo_salida(ms_nombre)
     VALUES
     ('Motivos personales'),
@@ -779,46 +828,50 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         FOREIGN KEY (tr_creado_por) REFERENCES colaborador(col_id)
     );
 
+
     INSERT INTO tipo_reporte (tr_nombre, tr_creado_por, tr_creado_fecha, tr_estado) 
     VALUES 
-    ('salida_de_personal', 'e952e0c6-2236-4ae5-acf6-58f0c9c889e3', '2024-04-01', 'A'),
-    ('solicitud_de_vacaciones', 'e952e0c6-2236-4ae5-acf6-58f0c9c889e3', '2024-04-01', 'A'),
-    ('traslado_de_personal', 'e952e0c6-2236-4ae5-acf6-58f0c9c889e3', '2024-04-01', 'A'),
-    ('incapacidades_y_licencias', 'e952e0c6-2236-4ae5-acf6-58f0c9c889e3', '2024-04-01', 'A'),    
-    ('solicitud_de_cartas', 'e952e0c6-2236-4ae5-acf6-58f0c9c889e3', '2024-04-01', 'A');
+    ('salida_de_personal', '7e47f1ed-a18e-4397-8259-3fb66a9b47a4', '2024-04-01', 'A'),
+    ('solicitud_de_vacaciones', '7e47f1ed-a18e-4397-8259-3fb66a9b47a4', '2024-04-01', 'A'),
+    ('traslado_de_personal', '7e47f1ed-a18e-4397-8259-3fb66a9b47a4', '2024-04-01', 'A'),
+    ('incapacidades_y_licencias', '7e47f1ed-a18e-4397-8259-3fb66a9b47a4', '2024-04-01', 'A'),    
+    ('solicitud_de_cartas', '7e47f1ed-a18e-4397-8259-3fb66a9b47a4', '2024-04-01', 'A');
 
 
-    CREATE TABLE reporte (
+    CREATE TABLE reporte(
         rep_id INT IDENTITY(1,1) PRIMARY KEY,
-        rep_col_id_subordinado UNIQUEIDENTIFIER NOT NULL,
-        rep_col_jefe_inmediato UNIQUEIDENTIFIER NOT NULL,
+        rep_col_id_solicita UNIQUEIDENTIFIER NOT NULL,
+        rep_col_id_aplica UNIQUEIDENTIFIER NOT NULL,
         rep_sp_tipo_salida INT,
         rep_sp_motivo_salida INT,
         rep_sp_saldo_vacaciones INT,
-        rep_tp_motivo_traslado INT,
+        rep_tp_motivo_traslado NVARCHAR(255),
         rep_tp_depto_actual INT,
         rep_tp_depto_traslado INT,
         rep_il_tipo_novedad INT,
         rep_ca_tipo_carta INT,
-        rep_ca_otro NVARCHAR(255),
         rep_ca_email_envio VARCHAR(50),
         rep_detalle_reporte NVARCHAR(MAX),
         rep_tipo_reporte_id INT NOT NULL,
         rep_pais_solicita INT,
-        rep_fec_inicio DATE,
+        rep_fec_inicio DATE,    
         rep_fec_fin DATE,
+        rep_otro NVARCHAR(255),
         rep_fec_envio_doc DATE,
         rep_estado CHAR(1) NOT NULL DEFAULT 'S',
         rep_fecha_transaccion DATETIME,
-        FOREIGN KEY (rep_col_id_subordinado) REFERENCES colaborador (col_id),
-        FOREIGN KEY (rep_col_jefe_inmediato) REFERENCES colaborador (col_id),
+        FOREIGN KEY (rep_col_id_solicita) REFERENCES colaborador (col_id),
+        FOREIGN KEY (rep_col_id_aplica) REFERENCES colaborador (col_id),
         FOREIGN KEY (rep_tipo_reporte_id) REFERENCES tipo_reporte (tr_id),
         FOREIGN KEY (rep_sp_tipo_salida) REFERENCES tipo_salida (ts_id),
         FOREIGN KEY (rep_sp_motivo_salida) REFERENCES motivo_salida (ms_id),
         FOREIGN KEY (rep_il_tipo_novedad) REFERENCES tipo_novedad (tn_id),
         FOREIGN KEY (rep_ca_tipo_carta) REFERENCES tipo_carta (tc_id),
         FOREIGN KEY (rep_pais_solicita) REFERENCES pais (pais_id)
-    );
+    );  
+
+    --cambiar nombre de columna
+    EXEC sp_rename 'reporte.rep_ca_otro', 'rep_otro', 'COLUMN' 
 
     CREATE TABLE tipo_documento(
         td_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -834,21 +887,27 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
     ('carta_despido_o_renuncia'),
     ('accion_de_personal');
 
+
     CREATE TABLE reporte_documento(
         rd_id INT IDENTITY(1,1) PRIMARY KEY,
         rd_id_reporte INT NOT NULL,
         rd_id_tipo_documento INT NOT NULL,
         rd_documento VARBINARY(MAX) NOT NULL, /*contenido del documento*/
-        rd_nombre_documento VARCHAR(50) NOT NULL, /*nombre del documento*/
+        rd_nombre_documento NVARCHAR(100) NOT NULL, /*nombre del documento*/
         rd_extension_documento VARCHAR(10), /*extension del documento*/
         rd_fecha_documento DATETIME NOT NULL, /*fecha de envío del documento*/
         FOREIGN KEY (rd_id_reporte) REFERENCES reporte(rep_id),
         FOREIGN KEY (rd_id_tipo_documento) REFERENCES tipo_documento(td_id)
     );
 
+    CREATE TABLE error_log(
+        el_id INT IDENTITY(1,1) PRIMARY KEY,
+        el_error_message NVARCHAR(MAX) NOT NULL,
+        el_fecha DATETIME NOT NULL DEFAULT GETDATE()
+    );
+    
     END
 
 
+
 SELECT * FROM colaborador
-SELECT * FROM reporte
-SELECT * FROM reporte_documento 

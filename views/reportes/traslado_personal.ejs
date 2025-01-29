@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" id="appIcon" type="image/x-icon" href="https://cms.blumewebsites.com/pops/website/favicon.png">
     <link rel="stylesheet" href="../../css/reportes/traslado_personal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Incident Report Form</title>
 </head>
 <body>
     <header>
         <nav>
             <div class="logo">
-                <img src="../../img/logo_pops_2024.webp" alt="POPS Logo">
+                <a href="/dhcoapp/inicio">
+                    <img src="../../img/logo_pops_2024.webp" alt="POPS Logo">
+                </a>
             </div>
             <div class="settings-menu">
                 <div class="settings-icon" id="settingsIcon">
@@ -32,86 +36,107 @@
         <div class="form-container">
             <div class="form-header">
                 <h1>Reporte traslado de personal</h1>
-                <p>Please fill out the form below to report an incident.</p>
+                <p>Por favor, complete el formulario para reportar una trasladación de personal.</p>
             </div>
-            <form class="form-content" id="incidentForm">
+            <form class="form-content" id="trasladoForm">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="correo">Correo</label>
-                        <input type="email" id="correo" name="correo" >
-                    </div>
-                    <div class="form-group">
-                        <label for="ident">Identificación</label>
-                        <input type="text" id="ident" name="ident" placeholder="119160949" disabled>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="name">Nombre</label>
-                        <input type="text" id="name" name="name" placeholder="Alessandro Arias Baldi" disabled>
+                        <label for="colaborador">Seleccione el colaborador</label>
+                        <input list="colaboradoresList" id="colaborador" name="incident-type" placeholder="Seleccionar colaborador" required>
+                        <datalist id="colaboradoresList">
+                                <% userSubordinados.forEach(sub => { %>
+                                    <option data-id="<%= sub.id %>"> <%= sub.nombre %> <%= sub.segundo_nombre %> <%= sub.primer_apellido %> <%= sub.segundo_apellido %> </option>
+                                <% }) %>
+                        </datalist>
                     </div>
                     <div class="form-group">
                         <label for="date">Fecha de traslado</label>
                         <input type="date" id="date" name="date" required>
                     </div>
                 </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="depto-actual">Departamento o heladeria actual</label>
+                        <input type="text" id="depto-actual" name="depto-actual" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="depto">Seleccione el departamento de o heladeria de traslado</label>
+                        <input list="deptosList" id="depto" name="incident-type" placeholder="Seleccionar departamento" required>
+                        <datalist id="deptosList">
+                                <% reportData.deptos.forEach(depto => { %>
+                                    <option data-id="<%= depto.id %>"> <%= depto.nombre %> </option>
+                                <% }) %>
+                        </datalist>
+                    </div>
+                </div>
+
                 <div class="form-row">
                     <div class="form-group">
                         <label for="pais">Motivo de traslado</label>
-                        <textarea id="detalle" name="detalle" placeholder="Detalle de la solicitud"></textarea>
+                        <textarea id="detalle" name="detalle" placeholder="Detalle de la solicitud" maxlength="255"></textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="area">Departamento / Heladería</label>
-                        <input list="areas" id="area" name="area" placeholder="Seleccionar" class="styled-input">
-                        <datalist id="areas">
-                            <option value="DHCO">
-                            <option value="Financiera">
-                            <option value="IT">
-                            <option value="Mercadeo">
-                            <option value="Comercial">
-                        </datalist>                
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="area">Departamento / Heladería</label>
-                        <input list="areas" id="area" name="area" placeholder="Seleccionar" class="styled-input">
-                        <datalist id="areas">
-                            <option value="DHCO">
-                            <option value="Financiera">
-                            <option value="IT">
-                            <option value="Mercadeo">
-                            <option value="Comercial">
-                        </datalist>                
-                    </div>
-                    <div class="form-group">
-                        <label for="date">Fecha de traslado</label>
-                        <input type="date" id="date" name="date" required>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group" style="flex: 1 1 100%;">
-                        <label>Foto de la cédula</label>
+                    <div class="form-group" >
+                        <label>Acción de personal</label>
                         <div class="file-inputs-container">
                             <div class="file-input-wrapper">
-                                <input type="file" id="file-upload-1" name="file-upload-1">
-                                <label for="file-upload-1" class="file-input-button">Choose File 1</label>
-                                <div class="file-input-name" id="file-input-name-1">No file chosen</div>
+                                <input type="file" id="file-upload-1" name="file">
+                                <label for="file-upload-1" class="file-input-button">Seleccione un archivo</label>
+                                <div class="file-input-name" id="file-input-name-1">No archivo adjunto</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <button type="submit">Submit Report</button>
+                <button type="submit">Enviar reporte</button>
             </form>
         </div>
     </main>
-
+    <div id="alert" class="alert">
+        <div class="alert-content">
+            <i id="alertIcon" class="alert-icon"></i>
+            <p id="alertMessage"></p>
+        </div>
+        <button class="close-btn" onclick="closeAlert()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
     <footer>
         <div class="footer-content">
             <img src="../../img/footer.webp" alt="Decorative footer with waves">
         </div>
     </footer>
-
 </body>
-<script src="../../js/reportes/solicitud_cartas.js"></script>
+<script src="../../js/reportes/traslado_personal.js"></script>
+<script>
+    const userSubordinados = <%- JSON.stringify(userSubordinados) %>;
+    const subordinadosInput = document.getElementById('colaborador');
+    const deptoActual = document.getElementById('depto-actual');
+
+    subordinadosInput.addEventListener('input', function () {
+        const dataList = document.getElementById('colaboradoresList');
+        const options = dataList.querySelectorAll('option');
+
+        let subId = null;
+        options.forEach(option => {
+            if (option.value === subordinadosInput.value) {
+                subId = option.getAttribute('data-id');
+            }
+        });
+
+        // Si se encuentra un subordinado válido, actualizar el departamento
+        if (subId) {
+            const sub = userSubordinados.find(sub => sub.id === subId);
+            deptoActual.value = sub ? sub.departamento : '';
+        } else {
+            // Si no hay coincidencia, limpiar el campo de departamento
+            deptoActual.value = '';
+        }
+    });
+
+    // Limpiar el campo de departamento si el input queda vacío
+    subordinadosInput.addEventListener('change', function () {
+        if (!subordinadosInput.value.trim()) {
+            deptoActual.value = '';
+        }
+    });
+</script>
 </html>

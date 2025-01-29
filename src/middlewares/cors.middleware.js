@@ -5,8 +5,7 @@ export const corsMiddleware = () => cors({
         const ACCEPTED_ORIGINS = [
         'http://localhost:3000',
         'https://popsdhcosite.azurewebsites.net',
-        'https://popsdhcosite.azurewebsites.net/',
-        'http://localhost:5173',
+        'https://dhco.pops.co.cr',
         ]; 
         if (ACCEPTED_ORIGINS.includes(origin) || !origin) {
         callback(null, true);

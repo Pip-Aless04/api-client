@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Evaluación del Desempeño</title>
+    <link rel="stylesheet" href="../../css/evaluacion/inicio.css">
+    <script src="https://kit.fontawesome.com/cfb3e3ada9.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="/dhcoapp/inicio">
+                    <img src="../../img/logo_pops_2024.webp" alt="POPS Logo">
+                </a>
+            </div>  
+            <div class="settings-menu">
+                <div class="settings-icon" id="settingsIcon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </div>
+                <div class="dropdown" id="settingsDropdown">
+                    <a href="#">Perfil</a>
+                    <a href="#">Configuración</a>
+                    <a href="#">Cerrar sesión</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content container">
+                <div class="hero-text">
+                    <h1>Evaluación del Desempeño</h1>
+                    <p>Impulsando el crecimiento y desarrollo profesional</p>
+                    <div class="button-group">
+                        <button class="btn btn-primary">Iniciar Evaluación</button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="../../img/banner_inicio.webp" alt="Evaluación del Desempeño">
+                </div>
+            </div>
+            <div class="hero-wave"></div>
+        </section>
+
+        <!-- Content Section -->
+        <section class="content container">
+            <!-- Team Evaluation Section -->
+            <div class="team-section">
+                <h2>Tu Equipo Estrella</h2>
+                <div class="team-cards">
+                    <% subordinados.info.forEach(subordinado => { %>
+                        <div class="employee-card">
+                            <div class="employee-avatar">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="employee-info">
+                                <h3><%= subordinado.nombre %> <%= subordinado.primer_apellido %> <%= subordinado.segundo_apellido %></h3>
+                                <p><%= subordinado.puesto.charAt(0).toUpperCase() + subordinado.puesto.slice(1).toLowerCase() %></p>
+                                <button class="evaluate-btn" onclick="evaluateEmployee('<%= subordinado.id %>')">Evaluar Colaborador</button>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <img src="../../img/footer.webp" alt="Decorative footer with waves">
+        </div>
+    </footer>
+    <script>
+        const subordinados = <%- JSON.stringify(subordinados.info) %>;
+        console.log(subordinados);
+    </script>
+    <script src="../../js/evaluacion/inicio.js"></script>
+</body>
+</html>
+
+
