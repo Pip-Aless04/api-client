@@ -50,11 +50,31 @@
 
         <!-- Content Section -->
         <section class="content container">
+            <!-- Features -->
+            <div class="features">
+                <div class="feature-card">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Métricas Claras</h3>
+                    <p>Evaluaciones basadas en objetivos medibles</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-bullseye"></i>
+                    <h3>Enfoque en Metas</h3>
+                    <p>Alineación con los objetivos de la empresa</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Feedback 360°</h3>
+                    <p>Evaluaciones completas y multidireccionales</p>
+                </div>
+            </div>
+
             <!-- Team Evaluation Section -->
+            <% if (subordinados.length > 0) { %>
             <div class="team-section">
                 <h2>Tu Equipo Estrella</h2>
                 <div class="team-cards">
-                    <% subordinados.info.forEach(subordinado => { %>
+                    <% subordinados.forEach(subordinado => { %>
                         <div class="employee-card">
                             <div class="employee-avatar">
                                 <i class="fas fa-user-circle"></i>
@@ -68,6 +88,7 @@
                     <% }) %>
                 </div>
             </div>
+            <% } %>
         </section>
     </main>
     <footer>
@@ -75,10 +96,7 @@
             <img src="../../img/footer.webp" alt="Decorative footer with waves">
         </div>
     </footer>
-    <script>
-        const subordinados = <%- JSON.stringify(subordinados.info) %>;
-        console.log(subordinados);
-    </script>
+
     <script src="../../js/evaluacion/inicio.js"></script>
 </body>
 </html>

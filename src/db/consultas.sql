@@ -29,8 +29,7 @@ WHERE 1=1
 UPDATE colaborador
 SET col_a_cargo = 'S'
 
-SELECT * FROM reporte WHERE rep_col_id_solicita = '71fc6e2f-7028-412c-9904-96bd380824d1'
-WHERE col_jefe_id = 'D594E981-410A-4085-90F5-EFE2A3BAE951'
+SELECT * FROM reporte WHERE rep_col_id_solicita = '71fc6e2f-7028-412c-9904-96bd380824d1' 
 
 
 SELECT * FROM descripcion_talento
@@ -38,6 +37,7 @@ SELECT * FROM colaborador WHERE col_id = '2F9B1306-45FE-4065-B7D9-41D3EABA3CE8'
 SELECT * FROM permiso
 SELECT * FROM reporte
 SELECT * FROM tipo_reporte
+
 
 
 SELECT 

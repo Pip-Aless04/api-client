@@ -14,12 +14,14 @@ export class EmailPlugin {
                 pass: this.passAppGmail
             }
         });
+        this.template = new EmailTemplates();
+        this.from = `"🍦Pops  - Bienestar Integral" <${this.userGmail}>`
     }
 
     sendEmailTest = async ({to, subject, html}) => {
         try {
             const info = await this.transporter.sendMail({
-                from: this.userGmail,
+                from: this.from,
                 to,
                 subject,
                 html
@@ -34,8 +36,11 @@ export class EmailPlugin {
         }
     }
 
-    sendEmailChangePasswordCode = async ({to, subject, html}) => {
+    sendEmailChangePasswordCode = async ({to, subject, code, user}) => {
         try {
+            
+            const html = this.template.sendEmailChangePasswordCode({user, code});
+
             const info = await this.transporter.sendMail({
                 from: this.from,
                 to,
@@ -54,15 +59,8 @@ export class EmailPlugin {
 
     sendEmailReportRequested = async ({to, subject, subordinado, jefe, email_jefe, report}) => {
         try {
-            console.log({
-                to,
-                subject,
-                subordinado,
-                jefe,
-                report
-            })
-            const template = new EmailTemplates();
-            const html = template.requestedReportTemplate({subordinado, jefe, message: report});
+            
+            const html = this.template.requestedReportTemplate({subordinado, jefe, message: report});
             
             // Enviar el correo de subordinado
             const info = await this.transporter.sendMail({
@@ -76,7 +74,7 @@ export class EmailPlugin {
 
             // Si el reporte requiere enviar un correo al jefe
             if (report === 2) {
-                const jefeHtml = template.requestedReportTemplate({subordinado, jefe, message: 6});
+                const jefeHtml = this.template.requestedReportTemplate({subordinado, jefe, message: 6});
                 await this.transporter.sendMail({
                     from: this.from,
                     to: email_jefe,  // Asumiendo que jefe tiene un campo 'email'

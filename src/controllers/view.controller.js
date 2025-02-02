@@ -165,9 +165,9 @@ export class ViewController {
     evaluacion = async (req, res) => {
         try {
             const user = req.user.info;
-            const subordinados = req.user.subordinados ||[];
+            const subordinados = req.user?.subordinados?.info || [];
             //const respuestas = ...jalar respuestas
-
+            console.log({subordinados})
             res.render('evaluacion/inicio', { user, subordinados });
 
         } catch (error) {

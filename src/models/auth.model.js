@@ -288,6 +288,7 @@ export class AuthModel{
                 SELECT 
                     C.col_id AS id,
                     C.col_identificacion AS ident,
+                    C.col_nombre AS nombre,
                     C.col_estado AS estado,
                     C.col_email AS email
                 FROM colaborador C

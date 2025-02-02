@@ -3,304 +3,450 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vista del Jefe - Evaluaciones de Empleados</title>
-    
+    <title>Evaluación de Desempeño - Jefe</title>
+    <style>
+        :root {
+            --color-primary: #3b82f6;
+            --color-primary-dark: #2563eb;
+            --color-secondary: #10b981;
+            --color-secondary-dark: #059669;
+            --color-background: #f3f4f6;
+            --color-surface: #ffffff;
+            --color-text: #1f2937;
+            --color-text-light: #6b7280;
+            --color-border: #e5e7eb;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-danger: #ef4444;
+        }
+
+        body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-image: url('../../img/background.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.logo img {
+    height: 50px;
+    width: auto;
+}
+
+.settings-menu {
+    position: relative;
+}
+
+.settings-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #f0f2f5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.settings-icon:hover {
+    background-color: #e4e6e9;
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 0.5rem 0;
+    min-width: 150px;
+}
+
+.dropdown a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #333;
+    text-decoration: none;
+}
+
+.dropdown a:hover {
+    background-color: #f0f2f5;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .evaluation-card {
+            background-color: var(--color-surface);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .employee-info {
+            background-color: var(--color-background);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .employee-info h2 {
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .employee-info p {
+            margin: 0.25rem 0;
+        }
+
+        .criteria {
+            border-left: 4px solid var(--color-primary);
+            padding-left: 1rem;
+        }
+
+        h2 {
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            color: var(--color-text-light);
+            margin-bottom: 1rem;
+        }
+
+        .self-evaluation {
+            background-color: var(--color-background);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .self-evaluation h3 {
+            color: var(--color-text);
+            margin-bottom: 0.5rem;
+        }
+
+        .rating {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+
+        .rating label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .rating input[type="radio"] {
+            display: none;
+        }
+
+        .rating span {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            border: 2px solid var(--color-border);
+            border-radius: 50%;
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .rating input[type="radio"]:checked + span {
+            background-color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        button {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            flex: 1;
+            margin: 0 0.5rem;
+        }
+
+        button:hover {
+            background-color: var(--color-primary-dark);
+        }
+
+        button.secondary {
+            background-color: var(--color-secondary);
+        }
+
+        button.secondary:hover {
+            background-color: var(--color-secondary-dark);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .evaluation-card {
+                padding: 1rem;
+            }
+
+            .rating {
+                flex-wrap: wrap;
+            }
+
+            .rating label {
+                margin-bottom: 1rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .button-group button {
+                margin: 0.5rem 0;
+            }
+        }
+
+        footer {
+    padding: 0;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 100%;
+    margin: 0;
+    display: block;
+}
+
+.footer-content img {
+    display: block;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+}
+    </style>
 </head>
 <body>
-  <style>
-    :root {
-  --primary-color: #30b4b5;
-  --background-start: #e8f5f5;
-  --background-end: #ffffff;
-  --card-background: #ffffff;
-  --text-color: #333333;
-  --border-color: #e0e0e0;
-}
-
-body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(to bottom, var(--background-start), var(--background-end));
-  margin: 0;
-  padding: 20px;
-  min-height: 100vh;
-  box-sizing: border-box;
-}
-
-.container {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.image-container {
-  background-color: var(--card-background);
-  border-radius: 8px;
-  overflow: hidden;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.main-image {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.title {
-  text-align: center;
-  color: var(--primary-color);
-  margin-bottom: 30px;
-}
-
-.progress-section {
-  margin-bottom: 30px;
-}
-
-.progress-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.progress-bar {
-  height: 8px;
-  background-color: #e0e0e0;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.progress-fill {
-  height: 100%;
-  background-color: var(--primary-color);
-  width: 0;
-  transition: width 0.3s ease;
-}
-
-.card {
-  background-color: var(--card-background);
-  border-radius: 8px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.evaluation-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.aspect-info {
-  flex: 1;
-}
-
-.aspect-title {
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.aspect-description {
-  font-size: 0.9em;
-  color: #666;
-}
-
-.nota{
-  background-color: var(--primary-color);
-  color: white;
-  padding: 5px;
-  border-radius: 4px;
-  width: fit-content;
-}
-
-select {
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid var(--border-color);
-}
-
-textarea {
-  width: 100%;
-  min-height: 100px;
-  margin-bottom: 15px;
-  padding: 10px;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  resize: vertical;
-}
-
-button {
-  background-color: var(--primary-color);
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  float: right;
-}
-
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.employee-evaluation {
-  border: 1px solid var(--border-color);
-  padding: 15px;
-  margin-bottom: 20px;
-  border-radius: 8px;
-}
-
-.employee-name {
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-@media (max-width: 600px) {
-  .evaluation-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  select {
-    width: 100%;
-    margin-top: 10px;
-  }
-}
-  </style>
-    <div class="container">
-        <main>
-            <div class="image-container">
-                <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pasion-invitado-consumidor-nOkTak30ruovyMoYoh3TT8XnqQrm2x.png" alt="Pasión por el invitado y el consumidor" class="main-image">
+  <header>
+    <nav>
+        <div class="logo">
+            <a href="/dhcoapp/inicio">
+                <img src="../../public/img/logo_pops_2024.webp" alt="POPS Logo">
+            </a>
+        </div>
+        <div class="settings-menu">
+            <div class="settings-icon" id="settingsIcon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
             </div>
-            <!-- <h1 class="title">Evaluaciones de Empleados</h1> -->
-            <h2 class="title">Alessandro Arias Baldi</h2>
-
-            <div id="employee-evaluations">
-                <!-- Employee evaluations will be inserted here by JavaScript -->
+            <div class="dropdown" id="settingsDropdown">
+                <a href="#">Perfil</a>
+                <a href="#">Configuración</a>
+                <a href="#">Cerrar sesión</a>
             </div>
-        </main>
-    </div>
+        </div>
+    </nav>
+</header>
+<main>
+  <div class="container">
+      <form id="evaluationForm">
+          <div class="evaluation-card employee-info">
+              <h2>Información del Colaborador</h2>
+              <p><strong>Nombre:</strong> Juan Pérez</p>
+              <p><strong>Cargo:</strong> Analista de Proyectos</p>
+              <p><strong>Departamento:</strong> Desarrollo de Proyectos</p>
+              <p><strong>Período de Evaluación:</strong> 2024-Q1</p>
+          </div>
+
+          <div class="evaluation-card">
+              <div class="criteria">
+                  <h2>Innovación y Creatividad</h2>
+                  <p>Capacidad para generar ideas originales y soluciones innovadoras que contribuyan al crecimiento y mejora continua de la empresa.</p>
+                  <div class="self-evaluation">
+                      <h3>Autoevaluación del Colaborador</h3>
+                      <p>Supera</p>
+                  </div>
+                  <div class="rating">
+                      <label>
+                          <input type="radio" name="innovation" value="no_supera">
+                          <span></span>
+                          No supera
+                      </label>
+                      <label>
+                          <input type="radio" name="innovation" value="cumple_parcialmente">
+                          <span></span>
+                          Cumple parcialmente
+                      </label>
+                      <label>
+                          <input type="radio" name="innovation" value="cumple">
+                          <span></span>
+                          Cumple
+                      </label>
+                      <label>
+                          <input type="radio" name="innovation" value="supera">
+                          <span></span>
+                          Supera
+                      </label>
+                  </div>
+                  <textarea name="innovation_comments" rows="3" placeholder="Comentarios adicionales..."></textarea>
+              </div>
+          </div>
+
+          <div class="evaluation-card">
+              <div class="criteria">
+                  <h2>Liderazgo Colaborativo</h2>
+                  <p>Habilidad para inspirar, guiar y motivar a los miembros del equipo hacia el logro de objetivos comunes.</p>
+                  <div class="self-evaluation">
+                      <h3>Autoevaluación del Colaborador</h3>
+                      <p>Cumple</p>
+                  </div>
+                  <div class="rating">
+                      <label>
+                          <input type="radio" name="leadership" value="no_supera">
+                          <span></span>
+                          No supera
+                      </label>
+                      <label>
+                          <input type="radio" name="leadership" value="cumple_parcialmente">
+                          <span></span>
+                          Cumple parcialmente
+                      </label>
+                      <label>
+                          <input type="radio" name="leadership" value="cumple">
+                          <span></span>
+                          Cumple
+                      </label>
+                      <label>
+                          <input type="radio" name="leadership" value="supera">
+                          <span></span>
+                          Supera
+                      </label>
+                  </div>
+                  <textarea name="leadership_comments" rows="3" placeholder="Comentarios adicionales..."></textarea>
+              </div>
+          </div>
+
+          <div class="evaluation-card">
+              <div class="criteria">
+                  <h2>Adaptabilidad y Resiliencia</h2>
+                  <p>Capacidad para adaptarse rápidamente a los cambios del entorno empresarial, manteniendo un alto nivel de eficacia.</p>
+                  <div class="self-evaluation">
+                      <h3>Autoevaluación del Colaborador</h3>
+                      <p>Cumple parcialmente</p>
+                  </div>
+                  <div class="rating">
+                      <label>
+                          <input type="radio" name="adaptability" value="no_supera">
+                          <span></span>
+                          No supera
+                      </label>
+                      <label>
+                          <input type="radio" name="adaptability" value="cumple_parcialmente">
+                          <span></span>
+                          Cumple parcialmente
+                      </label>
+                      <label>
+                          <input type="radio" name="adaptability" value="cumple">
+                          <span></span>
+                          Cumple
+                      </label>
+                      <label>
+                          <input type="radio" name="adaptability" value="supera">
+                          <span></span>
+                          Supera
+                      </label>
+                  </div>
+                  <textarea name="adaptability_comments" rows="3" placeholder="Comentarios adicionales..."></textarea>
+              </div>
+          </div>
+
+          <div class="button-group">
+              <button type="submit">Guardar Evaluación</button>
+              <button type="button" class="secondary" id="finishButton">Finalizar y Enviar</button>
+          </div>
+      </form>
+  </div>
+</main>
+    <footer>
+      <div class="footer-content">
+          <img src="../../public/img/footer.webp" alt="Decorative footer with waves">
+      </div>
+    </footer>
     <script>
-      localStorage.setItem(
-  "employeeEvaluation",
-  JSON.stringify({
-    evaluations: [
-      {
-        id: 1,
-        aspect: "Trabajo en equipo",
-        description: "Colabora de manera efectiva con el equipo.",
-        value: "cumple",
-      },
-      {
-        id: 2,
-        aspect: "Comunicación",
-        description: "Se comunica de manera clara y efectiva.",
-        value: "supera",
-      },
-    ],
-    feedback: "El empleado demuestra un buen desempeño general.",
-  })
-);
+        document.getElementById('evaluationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const evaluationData = {};
 
-      const evaluationOptions = [
-  { value: "supera", label: "Supera las expectativas", color: "green" },
-  { value: "cumple", label: "Cumple las expectativas", color: "blue" },
-  { value: "parcial", label: "Cumple parcialmente", color: "orange" },
-  { value: "desarrollo", label: "En desarrollo", color: "red" },
-]
+            for (let [key, value] of formData.entries()) {
+                evaluationData[key] = value;
+            }
 
-function loadEmployeeEvaluations() {
-  const employeeEvaluation = JSON.parse(localStorage.getItem("employeeEvaluation"))
-  console.log("Loaded employee evaluation:", employeeEvaluation) // Debugging line
+            console.log('Datos de la evaluación del jefe:', evaluationData);
+            // Aquí se enviarían los datos al servidor
+            alert('Evaluación guardada con éxito!');
+        });
 
-  if (
-    employeeEvaluation &&
-    Array.isArray(employeeEvaluation.evaluations) &&
-    employeeEvaluation.evaluations.length > 0
-  ) {
-    displayEmployeeEvaluation(employeeEvaluation)
-  } else {
-    document.getElementById("employee-evaluations").innerHTML = "<p>No hay evaluaciones disponibles.</p>"
-  }
-}
-
-function displayEmployeeEvaluation(data) {
-  console.log("Displaying evaluation data:", data) // Debugging line
-  const container = document.getElementById("employee-evaluations")
-  const evaluationHtml = `
-            <h2 class="employee-name">Evaluación del Empleado</h2>
-            ${data.evaluations
-              .map(
-                (item) => `
-                <div class="card evaluation-item">
-                    <div class="aspect-info">
-                        <div class="aspect-title">${item.aspect}</div>
-                        <div class="aspect-description">${item.description}</div>
-                        ${evaluationOptions
-                          .map(
-                            (option) => 
-                            (option.value === item.value)) =>
-                              `<p class="nota">${getOptionLabel(item.value)}</p>`
-                        
-                        <p class ="nota">${getOptionLabel(item.value)}</p>
-                    </div>
-                    <div>
-                        <select onchange="updateManagerEvaluation(${item.id}, this.value)">
-                            <option value="">Selecciona tu evaluación</option>
-                            ${evaluationOptions
-                              .map(
-                                (option) =>
-                                  `<option value="${option.value}" style="color: ${option.color}">${option.label}</option>`,
-                              )
-                              .join("")}
-                        </select>
-                    </div>
-                </div>
-            `,
-              )
-              .join("")}
-            <div class="card feedback-section">
-                <h3>Comentarios del empleado</h3>
-                <p>${data.feedback || "No hay comentarios."}</p>
-            </div>
-            <div class="card feedback-section">
-                <h3>Comentarios del jefe</h3>
-                <textarea id="manager-feedback" placeholder="Añade tus comentarios aquí..."></textarea>
-                <button onclick="saveManagerEvaluation()">Guardar Evaluación del Jefe</button>
-            </div>
-    `
-  container.innerHTML = evaluationHtml
-}
-
-function getOptionLabel(value) {
-  const option = evaluationOptions.find((opt) => opt.value === value)
-  return option ? option.label : "No evaluado"
-}
-
-function updateManagerEvaluation(id, value) {
-  console.log(`Manager evaluated aspect ${id} as ${value}`)
-  // Aquí puedes implementar la lógica para guardar la evaluación del manager
-}
-
-function saveManagerEvaluation() {
-  const managerFeedback = document.getElementById("manager-feedback").value
-  console.log("Manager feedback:", managerFeedback)
-  alert("Evaluación del jefe guardada con éxito!")
-  // Aquí puedes implementar la lógica para guardar la evaluación completa del manager
-}
-
-document.addEventListener("DOMContentLoaded", loadEmployeeEvaluations)
-
-// Debugging function to check localStorage
-function checkLocalStorage() {
-  console.log("Employee Evaluation in localStorage:", localStorage.getItem("employeeEvaluation"))
-}
-
-// Call this function when the page loads
-document.addEventListener("DOMContentLoaded", checkLocalStorage)
-
-
+        document.getElementById('finishButton').addEventListener('click', function() {
+            // Aquí se implementaría la lógica para finalizar y enviar la evaluación
+            alert('Evaluación finalizada y enviada con éxito!');
+        });
     </script>
 </body>
 </html>

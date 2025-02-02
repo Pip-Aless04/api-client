@@ -178,10 +178,8 @@ export class AuthController {
             await emailMessage.sendEmailChangePasswordCode({
                 to: email,
                 subject: 'Código de seguridad',
-                html: `<p>Su código de seguridad es: ${code}, expira en ${expires.toLocaleDateString('es-ES')} </p>
-                        <br/><p><strong>No lo comparta con nadie</strong></p>
-                        <br/>
-                        <p>Si no ha solicitado cambio de clave, comuníquese con el departamento de transformación digital.</p>`,
+                user: itExist.col_info.nombre,
+                code: code,
             });
             
             const token = await createToken(
