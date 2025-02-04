@@ -195,6 +195,7 @@ export class AuthController {
                 httpOnly: true,
                 sameSite: 'strict',
                 secure: true,
+                maxAge: '10m'
             });
     
             req.user = itExist.col_info;
