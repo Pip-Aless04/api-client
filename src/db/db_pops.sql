@@ -25,7 +25,7 @@ IF NOT EXISTS(SELECT * FROM sys.databases WHERE name = 'Pops')
         pue_nombre NVARCHAR(50) NOT NULL,
         pue_estado CHAR(1) NOT NULL DEFAULT 'A'
     );
-    SELECT * FROM puesto;
+
 INSERT INTO puesto(pue_nombre)
 VALUES
 (N'ANALISTA DE SALUD OCUPACIONAL'),

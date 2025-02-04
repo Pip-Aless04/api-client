@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoevaluaciones POPS</title>
+</head>
+<style>
+:root {
+  --color-teal: #2ccdb6;
+  --color-red: #f1404b;
+  --color-blue: #2b8bcc;
+  --color-orange: #ff8a00;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-image: url('../../img/background.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.logo img {
+    height: 50px;
+    width: auto;
+}
+
+.settings-menu {
+    position: relative;
+}
+
+.settings-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #f0f2f5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.settings-icon:hover {
+    background-color: #e4e6e9;
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 0.5rem 0;
+    min-width: 150px;
+}
+
+.dropdown a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #333;
+    text-decoration: none;
+}
+
+.dropdown a:hover {
+    background-color: #f0f2f5;
+}
+
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.title {
+  font-size: 2.5rem;
+  text-align: center;
+  background: linear-gradient(to right, var(--color-teal), var(--color-red), var(--color-orange));
+  -webkit-background-clip: text;
+  color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  text-align: center;
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.celebrate-btn {
+  display: block;
+  margin: 0 auto 2rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  background: linear-gradient(to right, var(--color-teal), var(--color-blue), var(--color-orange));
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.celebrate-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.tab-btn {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tab-btn:first-child {
+  border-top-left-radius: 0.5rem;
+  border-bottom-left-radius: 0.5rem;
+}
+
+.tab-btn:last-child {
+  border-top-right-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.tab-btn.active {
+  background-color: #e0e0e0;
+}
+
+.icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.evaluations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Ajustes responsivos */
+@media (max-width: 900px) {
+  .evaluations-grid {
+    grid-template-columns: repeat(2, 1fr); /* Máximo 2 tarjetas por fila */
+  }
+}
+
+@media (max-width: 600px) {
+  .evaluations-grid {
+    grid-template-columns: 1fr; /* Una tarjeta por fila */
+  }
+}
+
+
+
+.evaluation-card {
+  background-color: #f8f9fa; /* Color claro uniforme */
+  border: 1px solid #ddd; /* Borde sutil */
+  color: #1a1a1a; /* Texto oscuro para mejor legibilidad */
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.05); /* Sombra ligera para resaltar */
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+
+.evaluation-card:hover {
+  transform: scale(1.03);
+}
+
+.evaluation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.evaluation-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.evaluation-badge {
+  padding: 0.25rem 0.5rem;
+  margin-left: 10px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.evaluation-date {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.evaluation-info {
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.evaluation-action {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+footer {
+    padding: 0;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 100%;
+    margin: 0;
+    display: block;
+}
+
+.footer-content img {
+    display: block;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+}
+</style>
+<body>
+    <header>
+      <nav>
+          <div class="logo">
+              <a href="/dhcoapp/inicio">
+                  <img src="../../img/logo_pops_2024.webp" alt="POPS Logo">
+              </a>
+          </div>
+          <div class="settings-menu">
+              <div class="settings-icon" id="settingsIcon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="3"></circle>
+                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                  </svg>
+              </div>
+              <div class="dropdown" id="settingsDropdown">
+                  <a href="#">Perfil</a>
+                  <a href="#">Configuración</a>
+                  <a href="#">Cerrar sesión</a>
+              </div>
+          </div>
+      </nav>
+  </header>
+  <main>
+    <div class="container">
+      <h1 class="title">¡Nuestras Evaluaciones!</h1>
+        <p class="subtitle">Explora el viaje de crecimiento de nuestro equipo</p>
+        <button id="celebrateBtn" class="celebrate-btn">¡Celebra nuestros logros!</button>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="pending">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                Pendientes (<span id="pendingCount">0</span>)
+            </button>
+            <button class="tab-btn" data-tab="completed">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                Realizadas (<span id="completedCount">0</span>)
+            </button>
+        </div>
+
+        <div id="pendingEvaluations" class="evaluations-grid"></div>
+        <div id="completedEvaluations" class="evaluations-grid" style="display: none;"></div>
+    </div>
+  </main>
+    <footer>
+      <div class="footer-content">
+          <img src="../../img/footer.webp" alt="Decorative footer with waves">
+      </div>
+    </footer>
+    <script type="module">
+import confetti from "https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.module.mjs";
+      const evaluations = {
+  pending: [
+    { id: "006", date: "2024-02-15", employeeName: "Pedro Sánchez", department: "Desarrollo" },
+    { id: "007", date: "2024-02-14", employeeName: "Diana Torres", department: "Marketing" },
+  ],
+  completed: [
+    { id: "001", date: "2024-01-15", employeeName: "Ana García", department: "Ventas", score: 4.5 },
+    { id: "002", date: "2024-01-14", employeeName: "Carlos López", department: "Marketing", score: 3.8 },
+    { id: "003", date: "2024-01-13", employeeName: "María Rodríguez", department: "Recursos Humanos", score: 4.2 },
+  ],
+}
+
+const colorSchemes = [
+  { bg: "#2CCDB6E6", border: "#2CCDB6", text: "#1a1a1a" },
+  { bg: "#F1404BE6", border: "#F1404B", text: "#1a1a1a" },
+  { bg: "#2B8BCCE6", border: "#2B8BCC", text: "#1a1a1a" },
+  { bg: "#FF8A00E6", border: "#FF8A00", text: "#1a1a1a" },
+];
+
+
+function createEvaluationCard(evaluation, status) {
+  const card = document.createElement("div");
+  card.className = "evaluation-card"; // Ya no necesita colores dinámicos
+
+  let badgeColor = "#2CCDB6";
+  if (status === "completed") {
+    badgeColor = evaluation.score >= 4 ? "#2CCDB6" : evaluation.score >= 3 ? "#FF8A00" : "#F1404B";
+  }
+
+  card.innerHTML = `
+        <div class="evaluation-header">
+            <span class="evaluation-title">Autoevaluación #${evaluation.id}</span>
+            <span class="evaluation-badge" style="background-color: ${badgeColor}; color: white;">
+                ${status === "completed" ? evaluation.score.toFixed(1) : "Pendiente"}
+            </span>
+        </div>
+        <div class="evaluation-date">${evaluation.date}</div>
+        <div class="evaluation-info">${evaluation.employeeName}</div>
+        <div class="evaluation-info">${evaluation.department}</div>
+        <div class="evaluation-action">
+            ${status === "pending" ? "¡Completa tu autoevaluación!" : "¡Ver detalles!"}
+        </div>
+    `;
+
+  return card;
+}
+
+
+function renderEvaluations(status) {
+  const container = document.getElementById(`${status}Evaluations`)
+  container.innerHTML = ""
+  evaluations[status].forEach((evaluation) => {
+    container.appendChild(createEvaluationCard(evaluation, status))
+  })
+}
+
+function updateCounts() {
+  document.getElementById("pendingCount").textContent = evaluations.pending.length
+  document.getElementById("completedCount").textContent = evaluations.completed.length
+}
+
+function switchTab(tab) {
+  document.querySelectorAll(".tab-btn").forEach((btn) => btn.classList.remove("active"))
+  document.querySelector(`[data-tab="${tab}"]`).classList.add("active")
+  document.getElementById("pendingEvaluations").style.display = tab === "pending" ? "grid" : "none"
+  document.getElementById("completedEvaluations").style.display = tab === "completed" ? "grid" : "none"
+}
+
+document.querySelectorAll(".tab-btn").forEach((btn) => {
+  btn.addEventListener("click", () => switchTab(btn.dataset.tab))
+})
+
+document.getElementById("celebrateBtn").addEventListener("click", () => {
+    confetti({
+      particleCount: 300,
+      spread: 150,
+      origin: { y: 0.6 },
+      colors: ["#2CCDB6", "#F1404B", "#2B8BCC", "#FF8A00"],
+    });
+  });
+// Inicialización
+renderEvaluations("pending")
+renderEvaluations("completed")
+updateCounts()
+switchTab("pending")
+
+
+    </script>
+</body>
+</html>
+

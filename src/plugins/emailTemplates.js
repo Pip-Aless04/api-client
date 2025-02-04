@@ -136,17 +136,16 @@ export class EmailTemplates {
                                                             <!-- Separador Decorativo -->
                                                             <div style="margin: 32px 0; height: 1px; background: linear-gradient(to right, rgba(26,188,156,0.1) 0%, rgba(26,188,156,0.4) 50%, rgba(26,188,156,0.1) 100%);"></div>
                                                             <!-- Botón de Acción -->
-                                                            ${message === 3 ? `  
+                                                            
                                                                 <table role="presentation" cellpadding="0" cellspacing="0" style="margin: 32px auto;">
                                                                     <tr>
                                                                         <td style="border-radius: 50px; background: linear-gradient(135deg, #1abc9c 0%, #16a085 100%); box-shadow: 0 4px 12px rgba(26,188,156,0.2);">
-                                                                            <a href="https://popsdhcosite.azurewebsites.net/dhcoapp/" style="display: inline-block; padding: 16px 48px; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: 600; letter-spacing: 0.5px;">
+                                                                            <a href="https://dhco.pops.co.cr/dhcoapp/" style="display: inline-block; padding: 16px 48px; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 50px; font-weight: 600; letter-spacing: 0.5px;">
                                                                                 Ver más detalles
                                                                             </a>
                                                                         </td>
                                                                     </tr>
                                                                 </table>
-                                                            ` : ''}                                                                
                                             </td>
                                         </tr>
                                         <!-- Footer -->

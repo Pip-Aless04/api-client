@@ -166,24 +166,24 @@
     cursor: pointer;
   }
   
-  .btn-primary {
+  .btn-comenzar-evaluacion {
     background-color: var(--color-white);
     color: var(--color-blue);
     border: none;
   }
   
-  .btn-primary:hover {
+  .btn-comenzar-evaluacion:hover {
     background-color: var(--color-yellow);
     color: var(--color-white);
   }
   
-  .btn-outline {
+  .btn-mas-info {
     background-color: transparent;
     color: var(--color-white);
     border: 2px solid var(--color-white);
   }
   
-  .btn-outline:hover {
+  .btn-mas-info:hover {
     background-color: var(--color-white);
     color: var(--color-blue);
   }

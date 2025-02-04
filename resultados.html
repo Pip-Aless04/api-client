@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados de Evaluación de Desempeño</title>
+    <style>
+:root {
+    --color-primary: #3b82f6;
+    --color-primary-dark: #2563eb;
+    --color-secondary: #10b981;
+    --color-secondary-dark: #059669;
+    --color-background: #f3f4f6;
+    --color-surface: #ffffff;
+    --color-text: #1f2937;
+    --color-text-light: #6b7280;
+    --color-border: #e5e7eb;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+header {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.logo img {
+    height: 50px;
+    width: auto;
+}
+
+.settings-menu {
+    position: relative;
+}
+
+.settings-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #f0f2f5;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.settings-icon:hover {
+    background-color: #e4e6e9;
+}
+
+.dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 0.5rem 0;
+    min-width: 150px;
+}
+
+.dropdown a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #333;
+    text-decoration: none;
+}
+
+.dropdown a:hover {
+    background-color: #f0f2f5;
+}
+
+main {
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+.card {
+    background-color: var(--color-surface);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.employee-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.employee-info div {
+    margin-bottom: 0.5rem;
+}
+
+.employee-info p {
+    margin: 0;
+}
+
+.employee-info .label {
+    font-size: 0.875rem;
+    color: var(--color-text-light);
+}
+
+.employee-info .value {
+    font-weight: 600;
+}
+
+.instructions {
+    background-color: #f0f9ff;
+    border-left: 4px solid var(--color-primary);
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
+
+.instructions h2 {
+    color: var(--color-primary);
+    margin-top: 0;
+}
+
+.instructions ul {
+    padding-left: 1.5rem;
+    margin-bottom: 0;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+th {
+    background-color: #f2f2f2;
+}
+.section-header {
+    background-color: #ffd700;
+    font-weight: bold;
+}
+.criteria {
+    font-weight: bold;
+}
+.green {
+    background-color: #90EE90;
+}
+.yellow {
+    background-color: #FFFFE0;
+}
+.performance-header {
+    background-color: #FFA07A;
+    font-weight: bold;
+}
+.summary-header {
+    background-color: #FFB6C1;
+    font-weight: bold;
+}
+.comments-section {
+    margin-top: 20px;
+    padding: 0 20px;
+}
+.comments-section h3 {
+    margin-bottom: 10px;
+}
+.comments-section textarea {
+    width: 100%;
+    height: 100px;
+    margin-bottom: 10px;
+    padding: 5px;
+}
+.comments-section button {
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+.comments-section button:hover {
+    background-color: #45a049;
+}
+footer {
+    padding: 0;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 100%;
+    margin: 0;
+    display: block;
+}
+
+.footer-content img {
+    display: block;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="/dhcoapp/inicio">
+                    <img src="../../public/img/logo_pops_2024.webp" alt="POPS Logo">
+                </a>
+            </div>
+            <div class="settings-menu">
+                <div class="settings-icon" id="settingsIcon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </div>
+                <div class="dropdown" id="settingsDropdown">
+                    <a href="#">Perfil</a>
+                    <a href="#">Configuración</a>
+                    <a href="#">Cerrar sesión</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <h1>EVALUACIÓN DE DESEMPEÑO</h1>
+        
+        <div class="card">
+            <h2>Información del Colaborador</h2>
+            <div class="employee-info">
+                <div>
+                    <p class="label">Nombre del Colaborador</p>
+                    <p class="value">Juan Pérez</p>
+                </div>
+                <div>
+                    <p class="label">Cargo</p>
+                    <p class="value">Analista de Proyectos</p>
+                </div>
+                <div>
+                    <p class="label">Departamento</p>
+                    <p class="value">Desarrollo de Proyectos</p>
+                </div>
+                <div>
+                    <p class="label">Período de Evaluación</p>
+                    <p class="value">2024-Q1</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card instructions">
+            <h2>Instrucciones</h2>
+            <p>A continuación se presentan los criterios que van a ser evaluados en el desempeño del colaborador, mediante la verificación de resultados y demostración de competencias. Para ello se le presenta una escala de calificación que va de la siguiente manera:</p>
+            <ul>
+                <li><span class="rating-badge rating-supera">Supera = 100</span></li>
+                <li><span class="rating-badge rating-cumple">Cumple = 85</span></li>
+                <li><span class="rating-badge rating-cumple-parcialmente">Cumple parcialmente = 60</span></li>
+                <li><span class="rating-badge rating-no-cumple">No cumple = 0</span></li>
+            </ul>
+        </div>
+        
+        <table>
+            <tr class="section-header">
+                <th colspan="3">Sección A. Talentos</th>
+                <th>70%</th>
+            </tr>
+            <tr>
+                <th>Talento</th>
+                <th>Autoevaluación</th>
+                <th>Calificación</th>
+                <th>Nota</th>
+                <th>%Peso</th>
+            </tr>
+            <tr>
+                <td colspan="5"><strong>RESPONSABILIDAD</strong></td>
+            </tr>
+            <tr>
+                <td>Entrega de reportes a tiempo</td>
+                <td>85</td>
+                <td class="yellow">Cumple</td>
+                <td>8.5</td>
+                <td>70</td>
+            </tr>
+            <tr>
+                <td colspan="3"></td>
+                <td></td>
+                <td><strong>70</strong></td>
+            </tr>
+        </table>
+
+        <table>
+            <tr class="performance-header">
+                <th colspan="4">Rendimiento Individual</th>
+                <th>30%</th>
+            </tr>
+            <tr>
+                <th>INDICADOR</th>
+                <th></th>
+                <th>Calificación</th>
+                <th>Nota</th>
+                <th>%Peso</th>
+            </tr>
+            <tr>
+                <td>Proyectos completados</td>
+                <td>50</td>
+                <td>90</td>
+                <td>9.0</td>
+                <td>30</td>
+            </tr>
+            <tr>
+                <td><strong>Total</strong></td>
+                <td>100</td>
+                <td></td>
+                <td></td>
+                <td>30%</td>
+            </tr>
+        </table>        
+
+        <table>
+            <tr class="summary-header">
+                <th colspan="4">Resumen de desempeño</th>
+                <th>30%</th>
+            </tr>
+            <tr>
+                <th></th>
+                <th>Peso</th>
+                <th>Calificación sobre</th>
+                <th>Nota</th>
+            </tr>
+            <tr>
+                <td>Evaluación general</td>
+                <td>100%</td>
+                <td>100</td>
+                <td>8.75</td>
+            </tr>
+        </table>
+        <div class="comments-section">
+            <h3>COMENTARIOS:</h3>
+            <textarea></textarea>
+            <button>Guardar</button>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <img src="../../public/img/footer.webp" alt="Decorative footer with waves">
+        </div>
+    </footer>
+</body>
+</html>

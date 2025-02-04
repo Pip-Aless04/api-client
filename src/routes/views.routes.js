@@ -17,10 +17,13 @@ export const createViewsRoutes = ({ReportesModel, EvaluacionModel, AuthModel}) =
     // Bienestar Integral
     viewsRouter.get("/bienestar-integral/:solicitud", authUserJWT, validateUserAccesPermission, viewController.solicitudRports);
     viewsRouter.get("/mantenimiento/:solicitud", authUserJWT, viewController.solicitudMantenimiento);
+
     viewsRouter.get("/pruebaHistorico", authUserJWT, viewController.pruebaHistorico);
 
     // Evaluacion
     viewsRouter.get("/evaluacion/inicio", authUserJWT, viewController.evaluacion);
+    viewsRouter.get("/evaluacion/mas_info", authUserJWT, viewController.masInfo);
+    viewsRouter.get("/evaluacion/evaluaciones", authUserJWT, viewController.evaluaciones);
 
     return viewsRouter;
 };

@@ -39,6 +39,10 @@ SELECT * FROM reporte
 SELECT * FROM tipo_reporte
 
 
+UPDATE colaborador
+set col_jefatura_id = 'a840dab6-3ec1-41c3-a651-e77c85769ed2'
+WHERE col_identificacion = '800580037'
+
 
 SELECT 
                             T.tal_id AS id,

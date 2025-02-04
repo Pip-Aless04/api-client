@@ -175,5 +175,23 @@ export class ViewController {
             res.status(500).send('Error interno del servidor');
         }
     }
+
+    masInfo = async (req, res) => {
+        try {
+            res.render('evaluacion/mas_info')
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('Error interno del servidor');
+        }
+    }
+
+    evaluaciones = async (req, res) => {
+        try {
+            res.render('evaluacion/historico_evals');  // Cambié `mockData` por `data`
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('Error interno del servidor');
+        }
+    }
     
 }

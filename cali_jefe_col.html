@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación de Desempeño - Jefe</title>
+    <style>
+        :root {
+            --color-primary: #3b82f6;
+            --color-primary-dark: #2563eb;
+            --color-secondary: #10b981;
+            --color-secondary-dark: #059669;
+            --color-background: #f3f4f6;
+            --color-surface: #ffffff;
+            --color-text: #1f2937;
+            --color-text-light: #6b7280;
+            --color-border: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: var(--color-text);
+            background-color: var(--color-background);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            background-color: var(--color-surface);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        header img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        h1 {
+            color: var(--color-primary);
+            text-align: center;
+            padding: 1rem 0;
+            margin: 0;
+        }
+
+        .card {
+            background-color: var(--color-surface);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .employee-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .employee-info div {
+            margin-bottom: 0.5rem;
+        }
+
+        .employee-info p {
+            margin: 0;
+        }
+
+        .employee-info .label {
+            font-size: 0.875rem;
+            color: var(--color-text-light);
+        }
+
+        .employee-info .value {
+            font-weight: 600;
+        }
+
+        .evaluation-card {
+            border-left: 4px solid var(--color-primary);
+        }
+
+        .criteria h2 {
+            color: var(--color-primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .criteria p {
+            color: var(--color-text-light);
+            margin-bottom: 1rem;
+        }
+
+        .self-evaluation {
+            background-color: var(--color-background);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            font-size: 0.875rem;
+        }
+
+        .rating {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .rating label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.75rem;
+            border: 1px solid var(--color-border);
+            border-radius: 0.375rem;
+            transition: all 0.3s ease;
+        }
+
+        .rating label:hover {
+            background-color: var(--color-background);
+        }
+
+        .rating input[type="radio"] {
+            display: none;
+        }
+
+        .rating span {
+            display: inline-block;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid var(--color-border);
+            border-radius: 50%;
+            margin-right: 0.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .rating input[type="radio"]:checked + span {
+            background-color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            resize: vertical;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        button {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: var(--color-primary-dark);
+        }
+
+        button:disabled {
+            background-color: var(--color-text-light);
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+
+            .rating {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Evaluaci%C3%B3n%20de%20desempe%C3%B1o_VISION%20SOSTENIBLE-e6cAUXoihPa72ls7sdBUMZ1t60TKNC.webp" alt="Evaluación de desempeño Banner">
+        <h1>Evaluación de Desempeño - Jefe</h1>
+    </header>
+    <div class="container">
+        <div class="card">
+            <h2>Información del Colaborador</h2>
+            <div class="employee-info">
+                <div>
+                    <p class="label">Nombre del Colaborador</p>
+                    <p class="value">Juan Pérez</p>
+                </div>
+                <div>
+                    <p class="label">Cargo</p>
+                    <p class="value">Analista de Proyectos</p>
+                </div>
+                <div>
+                    <p class="label">Departamento</p>
+                    <p class="value">Desarrollo de Proyectos</p>
+                </div>
+                <div>
+                    <p class="label">Período de Evaluación</p>
+                    <p class="value">2024-Q1</p>
+                </div>
+            </div>
+        </div>
+
+        <form id="evaluationForm">
+            <div class="card evaluation-card">
+                <div class="criteria">
+                    <h2 id="criteriaTitle">Innovación y Creatividad</h2>
+                    <p id="criteriaDescription">Capacidad para generar ideas originales y soluciones innovadoras que contribuyan al crecimiento y mejora continua de la empresa. Demuestra pensamiento creativo en la resolución de problemas y en la propuesta de nuevas iniciativas.</p>
+                    <div class="self-evaluation">
+                        <strong>Autoevaluación del Colaborador:</strong> <span id="selfEvaluation">Supera</span>
+                    </div>
+                    <div class="rating">
+                        <label>
+                            <input type="radio" name="rating" value="no_supera">
+                            <span></span>
+                            No supera
+                        </label>
+                        <label>
+                            <input type="radio" name="rating" value="cumple_parcialmente">
+                            <span></span>
+                            Cumple parcialmente
+                        </label>
+                        <label>
+                            <input type="radio" name="rating" value="cumple">
+                            <span></span>
+                            Cumple
+                        </label>
+                        <label>
+                            <input type="radio" name="rating" value="supera">
+                            <span></span>
+                            Supera
+                        </label>
+                    </div>
+                    <textarea id="comments" rows="3" placeholder="Ingrese sus comentarios y retroalimentación específica para este criterio..."></textarea>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" id="prevBtn">Anterior</button>
+                <button type="button" id="nextBtn">Siguiente</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const evaluationCriteria = [
+            {
+                id: 1,
+                title: "Innovación y Creatividad",
+                description: "Capacidad para generar ideas originales y soluciones innovadoras que contribuyan al crecimiento y mejora continua de la empresa. Demuestra pensamiento creativo en la resolución de problemas y en la propuesta de nuevas iniciativas.",
+                selfEvaluation: "supera"
+            },
+            {
+                id: 2,
+                title: "Liderazgo Colaborativo",
+                description: "Habilidad para inspirar, guiar y motivar a los miembros del equipo hacia el logro de objetivos comunes. Fomenta un ambiente de trabajo positivo, promueve la colaboración y el desarrollo profesional de sus compañeros.",
+                selfEvaluation: "cumple"
+            },
+            {
+                id: 3,
+                title: "Adaptabilidad y Resiliencia",
+                description: "Capacidad para adaptarse rápidamente a los cambios del entorno empresarial, manteniendo un alto nivel de eficacia. Demuestra resiliencia ante los desafíos y utiliza las experiencias difíciles como oportunidades de aprendizaje y crecimiento.",
+                selfEvaluation: "cumple_parcialmente"
+            },
+            {
+                id: 4,
+                title: "Orientación al Cliente",
+                description: "Habilidad para comprender y anticipar las necesidades de los clientes, tanto internos como externos. Proporciona un servicio excepcional y busca constantemente formas de mejorar la experiencia del cliente y su satisfacción.",
+                selfEvaluation: "cumple"
+            },
+            {
+                id: 5,
+                title: "Aprendizaje Continuo",
+                description: "Demuestra un compromiso constante con el desarrollo personal y profesional. Busca activamente oportunidades de aprendizaje, se mantiene actualizado en las tendencias de la industria y comparte conocimientos con el equipo.",
+                selfEvaluation: "supera"
+            }
+        ];
+
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        let currentCriteriaIndex = 0;
+
+        function updateCard() {
+            const currentCriteria = evaluationCriteria[currentCriteriaIndex];
+            document.getElementById('criteriaTitle').textContent = currentCriteria.title;
+            document.getElementById('criteriaDescription').textContent = currentCriteria.description;
+            document.getElementById('selfEvaluation').textContent = currentCriteria.selfEvaluation.charAt(0).toUpperCase() + currentCriteria.selfEvaluation.slice(1);
+            
+            document.querySelectorAll('input[name="rating"]').forEach(input => {
+                input.checked = false;
+            });
+            document.getElementById('comments').value = '';
+
+            prevBtn.disabled = currentCriteriaIndex === 0;
+            nextBtn.disabled = currentCriteriaIndex === evaluationCriteria.length - 1;
+            nextBtn.textContent = currentCriteriaIndex === evaluationCriteria.length - 2 ? 'Finalizar' : 'Siguiente';
+        }
+
+        prevBtn.addEventListener('click', () => {
+            if (currentCriteriaIndex > 0) {
+                currentCriteriaIndex--;
+                updateCard();
+            }
+        });
+
+        nextBtn.addEventListener('click', () => {
+            if (currentCriteriaIndex < evaluationCriteria.length - 1) {
+                currentCriteriaIndex++;
+                updateCard();
+            }
+        });
+
+        document.getElementById('evaluationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            const evaluationData = {};
+
+            for (let [key, value] of formData.entries()) {
+                evaluationData[key] = value;
+            }
+
+            console.log('Datos de la evaluación del jefe:', evaluationData);
+            // Aquí se enviarían los datos al servidor
+            alert('Evaluación enviada con éxito!');
+        });
+
+        // Inicializar mostrando el primer criterio
+        updateCard();
+    </script>
+</body>
+</html>

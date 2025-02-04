@@ -4,7 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" id="appIcon" type="image/x-icon" href="https://cms.blumewebsites.com/pops/website/favicon.png">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
         <link rel="stylesheet" href="../../css/mantenimiento/colaboradores_config.css">
         <title>Gestión de colaboradores</title>
     </head>
@@ -35,12 +35,10 @@
         <main>
             <div class="container">
                 <h1>Gestión de Usuarios</h1>
-                <div id="filters" class="controls">
-                    <!-- Los filtros se generarán dinámicamente aquí -->
-                </div>
                 <div class="button-container">
                     <button id="addUserBtn">Agregar Usuario</button>
                     <button id="downloadExcelBtn">Descargar Excel</button>
+                    <button id="clearFiltersBtn">Limpiar Filtros</button>
                 </div>
                 <div class="table-container">
                     <table id="userTable">
@@ -119,8 +117,8 @@
                         <input type="date" id="userFechaIngreso" name="fecha_ingreso" required>
                     </div>
                     <div class="form-actions">
-                        <button type="button" class="btn-secondary" id="cancelBtn">Cancelar</button>
                         <button type="submit" class="btn-primary">Guardar</button>
+                        <button type="button" class="btn-secondary" id="cancelBtn">Cancelar</button>
                     </div>
                 </form>
             </div>
@@ -147,178 +145,170 @@
                 }
             });
             
-            // Datos de ejemplo (puedes reemplazar esto con tu propio array)
-            let users = <%- JSON.stringify(reportData.colaboradores.cols_info) %>
-            console.log(users)
+        });
+        // Datos de ejemplo (puedes reemplazar esto con tu propio array)
+        let users = <%- JSON.stringify(reportData.colaboradores.cols_info) %>
+        console.log(users)
+
+        const userTable = document.getElementById('userTable');
+        const addUserBtn = document.getElementById('addUserBtn');
+        const downloadExcelBtn = document.getElementById('downloadExcelBtn');
+        const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+        const userModal = document.getElementById('userModal');
+        const userForm = document.getElementById('userForm');
+        const modalTitle = document.getElementById('modalTitle');
+        const closeBtn = userModal.querySelector('.close-button');
+        const cancelBtn = document.getElementById('cancelBtn');
+
+        // Obtener las claves del objeto (excluyendo 'id')
+        const keys = Object.keys(users[0]).filter(key => key !== 'id');
+
+        // Función para generar los encabezados de la tabla y los filtros
+        function generateTableHeadersAndFilters() {
+            const thead = userTable.querySelector('thead');
+            let headerRow = '<tr>';
+            let filterRow = '<tr>';
             
-            /*
-            let users = [
-                { id: 1, nombre: 'Juan Pérez', email: 'juan@example.com', rol: 'Admin', edad: 30 },
-                { id: 2, nombre: 'María García', email: 'maria@example.com', rol: 'Usuario', edad: 25 },
-                { id: 3, nombre: 'Carlos López', email: 'carlos@example.com', rol: 'Editor', edad: 35 }
-            ];
-            */
+            keys.forEach(key => {
+                const displayKey = key.replace(/_/g, ' ');
+                headerRow += `<th>${displayKey.charAt(0).toUpperCase() + displayKey.slice(1)}</th>`;
+                filterRow += `
+                    <th>
+                        <input type="text" class="filter-input" data-key="${key}" placeholder="Filtrar ${displayKey}">
+                    </th>
+                `;
+            });
+            
+            headerRow += '<th>Acciones</th></tr>';
+            filterRow += '<th></th></tr>';
+            
+            thead.innerHTML = headerRow + filterRow;
 
-            const userTable = document.getElementById('userTable');
-            const addUserBtn = document.getElementById('addUserBtn');
-            const downloadExcelBtn = document.getElementById('downloadExcelBtn');
-            const clearFiltersBtn = document.getElementById('clearFiltersBtn');
-            const userModal = document.getElementById('userModal');
-            const userForm = document.getElementById('userForm');
-            const modalTitle = document.getElementById('modalTitle');
-            const closeBtn = userModal.querySelector('.close-button');
-            const cancelBtn = document.getElementById('cancelBtn');
+            // Agregar event listeners a los inputs de filtro
+            thead.querySelectorAll('.filter-input').forEach(input => {
+                input.addEventListener('input', filterTable);
+            });
+        }
 
-            // Obtener las claves del objeto (excluyendo 'id')
-            const keys = Object.keys(users[0]).filter(key => key !== 'id');
-
-            // Función para generar los encabezados de la tabla y los filtros
-            function generateTableHeadersAndFilters() {
-                const thead = userTable.querySelector('thead');
-                let headerRow = '<tr>';
-                let filterRow = '<tr>';
-                
+        // Función para renderizar la tabla
+        function renderTable(data) {
+            const tbody = userTable.querySelector('tbody');
+            tbody.innerHTML = '';
+            data.forEach(user => {
+                let row = '<tr>';
                 keys.forEach(key => {
-                    const displayKey = key.replace(/_/g, ' ');
-                    headerRow += `<th>${displayKey.charAt(0).toUpperCase() + displayKey.slice(1)}</th>`;
-                    filterRow += `
-                        <th>
-                            <input type="text" class="filter-input" data-key="${key}" placeholder="Filtrar ${displayKey}">
-                        </th>
-                    `;
+                    row += `<td>${user[key]}</td>`;
                 });
-                
-                headerRow += '<th>Acciones</th></tr>';
-                filterRow += '<th></th></tr>';
-                
-                thead.innerHTML = headerRow + filterRow;
+                row += `
+                    <td class="action-buttons">
+                        <button class="edit-button" onclick="editUser('${user.id}')">Editar</button>
+                    </td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
 
-                // Agregar event listeners a los inputs de filtro
-                thead.querySelectorAll('.filter-input').forEach(input => {
-                    input.addEventListener('input', filterTable);
+        // Función para filtrar la tabla
+        function filterTable() {
+            const filterInputs = document.querySelectorAll('.filter-input');
+            const filteredUsers = users.filter(user => {
+                return Array.from(filterInputs).every(input => {
+                    const key = input.dataset.key;
+                    const filterValue = input.value.toLowerCase();
+                    return user[key].toString().toLowerCase().includes(filterValue);
                 });
-            }
+            });
+            renderTable(filteredUsers);
+        }
 
-            // Función para renderizar la tabla
-            function renderTable(data) {
-                const tbody = userTable.querySelector('tbody');
-                tbody.innerHTML = '';
-                data.forEach(user => {
-                    let row = '<tr>';
-                    keys.forEach(key => {
-                        row += `<td>${user[key]}</td>`;
-                    });
-                    row += `
-                        <td class="action-buttons">
-                            <button class="edit-button" onclick="editUser('${user.id}')">Editar</button>
-                        </td>
-                    </tr>`;
-                    tbody.innerHTML += row;
-                });
-            }
-
-            // Función para filtrar la tabla
-            function filterTable() {
-                const filterInputs = document.querySelectorAll('.filter-input');
-                const filteredUsers = users.filter(user => {
-                    return Array.from(filterInputs).every(input => {
-                        const key = input.dataset.key;
-                        const filterValue = input.value.toLowerCase();
-                        return user[key].toString().toLowerCase().includes(filterValue);
-                    });
-                });
-                renderTable(filteredUsers);
-            }
-
-            // Función para limpiar todos los filtros
-            function clearFilters() {
-                document.querySelectorAll('.filter-input').forEach(input => {
-                    input.value = '';
-                });
-                renderTable(users);
-            }
-
-            // Inicializar la tabla y los filtros
-            generateTableHeadersAndFilters();
+        // Función para limpiar todos los filtros
+        function clearFilters() {
+            document.querySelectorAll('.filter-input').forEach(input => {
+                input.value = '';
+            });
             renderTable(users);
+        }
 
-            // Función para abrir el modal
-            function openModal() {
-                userModal.style.display = 'block';
-            }
+        // Inicializar la tabla y los filtros
+        generateTableHeadersAndFilters();
+        renderTable(users);
 
-            // Función para cerrar el modal
-            function closeModal() {
-                userModal.style.display = 'none';
-                userForm.reset();
-            }
+        // Función para abrir el modal
+        function openModal() {
+            userModal.style.display = 'block';
+        }
 
-            // Abrir modal para agregar usuario
-            addUserBtn.onclick = function() {
-                modalTitle.textContent = 'Agregar Usuario';
-                openModal();
-            }
+        // Función para cerrar el modal
+        function closeModal() {
+            userModal.style.display = 'none';
+            userForm.reset();
+        }
 
-            // Cerrar modal
-            closeBtn.onclick = closeModal;
-            cancelBtn.onclick = closeModal;
+        // Abrir modal para agregar usuario
+        addUserBtn.onclick = function() {
+            modalTitle.textContent = 'Agregar Usuario';
+            openModal();
+        }
 
-            // Cerrar modal al hacer clic fuera de él
-            window.onclick = function(event) {
-                if (event.target == userModal) {
-                    closeModal();
-                }
-            }
+        // Cerrar modal
+        closeBtn.onclick = closeModal;
+        cancelBtn.onclick = closeModal;
 
-            // Manejar envío del formulario
-            userForm.onsubmit = function(e) {
-                e.preventDefault();
-                const formData = new FormData(userForm);
-                const updatedUser = Object.fromEntries(formData.entries());
-
-                if (modalTitle.textContent === 'Editar Usuario') {
-                    const index = users.findIndex(u => u.id === updatedUser.id);
-                    if (index !== -1) {
-                        users[index] = { ...users[index], ...updatedUser };
-                    }
-                } else {
-                    updatedUser.id = crypto.randomUUID();
-                    users.push(updatedUser);
-                }
-
-                renderTable(users);
+        // Cerrar modal al hacer clic fuera de él
+        window.onclick = function(event) {
+            if (event.target == userModal) {
                 closeModal();
             }
+        }
 
-            // Función para editar usuario
-            function editUser(id) {
-                const user = users.find(u => u.id === id);
-                if (user) {
-                    modalTitle.textContent = 'Editar Usuario';
-                    Object.keys(user).forEach(key => {
-                        const input = document.getElementById(`user${key.charAt(0).toUpperCase() + key.slice(1)}`);
-                        if (input) {
-                            input.value = user[key];
-                        }
-                    });
-                    openModal();
+        // Manejar envío del formulario
+        userForm.onsubmit = function(e) {
+            e.preventDefault();
+            const formData = new FormData(userForm);
+            const updatedUser = Object.fromEntries(formData.entries());
+
+            if (modalTitle.textContent === 'Editar Usuario') {
+                const index = users.findIndex(u => u.id === updatedUser.id);
+                if (index !== -1) {
+                    users[index] = { ...users[index], ...updatedUser };
                 }
+            } else {
+                updatedUser.id = crypto.randomUUID();
+                users.push(updatedUser);
             }
 
-            // Función para descargar Excel
-            function downloadExcel() {
-                const worksheet = XLSX.utils.json_to_sheet(users);
-                const workbook = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(workbook, worksheet, "Usuarios");
-                XLSX.writeFile(workbook, "usuarios.xlsx");
+            renderTable(users);
+            closeModal();
+        }
+
+        // Función para editar usuario
+        function editUser(id) {
+            const user = users.find(u => u.id === id);
+            if (user) {
+                modalTitle.textContent = 'Editar Usuario';
+                Object.keys(user).forEach(key => {
+                    const input = document.getElementById(`user${key.charAt(0).toUpperCase() + key.slice(1)}`);
+                    if (input) {
+                        input.value = user[key];
+                    }
+                });
+                openModal();
             }
+        }
 
-            // Evento para descargar Excel
-            downloadExcelBtn.addEventListener('click', downloadExcel);
+        // Función para descargar Excel
+        function downloadExcel() {
+            const worksheet = XLSX.utils.json_to_sheet(users);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Usuarios");
+            XLSX.writeFile(workbook, "usuarios.xlsx");
+        }
 
-            // Evento para limpiar filtros
-            clearFiltersBtn.addEventListener('click', clearFilters);
-        })
+        // Evento para descargar Excel
+        downloadExcelBtn.addEventListener('click', downloadExcel);
+
+        // Evento para limpiar filtros
+        clearFiltersBtn.addEventListener('click', clearFilters);
 
         </script>
     </html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial de Evaluaciones - Portal de Evaluación del Desempeño</title>
+    <link rel="stylesheet" href="evaluaciones-styles.css">
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js" crossorigin="anonymous"></script>
+</head>
+<style>
+    :root {
+  --color-primary: #0066cc;
+  --color-secondary: #20c997;
+  --color-accent: #ff1493;
+  --color-background: #f8f9fa;
+  --color-text: #333333;
+  --color-white: #ffffff;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Arial", sans-serif;
+  line-height: 1.6;
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Header */
+.hero {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: var(--color-white);
+  padding: 4rem 0 6rem;
+  position: relative;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.hero-wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.hero-wave svg {
+  position: relative;
+  display: block;
+  width: calc(100% + 1.3px);
+  height: 60px;
+}
+
+.hero-wave .shape-fill {
+  fill: var(--color-background);
+}
+
+/* Content */
+.content {
+  padding: 4rem 0;
+}
+
+/* Evaluations Grid */
+.evaluations-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.evaluation-card {
+  background-color: var(--color-white);
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.evaluation-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.evaluation-card-header {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  padding: 1rem;
+  text-align: center;
+}
+
+.evaluation-card-body {
+  padding: 1.5rem;
+}
+
+.evaluation-card h3 {
+  margin-bottom: 0.5rem;
+}
+
+.evaluation-card p {
+  margin-bottom: 1rem;
+  color: #666;
+}
+
+.evaluation-card .btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-secondary);
+  color: var(--color-white);
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.evaluation-card .btn:hover {
+  background-color: #1ba97f;
+}
+
+/* Footer */
+.footer {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  text-align: center;
+  padding: 1rem 0;
+  margin-top: 3rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .hero h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .evaluations-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+</style>
+<body>
+    <header class="hero">
+        <div class="container">
+            <h1>Historial de Evaluaciones</h1>
+            <p>Accede a todas tus evaluaciones de desempeño anteriores</p>
+        </div>
+        <div class="hero-wave"></div>
+    </header>
+
+    <main class="content container">
+        <section class="evaluations-grid" id="evaluationsGrid">
+            <!-- Las tarjetas de evaluación se generarán dinámicamente aquí -->
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Portal de Evaluación del Desempeño. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+  const evaluationsGrid = document.getElementById("evaluationsGrid")
+
+  // Datos de ejemplo para las evaluaciones
+  const evaluations = [
+    { id: 1, year: 2025, period: "Anual", score: 4.5, date: "2025-12-15" },
+    { id: 2, year: 2025, period: "Semestral", score: 4.2, date: "2025-06-30" },
+    { id: 3, year: 2024, period: "Anual", score: 4.7, date: "2024-12-15" },
+    { id: 4, year: 2024, period: "Semestral", score: 4.0, date: "2024-06-30" },
+    { id: 5, year: 2023, period: "Anual", score: 4.3, date: "2023-12-15" },
+    // Agrega más evaluaciones según sea necesario
+  ]
+
+  // Función para crear una tarjeta de evaluación
+  function createEvaluationCard(evaluation) {
+    const card = document.createElement("div")
+    card.className = "evaluation-card"
+
+    card.innerHTML = `
+            <div class="evaluation-card-header">
+                <h3>Evaluación ${evaluation.year} - ${evaluation.period}</h3>
+            </div>
+            <div class="evaluation-card-body">
+                <p><strong>Fecha:</strong> ${evaluation.date}</p>
+                <p><strong>Puntuación:</strong> ${evaluation.score}/5</p>
+                <a href="detalle-evaluacion.html?id=${evaluation.id}" class="btn">Ver Detalles</a>
+            </div>
+        `
+
+    return card
+  }
+
+  // Generar y agregar las tarjetas al grid
+  evaluations.forEach((evaluation) => {
+    const card = createEvaluationCard(evaluation)
+    evaluationsGrid.appendChild(card)
+  })
+})
+
+
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evaluación de Desempeño - Jefe</title>
+    <style>
+        :root {
+            --color-primary: #3b82f6;
+            --color-primary-dark: #2563eb;
+            --color-background: #f3f4f6;
+            --color-surface: #ffffff;
+            --color-text: #1f2937;
+            --color-text-light: #6b7280;
+            --color-border: #e5e7eb;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--color-background);
+            color: var(--color-text);
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .logo img {
+            height: 50px;
+            width: auto;
+        }
+
+        .settings-menu {
+            position: relative;
+        }
+
+        .settings-icon {
+            width: 40px;
+            height: 40px;
+            background-color: #f0f2f5;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .settings-icon:hover {
+            background-color: #e4e6e9;
+        }
+
+        .dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0.5rem 0;
+            min-width: 150px;
+        }
+
+        .dropdown a {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: #333;
+            text-decoration: none;
+        }
+
+        .dropdown a:hover {
+            background-color: #f0f2f5;
+        }
+
+        main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            
+        }
+
+        .img-container {
+            
+            text-align: center;
+            
+        }
+
+        .img-container img {
+            width: 100%;
+            height: auto;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            
+        }
+
+        .evaluation-card {
+            background-color: var(--color-surface);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--color-primary);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .rating label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 0.75rem;
+            border: 1px solid var(--color-border);
+            border-radius: 0.375rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .rating input {
+            display: none;
+        }
+
+        .rating span {
+            display: inline-block;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid var(--color-border);
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .rating input:checked + span {
+            background-color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            resize: vertical;
+            font-size: 1rem;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        button {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: var(--color-primary-dark);
+        }
+
+        button:disabled {
+            background-color: var(--color-text-light);
+            cursor: not-allowed;
+        }
+
+        #summary {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 1rem;
+            }
+        }
+        footer {
+    padding: 0;
+    margin-top: auto;
+}
+
+.footer-content {
+    max-width: 100%;
+    margin: 0;
+    display: block;
+}
+
+.footer-content img {
+    display: block;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+}
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="/dhcoapp/inicio">
+                    <img src="../../public/img/logo_pops_2024.webp" alt="POPS Logo">
+                </a>
+            </div>
+            <div class="settings-menu">
+                <div class="settings-icon" id="settingsIcon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                    </svg>
+                </div>
+                <div class="dropdown" id="settingsDropdown">
+                    <a href="#">Perfil</a>
+                    <a href="#">Configuración</a>
+                    <a href="#">Cerrar sesión</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        
+    </main>
+    <div class="img-container">
+        <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Evaluaci%C3%B3n%20de%20desempe%C3%B1o_VISION%20SOSTENIBLE-e6cAUXoihPa72ls7sdBUMZ1t60TKNC.webp" alt="Evaluación de desempeño Banner">
+        <h1>Evaluación de Desempeño - Jefe</h1>
+    </div>
+
+    <div class="container">
+        <form id="evaluationForm">
+            <div class="evaluation-card">
+                <h2 id="criteriaTitle"></h2>
+                <p id="criteriaDescription"></p>
+
+                <div class="rating">
+                    <label>
+                        <input type="radio" name="rating" value="no_supera">
+                        <span></span> No supera
+                    </label>
+                    <label>
+                        <input type="radio" name="rating" value="cumple_parcialmente">
+                        <span></span> Cumple parcialmente
+                    </label>
+                    <label>
+                        <input type="radio" name="rating" value="cumple">
+                        <span></span> Cumple
+                    </label>
+                    <label>
+                        <input type="radio" name="rating" value="supera">
+                        <span></span> Supera
+                    </label>
+                </div>
+
+                <textarea id="comments" rows="3" placeholder="Ingrese sus comentarios..."></textarea>
+            </div>
+
+            <div class="button-group">
+                <button type="button" id="prevBtn">Anterior</button>
+                <button type="button" id="nextBtn">Siguiente</button>
+            </div>
+        </form>
+
+        <div id="summary" class="evaluation-card">
+            <h2>Resumen de Evaluación</h2>
+            <div id="summaryContent"></div>
+            <button id="editBtn">Editar</button>
+            <button id="submitBtn">Enviar Evaluación</button>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <img src="../../public/img/footer.webp" alt="Decorative footer with waves">
+        </div>
+    </footer>
+    <script>
+        const evaluationCriteria = [
+            { title: "Innovación y Creatividad", description: "Capacidad para generar ideas originales y soluciones innovadoras." },
+            { title: "Liderazgo Colaborativo", description: "Habilidad para inspirar y guiar al equipo hacia objetivos comunes." },
+            { title: "Adaptabilidad y Resiliencia", description: "Capacidad para adaptarse a los cambios y superar desafíos." }
+        ];
+
+        let currentCriteriaIndex = 0;
+        const evaluationResults = {};
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+        const summaryDiv = document.getElementById("summary");
+        const summaryContent = document.getElementById("summaryContent");
+        const editBtn = document.getElementById("editBtn");
+        const submitBtn = document.getElementById("submitBtn");
+
+        function updateCard() {
+            const currentCriteria = evaluationCriteria[currentCriteriaIndex];
+            document.getElementById("criteriaTitle").textContent = currentCriteria.title;
+            document.getElementById("criteriaDescription").textContent = currentCriteria.description;
+
+            document.querySelectorAll('input[name="rating"]').forEach(input => {
+                input.checked = evaluationResults[currentCriteria.title]?.rating === input.value;
+            });
+
+            document.getElementById("comments").value = evaluationResults[currentCriteria.title]?.comments || "";
+
+            prevBtn.disabled = currentCriteriaIndex === 0;
+            nextBtn.textContent = currentCriteriaIndex === evaluationCriteria.length - 1 ? "Finalizar" : "Siguiente";
+        }
+
+        function saveSelection() {
+            const selectedRating = document.querySelector('input[name="rating"]:checked')?.value || "";
+            const comments = document.getElementById("comments").value;
+
+            evaluationResults[evaluationCriteria[currentCriteriaIndex].title] = {
+                rating: selectedRating,
+                comments: comments
+            };
+        }
+
+        nextBtn.addEventListener("click", () => {
+            saveSelection();
+
+            if (currentCriteriaIndex < evaluationCriteria.length - 1) {
+                currentCriteriaIndex++;
+                updateCard();
+            } else {
+                showSummary();
+            }
+        });
+
+        prevBtn.addEventListener("click", () => {
+            saveSelection();
+            if (currentCriteriaIndex > 0) {
+                currentCriteriaIndex--;
+                updateCard();
+            }
+        });
+
+        function showSummary() {
+            document.getElementById("evaluationForm").style.display = "none";
+            summaryDiv.style.display = "block";
+
+            summaryContent.innerHTML = Object.entries(evaluationResults).map(([criteria, data]) => `
+                <h3>${criteria}</h3>
+                <p><strong>Calificación:</strong> ${data.rating || "No seleccionada"}</p>
+                <p><strong>Comentarios:</strong> ${data.comments || "Ninguno"}</p>
+            `).join("");
+        }
+
+        editBtn.addEventListener("click", () => {
+            summaryDiv.style.display = "none";
+            document.getElementById("evaluationForm").style.display = "block";
+        });
+
+        submitBtn.addEventListener("click", () => {
+            console.log(evaluationResults);
+            alert("Evaluación enviada!");
+        });
+
+        updateCard();
+    </script>
+
+</body>
+</html>
