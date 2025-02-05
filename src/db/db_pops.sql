@@ -375,7 +375,8 @@ VALUES
     CREATE TABLE tipo_evaluation(
         te_id INT IDENTITY(1,1) PRIMARY KEY,
         te_nombre NVARCHAR(50) NOT NULL,
-        te_estado CHAR(1) NOT NULL DEFAULT 'A'
+        te_estado CHAR(1) NOT NULL DEFAULT 'A',
+        te_año SMALLINT NOT NULL DEFAULT YEAR(GETDATE())
     );
     
     --/*
@@ -383,6 +384,8 @@ VALUES
     VALUES
     (N'Evaluación de desempeño')
     --*/
+
+
 
 /*##########################################################################*/
     CREATE TABLE evaluacion(

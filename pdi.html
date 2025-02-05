@@ -3,20 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plan de Desarrollo Individual</title>
+    <title>Evaluación</title>
     <style>
         :root {
             --color-primary: #3b82f6;
             --color-primary-dark: #2563eb;
-            --color-secondary: #10b981;
-            --color-secondary-dark: #059669;
             --color-background: #f3f4f6;
             --color-surface: #ffffff;
             --color-text: #1f2937;
             --color-text-light: #6b7280;
             --color-border: #e5e7eb;
-            --color-warning: #f59e0b;
-            --color-danger: #ef4444;
         }
 
         body {
@@ -76,16 +72,37 @@
 
         .talent-card {
             border-left: 4px solid var(--color-primary);
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
         }
 
         .talent-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--color-border);
+            padding: 1rem 2rem;
+            cursor: pointer;
+        }
+
+        .talent-header h3 {
+            margin: 0;
+        }
+
+        .talent-content {
+            display: none;
+            padding: 0 2rem 2rem;
+        }
+
+        .talent-card.active .talent-content {
+            display: block;
+        }
+
+        .arrow {
+            transition: transform 0.3s ease;
+        }
+
+        .talent-card.active .arrow {
+            transform: rotate(180deg);
         }
 
         .talent-score {
@@ -101,18 +118,8 @@
             font-size: 0.875rem;
         }
 
-        .score-high {
-            background-color: #10b981;
-            color: white;
-        }
-
         .score-medium {
             background-color: #f59e0b;
-            color: white;
-        }
-
-        .score-low {
-            background-color: #ef4444;
             color: white;
         }
 
@@ -129,31 +136,28 @@
             padding: 1rem;
         }
 
-        .development-entries {
-            margin-bottom: 1rem;
-        }
-
-        .entry {
-            background-color: white;
-            border: 1px solid var(--color-border);
+        .percentage-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
             border-radius: 4px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .entry-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            font-size: 0.75rem;
+            font-weight: 600;
             margin-bottom: 0.5rem;
-            font-size: 0.875rem;
-            color: var(--color-text-light);
         }
 
-        .entry-content {
-            font-size: 0.875rem;
-            color: var(--color-text);
-            white-space: pre-wrap;
+        .percentage-70 {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .percentage-20 {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .percentage-10 {
+            background-color: #fee2e2;
+            color: #991b1b;
         }
 
         textarea {
@@ -194,12 +198,36 @@
         }
 
         .btn-secondary {
-            background-color: var(--color-text-light);
-            color: white;
+            background-color: #e5e7eb;
+            color: #374151;
         }
 
         .btn-secondary:hover {
-            background-color: var(--color-text);
+            background-color: #d1d5db;
+        }
+
+        .add-talent-plan-btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 1rem;
+        }
+
+        .add-talent-plan-btn:hover {
+            background-color: var(--color-primary-dark);
+        }
+
+        .progress-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--color-border);
         }
 
         .progress-entries {
@@ -210,7 +238,32 @@
             margin-bottom: 0.5rem;
         }
 
+        .history-entry {
+            background-color: #f3f4f6;
+            border-left: 3px solid var(--color-primary);
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .history-date {
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
         @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .card {
+                padding: 1rem;
+            }
+
+            .development-grid {
+                grid-template-columns: 1fr;
+            }
+
             .button-group {
                 flex-direction: column;
             }
@@ -219,145 +272,181 @@
                 width: 100%;
             }
         }
+        .plan-input {
+            display: none;
+        }
+
+        .plan-input.active {
+            display: block;
+        }
+
+        .plan-history {
+            margin-top: 1rem;
+        }
+
+        .edit-mode .entry-content,
+        .edit-mode .edit-btn {
+            display: none;
+        }
+
+        .edit-mode .edit-form {
+            display: block;
+        }
+
+        .edit-form {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-    <!-- ... (código del header y la información del empleado sin cambios) ... -->
-    <h1>Plan de Desarrollo Individual</h1>
+        <h1>Evaluación</h1>
         
-    <div class="card">
-        <div class="employee-info">
-            <div class="form-group">
-                <label>Nombre del colaborador</label>
-                <input type="text" value="Juan Pérez" readonly>
+        <div class="card">
+            <div class="employee-info">
+                <div class="form-group">
+                    <label>Nombre del colaborador</label>
+                    <input type="text" value="Juan Pérez" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Puesto</label>
+                    <input type="text" value="Analista de Proyectos" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Jefatura inmediata</label>
+                    <input type="text" value="María González" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Dirección</label>
+                    <select>
+                        <option>Comercial</option>
+                        <option>Operaciones</option>
+                        <option>Tecnología</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Departamento</label>
+                    <input type="text" value="Desarrollo de Proyectos" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="date" value="2024-02-03">
+                </div>
+                <div class="form-group">
+                    <label>Acuerdo de seguimiento</label>
+                    <select>
+                        <option>Semanal</option>
+                        <option selected>Mensual</option>
+                        <option>Trimestral</option>
+                        <option>Semestral</option>
+                    </select>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Puesto</label>
-                <input type="text" value="Analista de Proyectos" readonly>
+        </div>
+
+        <div class="card talent-card">
+            <div class="talent-header" onclick="toggleTalent(this)">
+                <h3>Adaptabilidad y Resiliencia</h3>
+                <div class="talent-score">
+                    <span>Calificación actual:</span>
+                    <span class="score-badge score-medium">60</span>
+                    <span class="arrow">▼</span>
+                </div>
             </div>
-            <div class="form-group">
-                <label>Jefatura inmediata</label>
-                <input type="text" value="María González" readonly>
-            </div>
-            <div class="form-group">
-                <label>Dirección</label>
-                <select>
-                    <option>Comercial</option>
-                    <option>Operaciones</option>
-                    <option>Tecnología</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Departamento</label>
-                <input type="text" value="Desarrollo de Proyectos" readonly>
-            </div>
-            <div class="form-group">
-                <label>Fecha</label>
-                <input type="date" value="2024-02-03">
-            </div>
-            <div class="form-group">
-                <label>Acuerdo de seguimiento</label>
-                <select>
-                    <option>Semanal</option>
-                    <option selected>Mensual</option>
-                    <option>Trimestral</option>
-                    <option>Semestral</option>
-                </select>
+            <div class="talent-content">
+                <div class="development-grid">
+                    <div class="development-card">
+                        <span class="percentage-badge percentage-70">70% Aprendizaje a través de la práctica</span>
+                        <div class="plan-input active">
+                            <textarea id="practice-input" placeholder="Describir las actividades prácticas que se realizarán..."></textarea>
+                        </div>
+                        <div id="practice-history" class="plan-history"></div>
+                    </div>
+
+                    <div class="development-card">
+                        <span class="percentage-badge percentage-20">20% Interacciones con otros</span>
+                        <div class="plan-input active">
+                            <textarea id="coaching-input" placeholder="Describir las actividades de aprendizaje con otros..."></textarea>
+                        </div>
+                        <div id="coaching-history" class="plan-history"></div>
+                    </div>
+
+                    <div class="development-card">
+                        <span class="percentage-badge percentage-10">10% Aprendizaje formal</span>
+                        <div class="plan-input active">
+                            <textarea id="training-input" placeholder="Describir las capacitaciones formales..."></textarea>
+                        </div>
+                        <div id="training-history" class="plan-history"></div>
+                    </div>
+                </div>
+
+                <button class="add-talent-plan-btn" onclick="addAllPlans()">Agregar Planes de Desarrollo</button>
+
+                <div class="progress-section">
+                    <h4>Seguimiento de Avances</h4>
+                    <div class="progress-entries" id="progress-entries">
+                        <!-- Entradas de progreso existentes se mostrarán aquí -->
+                    </div>
+
+                    <div class="date-input">
+                        <label>Fecha de seguimiento</label>
+                        <input type="date" id="progress-date">
+                    </div>
+                    <textarea id="progress-input" placeholder="Registrar los avances y acuerdos de la reunión de seguimiento..."></textarea>
+                    <div class="button-group">
+                        <button class="btn-primary" onclick="addProgressEntry()">Agregar Avance</button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-
-    <div class="card talent-card">
-        <div class="talent-header">
-            <h3>Adaptabilidad y Resiliencia</h3>
-            <div class="talent-score">
-                <span>Calificación actual:</span>
-                <span class="score-badge score-medium">60</span>
-            </div>
-        </div>
-
-        <div class="development-grid">
-            <div class="development-card">
-                <span class="percentage-badge percentage-70">70% Aprendizaje a través de la práctica</span>
-                <h4>Actividades y tareas a desarrollar</h4>
-                
-                <div class="development-entries">
-                    <!-- Entradas existentes se mostrarán aquí -->
-                </div>
-
-                <textarea id="practice-input" placeholder="Describir las actividades prácticas que se realizarán..."></textarea>
-                <div class="button-group">
-                    <button class="btn-primary" onclick="addEntry('practice-input', 'practice-entries')">Agregar Actividad</button>
-                </div>
-            </div>
-
-            <div class="development-card">
-                <span class="percentage-badge percentage-20">20% Interacciones con otros</span>
-                <h4>Coaching y mentoría</h4>
-                
-                <div class="development-entries">
-                    <!-- Entradas existentes se mostrarán aquí -->
-                </div>
-
-                <textarea id="coaching-input" placeholder="Describir las actividades de aprendizaje con otros..."></textarea>
-                <div class="button-group">
-                    <button class="btn-primary" onclick="addEntry('coaching-input', 'coaching-entries')">Agregar Actividad</button>
-                </div>
-            </div>
-
-            <div class="development-card">
-                <span class="percentage-badge percentage-10">10% Aprendizaje formal</span>
-                <h4>Formaciones y capacitaciones</h4>
-                
-                <div class="development-entries">
-                    <!-- Entradas existentes se mostrarán aquí -->
-                </div>
-
-                <textarea id="training-input" placeholder="Describir las capacitaciones formales..."></textarea>
-                <div class="button-group">
-                    <button class="btn-primary" onclick="addEntry('training-input', 'training-entries')">Agregar Actividad</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="progress-section">
-            <h4>Seguimiento de Avances</h4>
-            <div class="progress-entries">
-                <!-- Entradas de progreso existentes se mostrarán aquí -->
-            </div>
-
-            <div class="date-input">
-                <label>Fecha de seguimiento</label>
-                <input type="date" id="progress-date">
-            </div>
-            <textarea id="progress-input" placeholder="Registrar los avances y acuerdos de la reunión de seguimiento..."></textarea>
-            <div class="button-group">
-                <button class="btn-primary" onclick="addProgressEntry()">Agregar Avance</button>
-            </div>
-        </div>
-    </div>
-</div>
 
     <script>
-        function addEntry(inputId, entriesClass) {
-            const input = document.getElementById(inputId);
+        function toggleTalent(header) {
+            const talentCard = header.closest('.talent-card');
+            talentCard.classList.toggle('active');
+        }
+
+        function addAllPlans() {
+            const types = ['practice', 'coaching', 'training'];
+            let allEmpty = true;
+
+            for (const type of types) {
+                const input = document.getElementById(`${type}-input`);
+                if (input.value.trim()) {
+                    allEmpty = false;
+                    break;
+                }
+            }
+
+            if (allEmpty) {
+                alert('Por favor, ingrese al menos un plan de desarrollo antes de agregar.');
+                return;
+            }
+
+            for (const type of types) {
+                updatePlan(type);
+            }
+
+            // Ocultar los inputs y el botón después de agregar los planes
+            document.querySelectorAll('.plan-input').forEach(input => input.classList.remove('active'));
+            document.querySelector('.add-talent-plan-btn').style.display = 'none';
+        }
+
+        function updatePlan(type) {
+            const input = document.getElementById(`${type}-input`);
+            const history = document.getElementById(`${type}-history`);
             const content = input.value.trim();
-            
+
             if (content) {
-                const entriesContainer = input.parentElement.querySelector('.development-entries');
-                const entry = document.createElement('div');
-                entry.className = 'entry';
-                
-                const currentDate = new Date().toLocaleDateString();
-                entry.innerHTML = `
-                    <div class="entry-header">
-                        <span>Agregado el ${currentDate}</span>
-                    </div>
-                    <div class="entry-content">${content}</div>
+                const date = new Date().toLocaleString();
+                const historyEntry = document.createElement('div');
+                historyEntry.className = 'history-entry';
+                historyEntry.innerHTML = `
+                    <span class="history-date">${date}</span>
+                    <p>${content}</p>
                 `;
-                
-                entriesContainer.appendChild(entry);
+                history.insertBefore(historyEntry, history.firstChild);
                 input.value = '';
             }
         }
@@ -367,23 +456,61 @@
             const input = document.getElementById('progress-input');
             const content = input.value.trim();
             
-            if (content && dateInput.value) {
-                const entriesContainer = document.querySelector('.progress-entries');
+            if (dateInput.value) {
+                const entriesContainer = document.getElementById('progress-entries');
                 const entry = document.createElement('div');
                 entry.className = 'entry';
                 
                 const formattedDate = new Date(dateInput.value).toLocaleDateString();
+                const entryId = Date.now();
                 entry.innerHTML = `
                     <div class="entry-header">
                         <span>Fecha de seguimiento: ${formattedDate}</span>
+                        ${!content ? `<button class="edit-btn" onclick="editEntry(${entryId})">Editar</button>` : ''}
                     </div>
-                    <div class="entry-content">${content}</div>
+                    <div class="entry-content" id="content-${entryId}">${content || 'Sin descripción'}</div>
+                    <div class="edit-form" id="edit-form-${entryId}">
+                        <textarea id="edit-textarea-${entryId}">${content}</textarea>
+                        <button class="btn-primary" onclick="saveEdit(${entryId})">Guardar</button>
+                        <button class="btn-secondary" onclick="cancelEdit(${entryId})">Cancelar</button>
+                    </div>
                 `;
                 
                 entriesContainer.appendChild(entry);
                 input.value = '';
                 dateInput.value = '';
+            } else {
+                alert('Por favor, ingrese al menos la fecha del seguimiento.');
             }
+        }
+
+        function editEntry(entryId) {
+            const entry = document.getElementById(`content-${entryId}`).closest('.entry');
+            entry.classList.add('edit-mode');
+        }
+
+        function saveEdit(entryId) {
+            const entry = document.getElementById(`content-${entryId}`).closest('.entry');
+            const textarea = document.getElementById(`edit-textarea-${entryId}`);
+            const content = textarea.value.trim();
+
+            if (content) {
+                document.getElementById(`content-${entryId}`).textContent = content;
+                entry.classList.remove('edit-mode');
+                
+                // Remover el botón de editar si ahora hay contenido
+                const editBtn = entry.querySelector('.edit-btn');
+                if (editBtn) {
+                    editBtn.remove();
+                }
+            } else {
+                alert('Por favor, ingrese una descripción antes de guardar.');
+            }
+        }
+
+        function cancelEdit(entryId) {
+            const entry = document.getElementById(`content-${entryId}`).closest('.entry');
+            entry.classList.remove('edit-mode');
         }
     </script>
 </body>
