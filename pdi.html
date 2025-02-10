@@ -205,7 +205,6 @@
         .btn-secondary:hover {
             background-color: #d1d5db;
         }
-
         .add-talent-plan-btn {
             display: block;
             width: 100%;
@@ -224,18 +223,50 @@
             background-color: var(--color-primary-dark);
         }
 
-        .progress-section {
-            margin-top: 1rem;
+        .progress-entry {
+            background-color: #f3f4f6;
+            border-left: 3px solid var(--color-primary);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+
+        .progress-entry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-entry-date {
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .progress-entry-content {
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .edit-form {
+            display: none;
+        }
+
+        .edit-form.active {
+            display: block;
+        }
+        .date-input {
+            margin-bottom: 0.5rem;
+        }
+
+        .history-section {
+            margin-top: 2rem;
             padding-top: 1rem;
             border-top: 1px solid var(--color-border);
         }
 
-        .progress-entries {
+        .history-entries {
             margin-top: 1rem;
-        }
-
-        .date-input {
-            margin-bottom: 0.5rem;
         }
 
         .history-entry {
@@ -249,6 +280,37 @@
         .history-date {
             font-weight: bold;
             color: var(--color-primary);
+        }
+
+        .history-content {
+            margin-top: 0.5rem;
+        }
+
+        .plan-content {
+            margin-top: 0.5rem;
+        }
+
+        .edit-button {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .edit-button:hover {
+            background-color: var(--color-primary-dark);
+        }
+
+        .edit-area {
+            display: none;
+        }
+
+        .edit-area.active {
+            display: block;
         }
 
         @media (max-width: 768px) {
@@ -271,30 +333,6 @@
             button {
                 width: 100%;
             }
-        }
-        .plan-input {
-            display: none;
-        }
-
-        .plan-input.active {
-            display: block;
-        }
-
-        .plan-history {
-            margin-top: 1rem;
-        }
-
-        .edit-mode .entry-content,
-        .edit-mode .edit-btn {
-            display: none;
-        }
-
-        .edit-mode .edit-form {
-            display: block;
-        }
-
-        .edit-form {
-            display: none;
         }
     </style>
 </head>
@@ -357,37 +395,46 @@
                 <div class="development-grid">
                     <div class="development-card">
                         <span class="percentage-badge percentage-70">70% Aprendizaje a través de la práctica</span>
-                        <div class="plan-input active">
+                        <div class="plan-content" id="practice-content"></div>
+                        <div class="edit-area" id="practice-edit">
                             <textarea id="practice-input" placeholder="Describir las actividades prácticas que se realizarán..."></textarea>
                         </div>
-                        <div id="practice-history" class="plan-history"></div>
                     </div>
 
                     <div class="development-card">
                         <span class="percentage-badge percentage-20">20% Interacciones con otros</span>
-                        <div class="plan-input active">
+                        <div class="plan-content" id="coaching-content"></div>
+                        <div class="edit-area" id="coaching-edit">
                             <textarea id="coaching-input" placeholder="Describir las actividades de aprendizaje con otros..."></textarea>
                         </div>
-                        <div id="coaching-history" class="plan-history"></div>
                     </div>
 
                     <div class="development-card">
                         <span class="percentage-badge percentage-10">10% Aprendizaje formal</span>
-                        <div class="plan-input active">
+                        <div class="plan-content" id="training-content"></div>
+                        <div class="edit-area" id="training-edit">
                             <textarea id="training-input" placeholder="Describir las capacitaciones formales..."></textarea>
                         </div>
-                        <div id="training-history" class="plan-history"></div>
                     </div>
                 </div>
 
-                <button class="add-talent-plan-btn" onclick="addAllPlans()">Agregar Planes de Desarrollo</button>
+                <button class="add-talent-plan-btn" id="save-plans-btn" onclick="savePlans()">Guardar Planes de Desarrollo</button>
+                <button class="add-talent-plan-btn btn-secondary" id="cancel-edit-btn" onclick="cancelEdit()" style="display: none;">Cancelar Edición</button>
+                <button class="add-talent-plan-btn" id="edit-plans-btn" onclick="editPlans()" style="display: none;">Editar Planes de Desarrollo</button>
+
+                <div class="history-section">
+                    <h4>Historial de Ediciones</h4>
+                    <div class="history-entries" id="history-entries">
+                        <!-- Las entradas del historial se mostrarán aquí -->
+                    </div>
+                </div>
 
                 <div class="progress-section">
                     <h4>Seguimiento de Avances</h4>
                     <div class="progress-entries" id="progress-entries">
                         <!-- Entradas de progreso existentes se mostrarán aquí -->
                     </div>
-
+                
                     <div class="date-input">
                         <label>Fecha de seguimiento</label>
                         <input type="date" id="progress-date">
@@ -402,116 +449,172 @@
     </div>
 
     <script>
-        function toggleTalent(header) {
-            const talentCard = header.closest('.talent-card');
-            talentCard.classList.toggle('active');
+let plans = {
+    practice: '',
+    coaching: '',
+    training: ''
+};
+
+let editHistory = []; // Array para almacenar el historial de ediciones
+
+function toggleTalent(header) {
+    const talentCard = header.closest('.talent-card');
+    talentCard.classList.toggle('active');
+}
+
+function savePlans() {
+    const types = ['practice', 'coaching', 'training'];
+    let allFilled = true;
+
+    for (const type of types) {
+        const input = document.getElementById(`${type}-input`);
+        if (!input.value.trim()) {
+            allFilled = false;
+            break;
         }
+    }
 
-        function addAllPlans() {
-            const types = ['practice', 'coaching', 'training'];
-            let allEmpty = true;
+    if (!allFilled) {
+        alert('Por favor, complete todos los campos antes de guardar.');
+        return;
+    }
 
-            for (const type of types) {
-                const input = document.getElementById(`${type}-input`);
-                if (input.value.trim()) {
-                    allEmpty = false;
-                    break;
-                }
-            }
+    // Guardar los planes
+    for (const type of types) {
+        const input = document.getElementById(`${type}-input`);
+        plans[type] = input.value.trim();
+        document.getElementById(`${type}-content`).textContent = plans[type];
+        document.getElementById(`${type}-edit`).classList.remove('active');
+    }
 
-            if (allEmpty) {
-                alert('Por favor, ingrese al menos un plan de desarrollo antes de agregar.');
-                return;
-            }
+    // Añadir una entrada al historial
+    addHistoryEntry();
 
-            for (const type of types) {
-                updatePlan(type);
-            }
+    // Ocultar botones de guardar y cancelar, mostrar botón de editar
+    document.getElementById('save-plans-btn').style.display = 'none';
+    document.getElementById('cancel-edit-btn').style.display = 'none';
+    document.getElementById('edit-plans-btn').style.display = 'block';
+}
 
-            // Ocultar los inputs y el botón después de agregar los planes
-            document.querySelectorAll('.plan-input').forEach(input => input.classList.remove('active'));
-            document.querySelector('.add-talent-plan-btn').style.display = 'none';
+function editPlans() {
+    const types = ['practice', 'coaching', 'training'];
+
+    for (const type of types) {
+        const input = document.getElementById(`${type}-input`);
+        input.value = plans[type];
+        document.getElementById(`${type}-edit`).classList.add('active');
+    }
+
+    // Mostrar botones de guardar y cancelar, ocultar botón de editar
+    document.getElementById('save-plans-btn').style.display = 'block';
+    document.getElementById('cancel-edit-btn').style.display = 'block';
+    document.getElementById('edit-plans-btn').style.display = 'none';
+}
+
+function cancelEdit() {
+    const types = ['practice', 'coaching', 'training'];
+
+    for (const type of types) {
+        const input = document.getElementById(`${type}-input`);
+        input.value = plans[type]; // Restablecer el valor al plan guardado
+        document.getElementById(`${type}-edit`).classList.remove('active'); // Ocultar el área de edición
+    }
+
+    // Ocultar botones de guardar y cancelar, mostrar botón de editar
+    document.getElementById('save-plans-btn').style.display = 'none';
+    document.getElementById('cancel-edit-btn').style.display = 'none';
+    document.getElementById('edit-plans-btn').style.display = 'block';
+}
+
+function addProgressEntry() {
+    const dateInput = document.getElementById('progress-date');
+    const input = document.getElementById('progress-input');
+    const content = input.value.trim();
+    
+    if (dateInput.value) {
+        const entriesContainer = document.getElementById('progress-entries');
+        const entry = document.createElement('div');
+        entry.className = 'progress-entry';
+        
+        const formattedDate = new Date(dateInput.value).toLocaleDateString();
+        const entryId = Date.now();
+        entry.innerHTML = `
+            <div class="progress-entry-header">
+                <span class="progress-entry-date">Fecha de seguimiento: ${formattedDate}</span>
+                ${content ? '' : `<button class="btn-secondary" onclick="toggleEditProgressEntry(${entryId})">Editar</button>`}
+            </div>
+            <div class="progress-entry-content" id="content-${entryId}">${content || 'Sin descripción'}</div>
+            ${content ? '' : `
+            <div class="edit-form" id="edit-form-${entryId}">
+                <textarea id="edit-textarea-${entryId}">${content}</textarea>
+                <button class="btn-primary" onclick="saveProgressEntry(${entryId})">Guardar</button>
+                <button class="btn-secondary" onclick="toggleEditProgressEntry(${entryId})">Cancelar</button>
+            </div>
+            `}
+        `;
+        
+        entriesContainer.insertBefore(entry, entriesContainer.firstChild);
+        input.value = '';
+        dateInput.value = '';
+    } else {
+        alert('Por favor, ingrese al menos la fecha del seguimiento.');
+    }
+}
+
+function toggleEditProgressEntry(entryId) {
+    const content = document.getElementById(`content-${entryId}`);
+    const editForm = document.getElementById(`edit-form-${entryId}`);
+    content.style.display = content.style.display === 'none' ? 'block' : 'none';
+    editForm.classList.toggle('active');
+}
+
+function saveProgressEntry(entryId) {
+    const content = document.getElementById(`content-${entryId}`);
+    const textarea = document.getElementById(`edit-textarea-${entryId}`);
+    const newContent = textarea.value.trim();
+
+    if (newContent) {
+        content.textContent = newContent;
+        toggleEditProgressEntry(entryId);
+        
+        // Remove edit button after saving content
+        const editButton = content.parentElement.querySelector('.btn-secondary');
+        if (editButton) {
+            editButton.remove();
         }
+    } else {
+        alert('Por favor, ingrese una descripción antes de guardar.');
+    }
+}
 
-        function updatePlan(type) {
-            const input = document.getElementById(`${type}-input`);
-            const history = document.getElementById(`${type}-history`);
-            const content = input.value.trim();
+function addHistoryEntry() {
+    const date = new Date().toLocaleDateString(); // Fecha actual
+    const historyEntriesContainer = document.getElementById('history-entries');
 
-            if (content) {
-                const date = new Date().toLocaleString();
-                const historyEntry = document.createElement('div');
-                historyEntry.className = 'history-entry';
-                historyEntry.innerHTML = `
-                    <span class="history-date">${date}</span>
-                    <p>${content}</p>
-                `;
-                history.insertBefore(historyEntry, history.firstChild);
-                input.value = '';
-            }
-        }
+    // Crear la entrada del historial
+    const entry = document.createElement('div');
+    entry.className = 'history-entry';
+    entry.innerHTML = `
+        <div class="history-date">${date}</div>
+        <div class="history-content">
+            <strong>Plan de Desarrollo Actualizado:</strong><br>
+            <strong>Práctica (70%):</strong> ${plans.practice}<br>
+            <strong>Interacciones (20%):</strong> ${plans.coaching}<br>
+            <strong>Formal (10%):</strong> ${plans.training}
+        </div>
+    `;
 
-        function addProgressEntry() {
-            const dateInput = document.getElementById('progress-date');
-            const input = document.getElementById('progress-input');
-            const content = input.value.trim();
-            
-            if (dateInput.value) {
-                const entriesContainer = document.getElementById('progress-entries');
-                const entry = document.createElement('div');
-                entry.className = 'entry';
-                
-                const formattedDate = new Date(dateInput.value).toLocaleDateString();
-                const entryId = Date.now();
-                entry.innerHTML = `
-                    <div class="entry-header">
-                        <span>Fecha de seguimiento: ${formattedDate}</span>
-                        ${!content ? `<button class="edit-btn" onclick="editEntry(${entryId})">Editar</button>` : ''}
-                    </div>
-                    <div class="entry-content" id="content-${entryId}">${content || 'Sin descripción'}</div>
-                    <div class="edit-form" id="edit-form-${entryId}">
-                        <textarea id="edit-textarea-${entryId}">${content}</textarea>
-                        <button class="btn-primary" onclick="saveEdit(${entryId})">Guardar</button>
-                        <button class="btn-secondary" onclick="cancelEdit(${entryId})">Cancelar</button>
-                    </div>
-                `;
-                
-                entriesContainer.appendChild(entry);
-                input.value = '';
-                dateInput.value = '';
-            } else {
-                alert('Por favor, ingrese al menos la fecha del seguimiento.');
-            }
-        }
+    // Añadir la entrada al historial
+    historyEntriesContainer.insertBefore(entry, historyEntriesContainer.firstChild);
+}
 
-        function editEntry(entryId) {
-            const entry = document.getElementById(`content-${entryId}`).closest('.entry');
-            entry.classList.add('edit-mode');
-        }
-
-        function saveEdit(entryId) {
-            const entry = document.getElementById(`content-${entryId}`).closest('.entry');
-            const textarea = document.getElementById(`edit-textarea-${entryId}`);
-            const content = textarea.value.trim();
-
-            if (content) {
-                document.getElementById(`content-${entryId}`).textContent = content;
-                entry.classList.remove('edit-mode');
-                
-                // Remover el botón de editar si ahora hay contenido
-                const editBtn = entry.querySelector('.edit-btn');
-                if (editBtn) {
-                    editBtn.remove();
-                }
-            } else {
-                alert('Por favor, ingrese una descripción antes de guardar.');
-            }
-        }
-
-        function cancelEdit(entryId) {
-            const entry = document.getElementById(`content-${entryId}`).closest('.entry');
-            entry.classList.remove('edit-mode');
-        }
+// Mostrar las textareas al cargar la página
+window.onload = function() {
+    const types = ['practice', 'coaching', 'training'];
+    for (const type of types) {
+        document.getElementById(`${type}-edit`).classList.add('active');
+    }
+};
     </script>
 </body>
 </html>

@@ -824,3 +824,141 @@ SELECT * FROM permiso
                     INNER JOIN departamento D ON C.col_depto_id = D.depto_id
                     INNER JOIN tipo_novedad TN ON R.rep_il_tipo_novedad = TN.tn_id
                     WHERE R.rep_tipo_reporte_id = 4
+
+
+
+
+SELECT 
+    E.ev_id as id,
+    E.ev_tipo_evaluation as tipo_evaluacion,
+    E.ev_fecha as fecha,
+    E.ev_categoria as categoria,
+    E.ev_estado as estado
+FROM evaluacion E
+
+INNER JOIN tipo_evaluation TE ON E.ev_tipo_evaluation = TE.te_id
+
+
+/*HISTORICO DE EVALUACIONES RESUMIDOS*/
+SELECT 
+    E.ev_id AS eval_id,
+    TE.te_nombre AS nombre_evaluacion,
+    E.ev_categoria AS categoria,
+    E.ev_fecha AS fecha,
+    CASE
+        WHEN SUM(CASE WHEN C.cal_calificacion_subordinado IS NULL THEN 1 ELSE 0 END) > 0 THEN 0
+        ELSE 1
+    END AS calificaciones_subordinado,
+    CASE
+        WHEN SUM(CASE WHEN C.cal_calificacion_jefe IS NULL THEN 1 ELSE 0 END) > 0 THEN 0
+        ELSE 1
+    END AS calificaciones_jefe
+FROM 
+    calificacion C
+INNER JOIN 
+    evaluacion_detalle ED ON C.cal_detalle_eval = ED.evd_id
+INNER JOIN 
+    evaluacion E ON ED.evd_evaluacion_id = E.ev_id
+INNER JOIN 
+    tipo_evaluation TE ON E.ev_tipo_evaluation = TE.te_id
+WHERE 
+    C.cal_col_subordinado = '612d9291-78c0-43d6-afa9-f0c964a8f90d'
+GROUP BY 
+    E.ev_id, TE.te_nombre, E.ev_categoria, E.ev_fecha;
+
+
+
+
+
+
+SELECT * FROM colaborador
+
+
+SELECT * FROM tipo_evaluation
+SELECT * FROM evaluacion
+SELECT * FROM evaluacion_detalle
+SELECT * FROM calificacion WHERE cal_col_subordinado = '612d9291-78c0-43d6-afa9-f0c964a8f90d'
+
+
+/*###############################HISTORICO RESULTADIS DE EVALUACIONES################################*/
+SELECT
+    E.ev_tipo_evaluation AS tipo_evaluacion,
+    T.tal_nombre AS talento_nombre,
+    DT.det_tal_texto AS talento_descripcion,
+    ED.valor_talento AS valor_talento,
+    ED.porcentaje_talento AS porcentaje_talento,
+    ED.valor_detalle_talento AS valor_detalle_talento,
+    N.nota_nombre AS nota_nombre,
+    N.nota_valor AS nota_valor,
+    N2.nota_nombre AS nota_nombre2,
+    N2.nota_valor AS nota_valor2,
+    FORMAT(ROUND((N2.nota_valor * 100 ), 2), 'N2') AS nota,
+    FORMAT(ROUND((N2.nota_valor * ED.valor_talento ) / COALESCE(DetalleCount.detalle_count, 1), 2), 'N2') AS peso,
+    FORMAT(ROUND(SUM((N2.nota_valor * ED.valor_talento ) / COALESCE(DetalleCount.detalle_count, 1)) 
+                OVER (PARTITION BY T.tal_nombre), 2), 'N2') AS suma_peso_talento
+FROM calificacion C
+INNER JOIN evaluacion_detalle ED ON C.cal_detalle_eval = ED.evd_id
+INNER JOIN evaluacion E ON ED.evd_evaluacion_id = E.ev_id
+INNER JOIN nota N ON C.cal_calificacion_subordinado = N.nota_id
+INNER JOIN nota N2 ON C.cal_calificacion_jefe = N2.nota_id
+INNER JOIN talento T ON ED.evd_talento_id = T.tal_id
+INNER JOIN detalle_talento DT ON ED.evd_detalle_talento_id = DT.det_tal_id
+LEFT JOIN (
+    SELECT 
+        evd_talento_id, 
+        COUNT(*) AS detalle_count
+    FROM evaluacion_detalle
+    WHERE evd_evaluacion_id = 1 -- Filtra por la evaluación específica
+    GROUP BY evd_talento_id
+) DetalleCount ON T.tal_id = DetalleCount.evd_talento_id
+WHERE E.ev_tipo_evaluation = 1
+AND C.cal_col_subordinado = '612d9291-78c0-43d6-afa9-f0c964a8f90d'
+
+
+
+
+/*##############PDI###############*/
+
+SELECT 
+    T.tal_id,
+    AP.act_pdi_nombre,
+    AP.act_pdi_descripcion,
+    DP.de_pdi_porcentaje,
+    DPH.det_pdi_his_descripcion,
+    DPH.det_pdi_his_fecha
+FROM detalle_pdi_historico DPH
+INNER JOIN detalle_pdi DP ON DPH.det_pdi_his_id_detalle_pdi = DP.de_pdi_id
+INNER JOIN actividades_pdi AP ON DP.de_pdi_act_id = AP.act_pdi_id
+INNER JOIN talento T ON DPH.det_pdi_his_talento_id = T.tal_id
+WHERE DP.de_pdi_eval_id = 1
+AND DPH.det_pdi_his_col_subordinado_id = '612d9291-78c0-43d6-afa9-f0c964a8f90d'
+
+
+SELECT
+    AP.av_pdi_talento_id,
+    AP.ap_pdi_feha_propuesta,
+    AP.ap_pdi_fecha_final,
+    AP.ap_pdi_descripcion
+FROM avance_pdi AP
+WHERE AP.av_pdi_eval_id = 1
+AND AP.av_pdi_col_subordinado_id = '612d9291-78c0-43d6-afa9-f0c964a8f90d'
+
+
+SELECT DISTINCT
+    T.tal_nombre AS talento_nombre,
+    AP.act_pdi_nombre AS nombre_actividad,
+    AP.act_pdi_descripcion AS descripcion_actividad,
+    DP.de_pdi_porcentaje AS porcentaje_actividad
+FROM calificacion C
+INNER JOIN evaluacion_detalle ED ON C.cal_detalle_eval = ED.evd_id
+INNER JOIN detalle_pdi DP ON ED.evd_evaluacion_id = DP.de_pdi_eval_id
+INNER JOIN actividades_pdi AP ON DP.de_pdi_act_id = AP.act_pdi_id
+INNER JOIN talento T ON ED.evd_talento_id = T.tal_id
+WHERE ED.evd_evaluacion_id = 1
+AND C.cal_col_subordinado = '612d9291-78c0-43d6-afa9-f0c964a8f90d'
+
+
+
+
+SELECT * FROM calificacion
+SELECT * FROM evaluacion_detalle

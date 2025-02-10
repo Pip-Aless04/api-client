@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/evaluacion/pdi.css">
+    <title>Evaluación</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Evaluación</h1>
+        
+        <div class="card">
+            <div class="employee-info">
+                <div class="form-group">
+                    <label>Nombre del colaborador</label>
+                    <input type="text" value="Juan Pérez" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Puesto</label>
+                    <input type="text" value="Analista de Proyectos" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Jefatura inmediata</label>
+                    <input type="text" value="María González" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Dirección</label>
+                    <select>
+                        <option>Comercial</option>
+                        <option>Operaciones</option>
+                        <option>Tecnología</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Departamento</label>
+                    <input type="text" value="Desarrollo de Proyectos" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Fecha</label>
+                    <input type="date" value="2024-02-03">
+                </div>
+                <div class="form-group">
+                    <label>Acuerdo de seguimiento</label>
+                    <select>
+                        <option>Semanal</option>
+                        <option selected>Mensual</option>
+                        <option>Trimestral</option>
+                        <option>Semestral</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <% 
+        // Función para formatear el nombre del talento
+        function formatTalentoName(name) {
+            return name.replace(/_/g, ' ') // Reemplazar _ por espacios
+                       .toLowerCase() // Convertir todo a minúsculas
+                       .replace(/^\w/, (char) => char.toUpperCase()); // Capitalizar solo la primera letra
+        }
+
+        // Objeto para almacenar talentos únicos
+        const uniqueTalentos = {};
+        talentos.forEach(talento => {
+            if (!uniqueTalentos[talento.talento_id]) {
+                uniqueTalentos[talento.talento_id] = talento;
+            }
+        });
+
+        // Iterar sobre los talentos únicos
+        Object.values(uniqueTalentos).forEach(talento => { 
+        %>
+        <div class="card talent-card">
+            <div class="talent-header" onclick="toggleTalent(this)">
+                <h3><%= formatTalentoName(talento.talento_nombre) %></h3>
+                <div class="talent-score">
+                    <span>Calificación actual:</span>
+                    <span class="score-badge score-medium"><%= talento.nota %></span>
+                    <span class="arrow">▼</span>
+                </div>
+            </div>
+            <div class="talent-content">
+                <div class="development-grid">
+                    <div class="development-card">
+                        <span class="percentage-badge % <%= talento.nombre_actividad %></span>
+                        <div class="edit-area">
+                            <textarea placeholder="Describir las actividades prácticas que se realizarán..."><%= pdi.detalle_descripcion : '' %></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="add-talent-plan-btn" onclick="savePlans()">Guardar Planes de Desarrollo</button>
+                <button class="add-talent-plan-btn btn-secondary" onclick="cancelEdit()" style="display: none;">Cancelar Edición</button>
+                <button class="add-talent-plan-btn" onclick="editPlans()" style="display: none;">Editar Planes de Desarrollo</button>
+
+                <div class="history-section">
+                    <h4>Historial de Ediciones</h4>
+                    <div class="history-entries">
+                        <!-- Las entradas del historial se mostrarán aquí -->
+                    </div>
+                </div>
+
+                <div class="progress-section">
+                    <h4>Seguimiento de Avances</h4>
+                    <div class="progress-entries">
+                        <!-- Entradas de progreso existentes se mostrarán aquí -->
+                    </div>
+                
+                    <div class="date-input">
+                        <label>Fecha de seguimiento</label>
+                        <input type="date">
+                    </div>
+                    <textarea placeholder="Registrar los avances y acuerdos de la reunión de seguimiento..."></textarea>
+                    <div class="button-group">
+                        <button class="btn-primary" onclick="addProgressEntry()">Agregar Avance</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% }); %>
+    </div>
+
+    <script>
+    function toggleTalent(header) {
+        const talentCard = header.closest('.talent-card');
+        talentCard.classList.toggle('active');
+    }
+
+    function savePlans() {
+        alert('Planes guardados');
+    }
+
+    function editPlans() {
+        alert('Editando planes');
+    }
+
+    function cancelEdit() {
+        alert('Edición cancelada');
+    }
+
+    function addProgressEntry() {
+        alert('Avance agregado');
+    }
+    </script>
+</body>
+</html>

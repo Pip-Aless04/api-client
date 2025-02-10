@@ -187,11 +187,44 @@ export class ViewController {
 
     evaluaciones = async (req, res) => {
         try {
-            res.render('evaluacion/historico_evals');  // Cambié `mockData` por `data`
+            const colId = req.params.colId;
+            console.log(colId);
+
+            const historicoResumido = await this.evaluacionModel.getHistoricoResumidoEvals({colId});
+            console.log(historicoResumido);
+
+            res.render('evaluacion/historico_evals', {historicoResumido, colId});
         } catch (error) {
             console.log(error);
             res.status(500).send('Error interno del servidor');
         }
     }
     
+    resultado = async (req, res) => {
+        try {
+            console.log('entro a resultado controller view')
+            const {colId, evalId} = req.params;
+            console.log(colId, evalId)
+            const resultado = await this.evaluacionModel.getEvalResultado({colId, evalId});
+            console.log(resultado);
+            res.render('evaluacion/resultados', {resultado, colId, evalId});
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('Error interno del servidor');
+        }
+    }
+
+    pdi = async (req, res) => {
+        try {
+            console.log('entro a pdi controller view')
+            const {colId, evalId} = req.params;
+            console.log(colId, evalId)
+            const {talentos, pdi, avances} = await this.evaluacionModel.getEvalPdi({colId, evalId});
+
+            res.render('evaluacion/pdi', {colId, evalId, talentos, pdi, avances});
+        } catch (error) {
+            console.log(error);
+            res.status(500).send('Error interno del servidor');
+        }
+    }
 }

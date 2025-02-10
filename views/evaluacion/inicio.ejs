@@ -34,16 +34,18 @@
         <!-- Hero Section -->
         <section class="hero">
             <div class="hero-content container">
-                <div class="hero-text">
-                    <h1>Evaluación del Desempeño</h1>
-                    <p>Impulsando el crecimiento y desarrollo profesional</p>
-                    <div class="button-group">
-                        <button class="btn btn-comenzar-evaluacion">Iniciar Evaluación</button>
-                        <button class="btn btn-mas-info">Más Información</button>
-                    </div>
-                </div>
                 <div class="hero-image">
                     <img src="../../img/banner_inicio.webp" alt="Evaluación del Desempeño">
+                </div>
+                <div class="hero-text">
+                    
+                        <h1>Evaluación del Desempeño</h1>
+                        <p>Impulsando el crecimiento y desarrollo profesional</p>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-comenzar-evaluacion" onclick="startEvaluation('<%=user.id%>')">Iniciar Evaluación</button>
+                        <button class="btn btn-mas-info">Más Información</button>
+                    </div>
                 </div>
             </div>
             <div class="hero-wave"></div>
@@ -83,7 +85,7 @@
                             <div class="employee-info">
                                 <h3><%= subordinado.nombre %> <%= subordinado.primer_apellido %> <%= subordinado.segundo_apellido %></h3>
                                 <p><%= subordinado.puesto.charAt(0).toUpperCase() + subordinado.puesto.slice(1).toLowerCase() %></p>
-                                <button class="evaluate-btn" onclick="evaluateEmployee('<%= subordinado.id %>')">Evaluar Colaborador</button>
+                                <button class="evaluate-btn" onclick="startEvaluation('<%= subordinado.id %>')">Evaluar Colaborador</button>
                             </div>
                         </div>
                     <% }) %>

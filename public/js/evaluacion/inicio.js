@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
   
   const settingsIcon = document.querySelector('.settings-icon');
   const dropdown = document.querySelector('.dropdown');
-  const btnStartEvaluation = document.querySelector('.btn-comenzar-evaluacion');
   const btnMoreInfo = document.querySelector('.btn-mas-info');
 
     // Menú desplegable de configuración
@@ -17,10 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
   });
   
-  btnStartEvaluation.addEventListener('click', function (event) {
-    window.location.href = 'evaluaciones';
-  });
-
   btnMoreInfo.addEventListener('click', function (event) {
     window.location.href = 'mas_info';
   });
@@ -28,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 
-function evaluateEmployee(employeeId) {
-  alert(`Iniciando evaluación para el empleado con ID: ${employeeId}`)
-  // Aquí puedes agregar la lógica para iniciar el proceso de evaluación
+function startEvaluation(colId) {
+  window.location.href = `evaluaciones/${colId}`;
 }

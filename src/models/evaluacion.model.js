@@ -101,4 +101,176 @@ export class EvaluacionModel{
             throw new Error('Error al obtener los colaboradores');
         }
     }
+
+    static async getHistoricoResumidoEvals({colId}) {
+        try {
+            
+            const query = `SELECT 
+                            E.ev_id AS eval_id,
+                            TE.te_nombre AS nombre_evaluacion,
+                            E.ev_categoria AS categoria,
+                            E.ev_fecha AS fecha,
+                            CASE
+                                WHEN SUM(CASE WHEN C.cal_calificacion_subordinado IS NULL THEN 1 ELSE 0 END) > 0 THEN 0
+                                ELSE 1
+                            END AS calificaciones_subordinado,
+                            CASE
+                                WHEN SUM(CASE WHEN C.cal_calificacion_jefe IS NULL THEN 1 ELSE 0 END) > 0 THEN 0
+                                ELSE 1
+                            END AS calificaciones_jefe
+                        FROM 
+                            calificacion C
+                        INNER JOIN 
+                            evaluacion_detalle ED ON C.cal_detalle_eval = ED.evd_id
+                        INNER JOIN 
+                            evaluacion E ON ED.evd_evaluacion_id = E.ev_id
+                        INNER JOIN 
+                            tipo_evaluation TE ON E.ev_tipo_evaluation = TE.te_id
+                        WHERE 
+                            C.cal_col_subordinado = '612d9291-78c0-43d6-afa9-f0c964a8f90d'
+                        GROUP BY 
+                            E.ev_id, TE.te_nombre, E.ev_categoria, E.ev_fecha;
+                        `;
+            
+            const request = connection.request();
+            // Asegúrate de utilizar los parámetros correctamente
+            const result = await request
+                .input('colId', sql.UniqueIdentifier, colId)
+                .query(query);
+
+            return result.recordset;
+
+        } catch (error) {
+            console.error('Error al obtener el resumen de evaluaciones:', error.message);
+            throw new Error('Error al obtener el resumen de evaluaciones');
+        }
+    }
+
+    static async getEvalResultado ({colId, evalId}) {
+        try {
+            const query = `
+                SELECT
+                T.tal_nombre AS talento_nombre,
+                DT.det_tal_texto AS talento_descripcion,
+                ED.valor_talento AS valor_talento,
+                ED.porcentaje_talento AS porcentaje_talento,
+                ED.valor_detalle_talento AS valor_detalle_talento,
+                N.nota_nombre AS nota_subordinado,
+                N.nota_valor AS nota_subordinado_valor,
+                N2.nota_nombre AS nota_jefe,
+                N2.nota_valor AS nota_jefe_valor,
+                FORMAT(ROUND((N2.nota_valor * 100 ), 2), 'N2') AS nota,
+                FORMAT(ROUND((N2.nota_valor * ED.valor_talento ) / COALESCE(DetalleCount.detalle_count, 1), 2), 'N2') AS peso,
+                FORMAT(ROUND(SUM((N2.nota_valor * ED.valor_talento ) / COALESCE(DetalleCount.detalle_count, 1)) 
+                            OVER (PARTITION BY T.tal_nombre), 2), 'N2') AS suma_peso_talento
+            FROM calificacion C
+            INNER JOIN evaluacion_detalle ED ON C.cal_detalle_eval = ED.evd_id
+            INNER JOIN evaluacion E ON ED.evd_evaluacion_id = E.ev_id
+            INNER JOIN nota N ON C.cal_calificacion_subordinado = N.nota_id
+            INNER JOIN nota N2 ON C.cal_calificacion_jefe = N2.nota_id
+            INNER JOIN talento T ON ED.evd_talento_id = T.tal_id
+            INNER JOIN detalle_talento DT ON ED.evd_detalle_talento_id = DT.det_tal_id
+            LEFT JOIN (
+                SELECT 
+                    evd_talento_id, 
+                    COUNT(*) AS detalle_count
+                FROM evaluacion_detalle
+                WHERE evd_evaluacion_id = @evalId -- Filtra por la evaluación específica
+                GROUP BY evd_talento_id
+            ) DetalleCount ON T.tal_id = DetalleCount.evd_talento_id
+            WHERE E.ev_tipo_evaluation = @evalId
+            AND C.cal_col_subordinado = @colId`;
+
+            const resultado = await connection
+                .request()
+                .input('colId', sql.UniqueIdentifier, colId)
+                .input('evalId', sql.Int, evalId)
+                .query(query);
+
+            return resultado.recordset;
+
+        } catch (error) {
+            console.error('Error al obtener el resumen de evaluaciones:', error.message);
+            throw new Error('Error al obtener el resumen de evaluaciones');
+        }
+    }
+
+    static async getEvalPdi ({colId, evalId}) {
+        try {
+            const query_talentos = `
+                SELECT DISTINCT
+                    T.tal_id AS talento_id,
+                    T.tal_nombre AS talento_nombre,
+                    AP.act_pdi_nombre AS nombre_actividad,
+                    AP.act_pdi_descripcion AS descripcion_actividad,
+                    DP.de_pdi_porcentaje AS porcentaje_actividad
+                FROM calificacion C
+                INNER JOIN evaluacion_detalle ED ON C.cal_detalle_eval = ED.evd_id
+                INNER JOIN detalle_pdi DP ON ED.evd_evaluacion_id = DP.de_pdi_eval_id
+                INNER JOIN actividades_pdi AP ON DP.de_pdi_act_id = AP.act_pdi_id
+                INNER JOIN talento T ON ED.evd_talento_id = T.tal_id
+                WHERE ED.evd_evaluacion_id = @evalId
+                AND C.cal_col_subordinado = @colId
+                `;
+
+            const resultado_talentos = await connection
+                .request()
+                .input('colId', sql.UniqueIdentifier, colId)
+                .input('evalId', sql.Int, evalId)
+                .query(query_talentos);
+
+            const query_pdi = `
+                SELECT 
+                    T.tal_id AS talento_id,
+                    AP.act_pdi_nombre AS nombre_actividad,
+                    AP.act_pdi_descripcion AS descripcion_actividad,
+                    DP.de_pdi_porcentaje AS porcentaje_actividad,
+                    DPH.det_pdi_his_descripcion AS detalle_descripcion,
+                    DPH.det_pdi_his_fecha AS fecha_detalle
+                FROM detalle_pdi_historico DPH
+                INNER JOIN detalle_pdi DP ON DPH.det_pdi_his_id_detalle_pdi = DP.de_pdi_id
+                INNER JOIN actividades_pdi AP ON DP.de_pdi_act_id = AP.act_pdi_id
+                INNER JOIN talento T ON DPH.det_pdi_his_talento_id = T.tal_id
+                WHERE DP.de_pdi_eval_id = @evalId
+                AND DPH.det_pdi_his_col_subordinado_id = @colId
+            `;
+
+            const result_pdi = await connection
+                .request()
+                .input('colId', sql.UniqueIdentifier, colId)
+                .input('evalId', sql.Int, evalId)
+                .query(query_pdi)
+
+
+
+            const query_avances = `
+                SELECT
+                    AP.av_pdi_talento_id AS talento_id,
+                    AP.av_pdi_fecha_propuesta AS fecha_propuesta,
+                    AP.av_pdi_fecha_final AS fecha_final,
+                    AP.av_pdi_descripcion AS descripcion
+                FROM avance_pdi AP
+                WHERE AP.av_pdi_eval_id = @evalId
+                AND AP.av_pdi_col_subordinado_id = @colId
+            `;
+
+            const result_avances = await connection
+                .request()
+                .input('colId', sql.UniqueIdentifier, colId)
+                .input('evalId', sql.Int, evalId)
+                .query(query_avances)
+
+
+            return {
+                talentos: resultado_talentos.recordset,
+                pdi: result_pdi.recordset,
+                avances: result_avances.recordset
+            };
+
+        } catch (error) {
+            console.error('Error al obtener el resumen de evaluaciones:', error.message);
+            throw new Error('Error al obtener el resumen de evaluaciones');
+        }
+    }
+
 }

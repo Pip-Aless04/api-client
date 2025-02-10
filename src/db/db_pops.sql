@@ -385,102 +385,146 @@ VALUES
     (N'Evaluación de desempeño')
     --*/
 
+EXEC sp_rename 'DB_POPD_BLUME.tipo_evaluation', 'tipo_evaluacion'
+/*##########################################################################*/
 
+CREATE TABLE evaluacion_categoria(
+    ec_id INT IDENTITY(1,1) PRIMARY KEY,
+    ec_nombre VARCHAR(50) NOT NULL,
+    ec_estado CHAR(1) NOT NULL DEFAULT 'A'
+)
+
+INSERT INTO evaluacion_categoria(ec_nombre)
+VALUES
+('Subordinado'),
+('Jefe a cargo')
 
 /*##########################################################################*/
     CREATE TABLE evaluacion(
         ev_id INT IDENTITY(1,1) PRIMARY KEY,
         ev_tipo_evaluation INT NOT NULL,
         ev_fecha DATE NOT NULL,
-        ev_categoria VARCHAR(50) NOT NULL,
         ev_estado CHAR(1) NOT NULL DEFAULT 'A',
-        FOREIGN KEY(ev_tipo_evaluation) REFERENCES tipo_evaluation(te_id)
+        ev_categoria VARCHAR(50) NOT NULL,
+        FOREIGN KEY(ev_tipo_evaluation) REFERENCES tipo_evaluation(te_id),
+        FOREIGN KEY(ev_categoria) REFERENCES evaluacion_categoria(ec_id)
     );
 
+    SELECT * FROM evaluacion;
     --/*
     INSERT INTO evaluacion(ev_tipo_evaluation, ev_fecha, ev_categoria)
     VALUES
-    (1,  GETDATE(), 'Subordinado'),
-    (1,  GETDATE(), 'Jefe a cargo')
+    (1,  '2025-01-10', 1),
+    (1,  '2024-01-10', 1),
+    (1,  '2024-01-10', 2)
     --*/
+
 
     
 
 /*##########################################################################*/
     CREATE TABLE evaluacion_detalle(
         evd_id INT IDENTITY(1,1) PRIMARY KEY,
-        evd_evaluacion INT NOT NULL,
-        evd_talento INT NOT NULL,
-        evd_detalle_talento INT NOT NULL,
+        evd_evaluacion_id INT NOT NULL,
+        evd_talento_id INT NOT NULL,
+        evd_detalle_talento_id INT NOT NULL,
         valor_talento INT NOT NULL DEFAULT 0,
-        pordentaje_talento DECIMAL(3,2) NOT NULL DEFAULT 0,
+        porcentaje_talento DECIMAL(3,2) NOT NULL DEFAULT 0,
         valor_detalle_talento INT NOT NULL DEFAULT 0,
-        FOREIGN KEY(evd_evaluacion) REFERENCES evaluacion(ev_id),
-        FOREIGN KEY(evd_talento) REFERENCES talento(tal_id),
-        FOREIGN KEY(evd_detalle_talento) REFERENCES detalle_talento(det_tal_id)
+        FOREIGN KEY(evd_evaluacion_id) REFERENCES evaluacion(ev_id),
+        FOREIGN KEY(evd_talento_id) REFERENCES talento(tal_id),
+        FOREIGN KEY(evd_detalle_talento_id) REFERENCES detalle_talento(det_tal_id)
     );
 
-    /*
-    INSERT INTO evaluacion_detalle(evd_evaluacion, evd_talento, evd_detalle_talento, valor_talento, pordentaje_talento, valor_detalle_talento)
-    VALUES
-    INSERT INTO evaluacion_detalle(evd_evaluacion, evd_talento, evd_detalle_talento, valor_talento, pordentaje_talento, valor_detalle_talento)
-    VALUES
-    (1, 1, 1, 10, 0, 0),
-    (1, 1, 2, 10, 0, 0),
-    (1, 1, 3, 10, 0, 0),
-    (1, 2, 1, 15, 0, 0),
-    (1, 2, 2, 15, 0, 0),
-    (1, 2, 3, 15, 0, 0),
-    (1, 3, 1, 10, 0, 0),
-    (1, 3, 2, 10, 0, 0),
-    (1, 3, 3, 10, 0, 0),
-    (1, 4, 1, 10, 0, 0),
-    (1, 4, 2, 10, 0, 0),
-    (1, 4, 3, 10, 0, 0),
-    (1, 5, 1, 10, 0, 0),
-    (1, 5, 2, 10, 0, 0),
-    (1, 5, 3, 10, 0, 0),
-    (1, 6, 1, 15, 0, 0),
-    (1, 6, 2, 15, 0, 0),
-    (1, 6, 3, 15, 0, 0),
-    (1, 7, 1, 15, 0, 0),
-    (1, 7, 2, 15, 0, 0),
-    (1, 7, 3, 15, 0, 0),
-    (1, 8, 1, 15, 0, 0),
-    (1, 8, 2, 15, 0, 0),
-    (1, 8, 3, 15, 0, 0),
-    (1, 9, 1, 0, 0.30, 50),
-    (1, 9, 2, 0, 0.30, 25),
-    (1, 9, 3, 0, 0.30, 25),
-    (2, 1, 4, 10, 0, 0),
-    (2, 1, 5, 10, 0, 0),
-    (2, 1, 6, 10, 0, 0),
-    (2, 2, 4, 15, 0, 0),
-    (2, 2, 5, 15, 0, 0),
-    (2, 2, 6, 15, 0, 0),
-    (2, 3, 4, 10, 0, 0),
-    (2, 3, 5, 10, 0, 0),
-    (2, 3, 6, 10, 0, 0),
-    (2, 4, 4, 10, 0, 0),
-    (2, 4, 5, 10, 0, 0),
-    (2, 4, 6, 10, 0, 0),
-    (2, 5, 4, 10, 0, 0),
-    (2, 5, 5, 10, 0, 0),
-    (2, 5, 6, 10, 0, 0),
-    (2, 6, 4, 15, 0, 0),
-    (2, 6, 5, 15, 0, 0),
-    (2, 6, 6, 15, 0, 0),
-    (2, 7, 4, 15, 0, 0),
-    (2, 7, 5, 15, 0, 0),
-    (2, 7, 6, 15, 0, 0),
-    (2, 8, 4, 15, 0, 0),
-    (2, 8, 5, 15, 0, 0),
-    (2, 8, 6, 15, 0, 0),
-    (2, 9, 4, 0, 0.30, 50),
-    (2, 9, 5, 0, 0.30, 25),
-    (2, 9, 6, 0, 0.30, 25);
-    */
+    EXEC sp_rename 'evaluacion_detalle.pordentaje_talento', 'porcentaje_talento', 'COLUMN'
 
+    SELECT * FROM evaluacion_detalle;
+    SELECT * FROM nota;
+/*
+INSERT INTO evaluacion_detalle (evd_evaluacion_id, evd_talento_id, evd_detalle_talento_id, valor_talento, pordentaje_talento, valor_detalle_talento)  
+VALUES 
+(3, 1, 1, 10, 0, 0),  
+(3, 1, 2, 10, 0, 0),  
+(3, 1, 3, 10, 0, 0),  
+(3, 2, 1, 15, 0, 0),  
+(3, 2, 2, 15, 0, 0),  
+(3, 2, 3, 15, 0, 0),  
+(3, 3, 1, 10, 0, 0),  
+(3, 3, 2, 10, 0, 0),  
+(3, 3, 3, 10, 0, 0),  
+(3, 4, 1, 10, 0, 0),  
+(3, 4, 2, 10, 0, 0),  
+(3, 4, 3, 10, 0, 0),  
+(3, 5, 1, 10, 0, 0),  
+(3, 5, 2, 10, 0, 0),  
+(3, 5, 3, 10, 0, 0),  
+(3, 6, 1, 15, 0, 0),  
+(3, 6, 2, 15, 0, 0),  
+(3, 6, 3, 15, 0, 0),  
+(3, 7, 1, 15, 0, 0),  
+(3, 7, 2, 15, 0, 0),  
+(3, 7, 3, 15, 0, 0),  
+(3, 8, 1, 15, 0, 0),  
+(3, 8, 2, 15, 0, 0),  
+(3, 8, 3, 15, 0, 0),  
+(3, 9, 1, 0, 0.30, 50),  
+(3, 9, 2, 0, 0.30, 25),  
+(3, 9, 3, 0, 0.30, 25),
+(1, 1, 1, 10, 0, 0),  
+(1, 1, 2, 10, 0, 0),  
+(1, 1, 3, 10, 0, 0),  
+(1, 2, 1, 15, 0, 0),  
+(1, 2, 2, 15, 0, 0),  
+(1, 2, 3, 15, 0, 0),  
+(1, 3, 1, 10, 0, 0),  
+(1, 3, 2, 10, 0, 0),  
+(1, 3, 3, 10, 0, 0),  
+(1, 4, 1, 10, 0, 0),  
+(1, 4, 2, 10, 0, 0),  
+(1, 4, 3, 10, 0, 0),  
+(1, 5, 1, 10, 0, 0),  
+(1, 5, 2, 10, 0, 0),  
+(1, 5, 3, 10, 0, 0),  
+(1, 6, 1, 15, 0, 0),  
+(1, 6, 2, 15, 0, 0),  
+(1, 6, 3, 15, 0, 0),  
+(1, 7, 1, 15, 0, 0),  
+(1, 7, 2, 15, 0, 0),  
+(1, 7, 3, 15, 0, 0),  
+(1, 8, 1, 15, 0, 0),  
+(1, 8, 2, 15, 0, 0),  
+(1, 8, 3, 15, 0, 0),  
+(1, 9, 1, 0, 0.30, 50),  
+(1, 9, 2, 0, 0.30, 25),  
+(1, 9, 3, 0, 0.30, 25),  
+(2, 1, 4, 10, 0, 0),  
+(2, 1, 5, 10, 0, 0),  
+(2, 1, 6, 10, 0, 0),  
+(2, 2, 4, 15, 0, 0),  
+(2, 2, 5, 15, 0, 0),  
+(2, 2, 6, 15, 0, 0),  
+(2, 3, 4, 10, 0, 0),  
+(2, 3, 5, 10, 0, 0),  
+(2, 3, 6, 10, 0, 0),  
+(2, 4, 4, 10, 0, 0),  
+(2, 4, 5, 10, 0, 0),  
+(2, 4, 6, 10, 0, 0),  
+(2, 5, 4, 10, 0, 0),  
+(2, 5, 5, 10, 0, 0),  
+(2, 5, 6, 10, 0, 0),  
+(2, 6, 4, 15, 0, 0),  
+(2, 6, 5, 15, 0, 0),  
+(2, 6, 6, 15, 0, 0),  
+(2, 7, 4, 15, 0, 0),  
+(2, 7, 5, 15, 0, 0),  
+(2, 7, 6, 15, 0, 0),  
+(2, 8, 4, 15, 0, 0),  
+(2, 8, 5, 15, 0, 0),  
+(2, 8, 6, 15, 0, 0),  
+(2, 9, 4, 0, 0.30, 50),  
+(2, 9, 5, 0, 0.30, 25),  
+(2, 9, 6, 0, 0.30, 25);  
+*/
 
     CREATE TABLE nota(
         nota_id INT IDENTITY(1,1) PRIMARY KEY,
@@ -503,34 +547,101 @@ VALUES
 /*##########################################################################*/
     CREATE TABLE calificacion(
         cal_id INT IDENTITY(1,1) PRIMARY KEY,
+        cal_detalle_eval INT NOT NULL,
         cal_col_subordinado UNIQUEIDENTIFIER NOT NULL,
         cal_col_jefe_a_cargo UNIQUEIDENTIFIER NOT NULL,
         cal_calificacion_subordinado INT NOT NULL,
         cal_calificacion_jefe INT NOT NULL,
-        FOREIGN KEY (cal_id) REFERENCES evaluacion_detalle(evd_id),
+        FOREIGN KEY (cal_detalle_eval) REFERENCES evaluacion_detalle(evd_id),
         FOREIGN KEY(cal_col_subordinado) REFERENCES colaborador(col_id),
         FOREIGN KEY(cal_col_jefe_a_cargo) REFERENCES colaborador(col_id),
         FOREIGN KEY(cal_calificacion_subordinado) REFERENCES nota(nota_id),
         FOREIGN KEY(cal_calificacion_jefe) REFERENCES nota(nota_id)
     );
+    SELECT * FROM calificacion;
+
+
 
     /*
-    INSERT INTO calificacion(cal_col_subordinado, cal_col_jefe_a_cargo, cal_calificacion_subordinado, cal_calificacion_jefe)
+    INSERT INTO calificacion(cal_detalle_eval, cal_col_subordinado, cal_col_jefe_a_cargo, cal_calificacion_subordinado, cal_calificacion_jefe)
     VALUES
-    (1, 1, 1, 4),
-    (1, 2, 2, 4)
+    (1, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (2, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (3, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (4, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (5, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (6, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (7, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (8, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (9, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (10, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (11, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (12, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (13, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (14, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (15, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (16, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (17, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (18, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (19, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (20, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (21, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (22, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (23, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (24, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (25, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (26, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+    (27, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', 2, 2),
+
+    (55, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (56, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (57, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (58, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (59, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (60, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (61, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (62, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (63, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (64, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (65, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (66, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (67, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (68, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (69, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (70, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (71, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (72, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (73, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (74, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (75, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (76, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (77, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (78, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (79, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (80, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+    (81, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', null, null),
+
     */
-
 /*##########################################################################*/
-    CREATE TABLE aspecto_pdi(
-        apdi_id INT IDENTITY(1,1) PRIMARY KEY,
-        apdi_nombre NVARCHAR(50) NOT NULL,
-        apdi_descripcion NVARCHAR(MAX) NOT NULL,
-        apdi_estado CHAR(1) NOT NULL DEFAULT 'A'
+CREATE TABLE tipo_pdi(
+    tp_pdi_id INT IDENTITY(1,1) PRIMARY KEY,
+    tp_pdi_nombre NVARCHAR(50) NOT NULL,
+    tp_pdi_año SMALLINT NOT NULL DEFAULT YEAR(GETDATE())
+);
+/*
+INSERT INTO tipo_pdi(tp_pdi_nombre, tp_pdi_año)
+VALUES
+(N'Plan de Desarrollo Individual', 2024),
+*/
+/*##########################################################################*/
+    CREATE TABLE actividades_pdi(
+        act_pdi_id INT IDENTITY(1,1) PRIMARY KEY,
+        act_pdi_nombre NVARCHAR(255) NOT NULL,
+        act_pdi_descripcion NVARCHAR(MAX) NOT NULL,
     );
-
+    
     --/*
-    INSERT INTO aspecto_pdi(apdi_nombre, apdi_descripcion)
+    INSERT INTO actividades_pdi(act_pdi_nombre, act_pdi_descripcion)
     VALUES
     (N'Aprendizaje a través de la prácitca', N'Actividades o tareas a desarrollar en el trabajo diario o proyectos especiales, que nos permitan un aprendizaje integrado en el flujo de trabajo'),
     (N'Interacciones con otros para aprender', N'Coaching, mentoring o acompañamiento del jefe. Actividades que requieren compartir conocimiento con otros, interacción y aprendizaje de otras personas,'),
@@ -542,49 +653,65 @@ VALUES
 /*##########################################################################*/
     CREATE TABLE detalle_pdi(
         de_pdi_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-        de_pdi_col_id uniqueidentifier NOT NULL,
-        de_pdi_talento INT NOT NULL,
-        de_pdi_resultado_esperado TEXT,
-        de_pdi_aprendizaje_practico TEXT,
-        de_pdi_aprendizaje_con_otros TEXT,
-        de_pdi_aprendizaje_formal TEXT,
-        FOREIGN KEY (de_pdi_col_id) REFERENCES colaborador(col_id),
-        FOREIGN KEY (de_pdi_talento) REFERENCES talento(tal_id)
+        de_pdi_pdi_id INT NOT NULL,
+        de_pdi_eval_id INT NOT NULL,
+        de_pdi_act_id INT NOT NULL,
+        de_pdi_porcentaje INT NOT NULL,
+        FOREIGN KEY (de_pdi_pdi_id) REFERENCES tipo_pdi(tp_pdi_id),
+        FOREIGN KEY (de_pdi_eval_id) REFERENCES evaluacion(ev_id),
+        FOREIGN KEY (de_pdi_act_id) REFERENCES actividades_pdi(act_pdi_id),
     );
+
+    /*
+    INSERT INTO detalle_pdi(de_pdi_pdi_id, de_pdi_eval_id, de_pdi_act_id, de_pdi_porcentaje)
+    VALUES
+    (1, 1, 1, 70),
+    (1, 1, 2, 20),
+    (1, 1, 3, 10),
+    */
+
+    SELECT * FROM detalle_pdi
 
 /*##########################################################################*/
-    CREATE TABLE pdi (
-        pdi_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
-        pdi_id_colaborador uniqueidentifier NOT NULL,
-        pdi_id_jefe_cargo uniqueidentifier NOT NULL,
-        pdi_talento_mejorar INT,
-        pdi_id_detalle INT,
-        pdi_fecha_avance DATE NULL,
-        pdi_avances TEXT,
-        FOREIGN KEY (pdi_id_colaborador) REFERENCES colaborador(col_id),
-        FOREIGN KEY (pdi_id_jefe_cargo) REFERENCES colaborador(col_id),
-        FOREIGN KEY (pdi_talento_mejorar) REFERENCES talento(tal_id),
-        FOREIGN KEY (pdi_id_detalle) REFERENCES detalle_pdi(de_pdi_id)
-    );
-    /*
-    INSERT INTO pdi_detalle(pdid_id_eval_detalle, pdid_apdi_nombre, pdid_apdid_texto)
-    VALUES
-    (1,1,1),
-    (1,2,1),
-    (1,3,1),
-    (1,4,1),
-    (1,4,2),
-    (1,4,3),
-    (1,5,1),
-    (1,5,2),
-    (1,5,3),
-    (1,6,1),
-    (1,6,2),
-    (1,6,3),
-    (1,7,1),
-    (1,7,2),
-*/  
+CREATE TABLE detalle_pdi_historico (
+    det_pdi_his_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+    det_pdi_his_id_detalle_pdi INT NOT NULL,
+    det_pdi_his_talento_id INT NOT NULL, -- Nombre corregido
+    det_pdi_his_col_subordinado_id UNIQUEIDENTIFIER NOT NULL,
+    det_pdi_his_col_jefe_id UNIQUEIDENTIFIER NOT NULL,
+    det_pdi_his_fecha DATETIME2 NOT NULL,
+    det_pdi_his_descripcion NVARCHAR(MAX) NOT NULL,
+    FOREIGN KEY (det_pdi_his_id_detalle_pdi) REFERENCES detalle_pdi(de_pdi_id),
+    FOREIGN KEY (det_pdi_his_talento_id) REFERENCES talento(tal_id), -- Corrección aquí
+    FOREIGN KEY (det_pdi_his_col_subordinado_id) REFERENCES colaborador(col_id),
+    FOREIGN KEY (det_pdi_his_col_jefe_id) REFERENCES colaborador(col_id)
+);
 
+/*
+    INSERT INTO detalle_pdi_historico(det_pdi_his_id_detalle_pdi, det_pdi_his_talento_id, det_pdi_his_col_subordinado_id, det_pdi_his_col_jefe_id, det_pdi_his_fecha, det_pdi_his_descripcion)
+    VALUES
+    (1, 1, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', '2024-01-10', 'DESC......'),
+    (2, 1, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', '2024-01-10', 'DESC......'),
+    (3, 1, '612d9291-78c0-43d6-afa9-f0c964a8f90d', '578c5efb-3a95-4f7f-9106-c99e1d26c08d', '2024-01-10', 'DESC......'),
+    */
+
+/*##########################################################################*/
+    CREATE TABLE avance_pdi(
+        av_pdi_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
+        av_pdi_eval_id INT NOT NULL,
+        av_pdi_talento_id INT NOT NULL,
+        av_pdi_col_subordinado_id UNIQUEIDENTIFIER NOT NULL,
+        av_pdi_col_jefe_id UNIQUEIDENTIFIER NOT NULL,
+        av_pdi_fecha_propuesta DATETIME2 NOT NULL,
+        av_pdi_fecha_final DATETIME2 NOT NULL,
+        av_pdi_descripcion NVARCHAR(MAX) NOT NULL,
+        FOREIGN KEY (av_pdi_eval_id) REFERENCES evaluacion(ev_id),
+        FOREIGN KEY (av_pdi_talento_id) REFERENCES talento(tal_id),
+        FOREIGN KEY (av_pdi_col_subordinado_id) REFERENCES colaborador(col_id),
+        FOREIGN KEY (av_pdi_col_jefe_id) REFERENCES colaborador(col_id)
+    );
+
+    SELECT * FROM avance_pdi
 /*##############################################################################*/
     CREATE TABLE historico_salida_colaborador(
         hac_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
@@ -635,7 +762,7 @@ VALUES
 
 /*##############################################################################*/
 
-    CREATE TABLE historico_cambio_jefe(
+    CREATE DROP TABLE historico_cambio_jefe(
         hcj_id INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
         hcj_col_subordinado_id UNIQUEIDENTIFIER NOT NULL,
         hcj_col_jefe_id UNIQUEIDENTIFIER NOT NULL,
@@ -645,7 +772,7 @@ VALUES
     );
     
 
-    CREATE TRIGGER trg_update_colaborador_jefatura
+    CREATE DROP TRIGGER trg_update_colaborador_jefatura
     ON colaborador
     AFTER UPDATE
     AS
@@ -831,14 +958,15 @@ VALUES
         FOREIGN KEY (tr_creado_por) REFERENCES colaborador(col_id)
     );
 
+    SELECT * FROM tipo_reporte
 
     INSERT INTO tipo_reporte (tr_nombre, tr_creado_por, tr_creado_fecha, tr_estado) 
     VALUES 
-    ('salida_de_personal', '7e47f1ed-a18e-4397-8259-3fb66a9b47a4', '2024-04-01', 'A'),
-    ('solicitud_de_vacaciones', '7e47f1ed-a18e-4397-8259-3fb66a9b47a4', '2024-04-01', 'A'),
-    ('traslado_de_personal', '7e47f1ed-a18e-4397-8259-3fb66a9b47a4', '2024-04-01', 'A'),
-    ('incapacidades_y_licencias', '7e47f1ed-a18e-4397-8259-3fb66a9b47a4', '2024-04-01', 'A'),    
-    ('solicitud_de_cartas', '7e47f1ed-a18e-4397-8259-3fb66a9b47a4', '2024-04-01', 'A');
+    ('salida_de_personal', '24fbad8b-abab-4ad1-ada1-216ec7b64995', '2024-04-01', 'A'),
+    ('solicitud_de_vacaciones', '24fbad8b-abab-4ad1-ada1-216ec7b64995', '2024-04-01', 'A'),
+    ('traslado_de_personal', '24fbad8b-abab-4ad1-ada1-216ec7b64995', '2024-04-01', 'A'),
+    ('incapacidades_y_licencias', '24fbad8b-abab-4ad1-ada1-216ec7b64995', '2024-04-01', 'A'),    
+    ('solicitud_de_cartas', '24fbad8b-abab-4ad1-ada1-216ec7b64995', '2024-04-01', 'A');
 
 
     CREATE TABLE reporte(
@@ -912,5 +1040,3 @@ VALUES
     END
 
 
-
-SELECT * FROM colaborador

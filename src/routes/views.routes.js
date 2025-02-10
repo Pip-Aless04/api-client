@@ -23,7 +23,9 @@ export const createViewsRoutes = ({ReportesModel, EvaluacionModel, AuthModel}) =
     // Evaluacion
     viewsRouter.get("/evaluacion/inicio", authUserJWT, viewController.evaluacion);
     viewsRouter.get("/evaluacion/mas_info", authUserJWT, viewController.masInfo);
-    viewsRouter.get("/evaluacion/evaluaciones", authUserJWT, viewController.evaluaciones);
+    viewsRouter.get("/evaluacion/evaluaciones/:colId", authUserJWT, viewController.evaluaciones);
+    viewsRouter.get("/evaluacion/resultado/:colId/:evalId", authUserJWT, viewController.resultado);
+    viewsRouter.get("/evaluacion/pdi/:colId/:evalId", authUserJWT, viewController.pdi);
 
     return viewsRouter;
 };

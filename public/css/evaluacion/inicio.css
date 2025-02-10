@@ -99,11 +99,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 2rem;
   }
   
   .hero-text {
     flex: 1;
-    padding-right: 2rem;
+    padding-left: 2rem;
   }
   
   .hero h1 {
@@ -138,6 +139,7 @@
     background: linear-gradient(to right, var(--color-blue), transparent);
     opacity: 0.75;
     border-radius: 10px;
+    
   }
   
   .hero-wave {

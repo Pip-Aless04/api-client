@@ -21,10 +21,12 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    /*
     background-image: url('../../img/background.webp');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
+    */
 }
 
 header {
@@ -292,122 +294,85 @@ footer {
           </div>
       </nav>
   </header>
-  <main>
-    <div class="container">
-      <h1 class="title">¡Nuestras Evaluaciones!</h1>
-        <p class="subtitle">Explora el viaje de crecimiento de nuestro equipo</p>
-        <button id="celebrateBtn" class="celebrate-btn">¡Celebra nuestros logros!</button>
+      <main>
+        <div class="container">
+            <h1 class="title">¡Nuestras Evaluaciones!</h1>
+            <p class="subtitle">Explora el viaje de crecimiento de nuestro equipo</p>
+            <button id="celebrateBtn" class="celebrate-btn">¡Celebra nuestros logros!</button>
 
-        <div class="tabs">
-            <button class="tab-btn active" data-tab="pending">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                Pendientes (<span id="pendingCount">0</span>)
-            </button>
-            <button class="tab-btn" data-tab="completed">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                Realizadas (<span id="completedCount">0</span>)
-            </button>
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="pending">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Pendientes (<span id="pendingCount"><%= historicoResumido.filter(e => e.calificaciones_subordinado === 0).length %></span>)
+                </button>
+                <button class="tab-btn" data-tab="completed">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    Realizadas (<span id="completedCount"><%= historicoResumido.filter(e => e.calificaciones_subordinado === 1).length %></span>)
+                </button>
+            </div>
+
+            <div id="pendingEvaluations" class="evaluations-grid">
+                <% historicoResumido.filter(e => e.calificaciones_subordinado === 0).forEach(evaluation => { %>
+                    <div class="evaluation-card">
+                        <div class="evaluation-header">
+                            <span class="evaluation-title"><%= evaluation.nombre_evaluacion %></span>
+                            <span class="evaluation-badge" style="background-color: #2CCDB6; color: white;">
+                                Pendiente
+                            </span>
+                        </div>
+                        <div class="evaluation-date"><%= new Date(evaluation.fecha).toLocaleDateString() %></div>
+                        <div class="evaluation-action">¡Completa tu autoevaluación!</div>
+                    </div>
+                <% }) %>
+            </div>
+
+            <div id="completedEvaluations" class="evaluations-grid" style="display: none;">
+                <% historicoResumido.filter(e => e.calificaciones_subordinado === 1).forEach(evaluation => { %>
+                    <div class="evaluation-card" onclick="window.location.href='/dhcoapp/evaluacion/resultado/<%=colId%>/<%= evaluation.eval_id %>'">
+                        <div class="evaluation-header">
+                            <span class="evaluation-title"><%= evaluation.nombre_evaluacion %></span>
+                            <span class="evaluation-badge" style="background-color: #2CCDB6; color: white;">
+                                <%= evaluation.calificaciones_jefe.toFixed(1) %>
+                            </span>
+                        </div>
+                        <div class="evaluation-date"><%= new Date(evaluation.fecha).toLocaleDateString() %></div>
+                        <div class="evaluation-action">¡Ver detalles!</div>
+                    </div>
+                <% }) %>
+            </div>
         </div>
-
-        <div id="pendingEvaluations" class="evaluations-grid"></div>
-        <div id="completedEvaluations" class="evaluations-grid" style="display: none;"></div>
-    </div>
-  </main>
+    </main>
     <footer>
       <div class="footer-content">
           <img src="../../img/footer.webp" alt="Decorative footer with waves">
       </div>
     </footer>
     <script type="module">
-import confetti from "https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.module.mjs";
-      const evaluations = {
-  pending: [
-    { id: "006", date: "2024-02-15", employeeName: "Pedro Sánchez", department: "Desarrollo" },
-    { id: "007", date: "2024-02-14", employeeName: "Diana Torres", department: "Marketing" },
-  ],
-  completed: [
-    { id: "001", date: "2024-01-15", employeeName: "Ana García", department: "Ventas", score: 4.5 },
-    { id: "002", date: "2024-01-14", employeeName: "Carlos López", department: "Marketing", score: 3.8 },
-    { id: "003", date: "2024-01-13", employeeName: "María Rodríguez", department: "Recursos Humanos", score: 4.2 },
-  ],
-}
+      import confetti from "https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.module.mjs";
 
-const colorSchemes = [
-  { bg: "#2CCDB6E6", border: "#2CCDB6", text: "#1a1a1a" },
-  { bg: "#F1404BE6", border: "#F1404B", text: "#1a1a1a" },
-  { bg: "#2B8BCCE6", border: "#2B8BCC", text: "#1a1a1a" },
-  { bg: "#FF8A00E6", border: "#FF8A00", text: "#1a1a1a" },
-];
+      const historicoResumido = <%- JSON.stringify(historicoResumido) %>;
+      console.log(historicoResumido)
 
+      document.getElementById("celebrateBtn").addEventListener("click", () => {
+          confetti({
+              particleCount: 300,
+              spread: 150,
+              origin: { y: 0.6 },
+              colors: ["#2CCDB6", "#F1404B", "#2B8BCC", "#FF8A00"],
+          });
+      });
 
-function createEvaluationCard(evaluation, status) {
-  const card = document.createElement("div");
-  card.className = "evaluation-card"; // Ya no necesita colores dinámicos
+      function switchTab(tab) {
+          document.querySelectorAll(".tab-btn").forEach((btn) => btn.classList.remove("active"));
+          document.querySelector(`[data-tab="${tab}"]`).classList.add("active");
+          document.getElementById("pendingEvaluations").style.display = tab === "pending" ? "grid" : "none";
+          document.getElementById("completedEvaluations").style.display = tab === "completed" ? "grid" : "none";
+      }
 
-  let badgeColor = "#2CCDB6";
-  if (status === "completed") {
-    badgeColor = evaluation.score >= 4 ? "#2CCDB6" : evaluation.score >= 3 ? "#FF8A00" : "#F1404B";
-  }
-
-  card.innerHTML = `
-        <div class="evaluation-header">
-            <span class="evaluation-title">Autoevaluación #${evaluation.id}</span>
-            <span class="evaluation-badge" style="background-color: ${badgeColor}; color: white;">
-                ${status === "completed" ? evaluation.score.toFixed(1) : "Pendiente"}
-            </span>
-        </div>
-        <div class="evaluation-date">${evaluation.date}</div>
-        <div class="evaluation-info">${evaluation.employeeName}</div>
-        <div class="evaluation-info">${evaluation.department}</div>
-        <div class="evaluation-action">
-            ${status === "pending" ? "¡Completa tu autoevaluación!" : "¡Ver detalles!"}
-        </div>
-    `;
-
-  return card;
-}
-
-
-function renderEvaluations(status) {
-  const container = document.getElementById(`${status}Evaluations`)
-  container.innerHTML = ""
-  evaluations[status].forEach((evaluation) => {
-    container.appendChild(createEvaluationCard(evaluation, status))
-  })
-}
-
-function updateCounts() {
-  document.getElementById("pendingCount").textContent = evaluations.pending.length
-  document.getElementById("completedCount").textContent = evaluations.completed.length
-}
-
-function switchTab(tab) {
-  document.querySelectorAll(".tab-btn").forEach((btn) => btn.classList.remove("active"))
-  document.querySelector(`[data-tab="${tab}"]`).classList.add("active")
-  document.getElementById("pendingEvaluations").style.display = tab === "pending" ? "grid" : "none"
-  document.getElementById("completedEvaluations").style.display = tab === "completed" ? "grid" : "none"
-}
-
-document.querySelectorAll(".tab-btn").forEach((btn) => {
-  btn.addEventListener("click", () => switchTab(btn.dataset.tab))
-})
-
-document.getElementById("celebrateBtn").addEventListener("click", () => {
-    confetti({
-      particleCount: 300,
-      spread: 150,
-      origin: { y: 0.6 },
-      colors: ["#2CCDB6", "#F1404B", "#2B8BCC", "#FF8A00"],
-    });
-  });
-// Inicialización
-renderEvaluations("pending")
-renderEvaluations("completed")
-updateCounts()
-switchTab("pending")
-
-
-    </script>
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+          btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+      });
+  </script>
 </body>
 </html>
 
